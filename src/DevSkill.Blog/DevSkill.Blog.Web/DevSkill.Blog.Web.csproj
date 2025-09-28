@@ -20,4 +20,10 @@
     <Folder Include="Logs\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DevSkill.Blog.Application\DevSkill.Blog.Application.csproj" />
+    <ProjectReference Include="..\DevSkill.Blog.Domain\DevSkill.Blog.Domain.csproj" />
+    <ProjectReference Include="..\DevSkill.Blog.Infrastructure\DevSkill.Blog.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
