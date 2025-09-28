@@ -1,20 +1,19 @@
-using DevSkill.Blog.Web.Data;
+using DevSkill.Blog.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Reflection;
 
-// BootstrapLogger Configuration
+#region Bootstrap Logger Configuration
 Log.Logger = new LoggerConfiguration()
     .WriteTo.File("Logs/web-log-.log",rollingInterval:RollingInterval.Day)
     .CreateBootstrapLogger();
-
-
+#endregion
 try
 {
 
     var builder = WebApplication.CreateBuilder(args);
 
-    //Serilog Configuration
     #region Serilog Configuration
     builder.Host.UseSerilog((context, lc) => lc
         .MinimumLevel.Debug()
@@ -23,10 +22,18 @@ try
         .ReadFrom.Configuration(builder.Configuration)
     );
     #endregion
+    
     // Add services to the container.
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+    var migrationAssembly = Assembly.GetAssembly(typeof(ApplicationDbContext));
+
+    //Add DbContext
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(connectionString));
+        options.UseSqlServer(connectionString, (x) => x.MigrationsAssembly(migrationAssembly)));
+    //Add Razor Pages
+    builder.Services.AddRazorPages();
+
+
     builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
     builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
