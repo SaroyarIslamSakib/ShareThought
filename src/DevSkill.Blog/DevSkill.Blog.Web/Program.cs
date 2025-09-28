@@ -1,4 +1,5 @@
 using DevSkill.Blog.Infrastructure.Data;
+using DevSkill.Blog.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -23,9 +24,14 @@ try
     );
     #endregion
     
+
     // Add services to the container.
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
     var migrationAssembly = Assembly.GetAssembly(typeof(ApplicationDbContext));
+
+    #region Service Collection based Dependency Injection
+    builder.Services.AddDependencyInjection();
+    #endregion
 
     //Add DbContext
     builder.Services.AddDbContext<ApplicationDbContext>(options =>

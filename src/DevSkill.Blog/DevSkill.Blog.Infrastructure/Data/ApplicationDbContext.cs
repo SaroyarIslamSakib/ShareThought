@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using DevSkill.Blog.Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DevSkill.Blog.Infrastructure.Data
@@ -9,5 +10,6 @@ namespace DevSkill.Blog.Infrastructure.Data
             : base(options)
         {
         }
+        public DbSet<BlogPost> BlogPosts { get; set; }
     }
 }
