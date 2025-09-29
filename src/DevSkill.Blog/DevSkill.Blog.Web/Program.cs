@@ -1,5 +1,8 @@
+using Cortex.Mediator.DependencyInjection;
+using DevSkill.Blog.Application.Features.Blogs.Commands;
 using DevSkill.Blog.Infrastructure.Data;
 using DevSkill.Blog.Infrastructure.Extensions;
+using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -24,14 +27,25 @@ try
     );
     #endregion
     
+    #region Service Collection based Dependency Injection
+    builder.Services.AddDependencyInjection();
+    #endregion
+
+    #region Mediator Configuration
+    builder.Services.AddCortexMediator(
+        builder.Configuration,
+        new[] { typeof(Program), typeof(BlogPostAddCommand) },
+        options => options.AddDefaultBehaviors());
+    #endregion
+
+    #region Mapster Configuration
+    builder.Services.AddMapster();
+    #endregion
 
     // Add services to the container.
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
     var migrationAssembly = Assembly.GetAssembly(typeof(ApplicationDbContext));
 
-    #region Service Collection based Dependency Injection
-    builder.Services.AddDependencyInjection();
-    #endregion
 
     //Add DbContext
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
