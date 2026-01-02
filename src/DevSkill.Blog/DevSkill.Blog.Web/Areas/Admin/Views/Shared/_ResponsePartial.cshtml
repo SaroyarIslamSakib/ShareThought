@@ -1,0 +1,21 @@
+﻿﻿@using DevSkill.Blog.Infrastructure.Extensions
+
+@if (TempData.Peek<ResponseModel>("ResponseMessage") != null)
+{
+    var response = TempData.Get<ResponseModel>("ResponseMessage");
+    <div id="topAlert"
+         class="alert alert-dismissible fade show top-center-alert
+                            alert-@response.Response"
+         role="alert">
+
+        <strong>
+            @(response.Message)
+        </strong>
+
+        <button type="button"
+                class="btn-close"
+                aria-label="Close"
+                onclick="closeTopAlert()">
+        </button>
+    </div>
+}

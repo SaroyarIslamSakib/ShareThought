@@ -18,17 +18,18 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.11" />
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Logs\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DevSkill.Blog.Application\DevSkill.Blog.Application.csproj" />
     <ProjectReference Include="..\DevSkill.Blog.Domain\DevSkill.Blog.Domain.csproj" />
     <ProjectReference Include="..\DevSkill.Blog.Infrastructure\DevSkill.Blog.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Admin\Data\" />
   </ItemGroup>
 
 </Project>
