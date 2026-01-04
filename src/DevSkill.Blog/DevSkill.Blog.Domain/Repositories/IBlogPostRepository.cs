@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace DevSkill.Blog.Domain.Repositories
 {
-    public interface IBlogPostRepository : IRepository<BlogPost,Guid>
+    public interface IBlogPostRepository : IRepository<BlogPost, Guid>
     {
-
+        Task<(IList<BlogPost>, int total, int totalDisplay)> GetPagedBlogsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder);
     }
 }

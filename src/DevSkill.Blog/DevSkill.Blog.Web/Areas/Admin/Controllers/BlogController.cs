@@ -5,6 +5,9 @@ using DevSkill.Blog.Infrastructure.Extensions;
 using DevSkill.Blog.Web.Areas.Admin.Models;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
+using DevSkill.Blog.Domain;
+using DevSkill.Blog.Application.Features.Blogs.Queries;
+using System.Web;
 
 namespace DevSkill.Blog.Web.Areas.Admin.Controllers
 {
@@ -58,5 +61,38 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
             }
             return View();
         }
+        [HttpPost]
+        public async Task<JsonResult> GetBlogPostJsonData([FromBody] BlogPostListModel model)
+        {
+            try
+            {
+                var query = new GetBlogsQuery();
+                query.PageIndex = model.PageIndex;
+                query.SearchText = model.Search.Value;
+                query.PageSize = model.PageSize;
+                query.SortOrder = model.FormatSortExpression("Title", "Body");
+
+                var (items, total, totalDisplay) = await _mediator.SendQueryAsync<GetBlogsQuery, (IList<BlogPost>, int total, int totalDisplay)>(query);
+
+                var blogs = new
+                {
+                    recordsTotal = total,
+                    recordsFiltered = totalDisplay,
+                    data = (from item in items
+                            select new string[]
+                            {
+                            HttpUtility.HtmlEncode(item.Title),
+                            HttpUtility.HtmlEncode(item.Body)
+                            }).ToArray()
+                };
+                return Json(blogs);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to get blog post data");
+                return Json(DataTables.EmptyResult);
+            }
+        }
     }
+
 }

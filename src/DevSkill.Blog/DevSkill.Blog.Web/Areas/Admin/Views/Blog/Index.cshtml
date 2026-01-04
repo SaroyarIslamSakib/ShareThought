@@ -1,7 +1,101 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
+}
+
+<!--begin::App Content Header-->
+<div class="app-content-header">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-sm-6"><h3 class="mb-0">All Products</h3></div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">All Products</li>
+                </ol>
+            </div>
+        </div>
+        <!--end::Row-->
+    </div>
+    <!--end::Container-->
+</div>
+<!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <!--begin::Col-->
+            <div class="col-md-12">
+                <!--begin::Product List-->
+                <div class="card card-primary card-outline mb-4">
+                    <!--begin::Header-->
+                    <div class="card-header"><div class="card-title">Products</div></div>
+                    <!--end::Header-->
+                    <!--begin::Datatables-->
+                    <div class="card-body">
+                        <partial name="_ResponsePartial" />
+                        <table id="blogs">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Body</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Body</th>
+
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <!--end::Datatables-->
+                </div>
+                <!--end::Product List-->
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Row-->
+    </div>
+    <!--end::Container-->
+</div>
+<!--end::App Content-->
+@section Scripts
+{
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
+
+    <script>
+        $(function(){
+            $("#blogs").DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                lengthChange: true,
+                autoWidth: false,
+                ajax: {
+                    url: "/Admin/Blog/GetBlogPostJsonData",
+                    type: "POST",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: function(d){
+                        d.SearchItem = {
+
+                        };
+                        return JSON.stringify(d);
+                    },
+                }
+            });
+        });
+    </script>
+}
 
