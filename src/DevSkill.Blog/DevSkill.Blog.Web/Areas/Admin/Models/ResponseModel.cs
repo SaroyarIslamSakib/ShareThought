@@ -1,4 +1,4 @@
-﻿namespace DevSkill.Blog.Web.Areas.Admin.Models
+﻿namespace DevSkill.Blog.Web.Models
 {
     public enum ResponseTypes
     {
