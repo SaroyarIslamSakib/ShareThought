@@ -48,16 +48,16 @@ try
 
 
     //Add DbContext
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(connectionString, (x) => x.MigrationsAssembly(migrationAssembly)));
+    builder.Services.AddDbContext(connectionString, migrationAssembly!);
     //Add Razor Pages
     builder.Services.AddRazorPages();
 
 
     builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-    builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-        .AddEntityFrameworkStores<ApplicationDbContext>();
+    #region Identity Configuration
+    builder.Services.AddIdentity();
+    #endregion
     builder.Services.AddControllersWithViews();
 
     var app = builder.Build();
