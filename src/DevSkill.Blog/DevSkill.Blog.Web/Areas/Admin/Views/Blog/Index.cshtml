@@ -6,12 +6,17 @@
 @section Styles
 {
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
+    <!--begin: Alert : Successfully css-->
+    <link rel="stylesheet" href="~/css/alert.css" />
+    <!--end: Alert : Successfully css-->
 }
 
 <!--begin::App Content Header-->
 <div class="app-content-header">
     <!--begin::Container-->
     <div class="container-fluid">
+        <div class="col-4" ><partial name="_ResponsePartial" /></div>
+
         <!--begin::Row-->
         <div class="row">
             <div class="col-sm-6"><h3 class="mb-0">All Products</h3></div>
@@ -80,7 +85,6 @@
                     <!--end::Header-->
                     <!--begin::Datatables-->
                     <div class="card-body">
-                        <partial name="_ResponsePartial" />
                         <table id="blogs" class="table-bordered">
                             <thead>
                                 <tr>
@@ -112,6 +116,9 @@
 @section Scripts
 {
     <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
+    @* <script src="~/js/alert.js"></script> *@
+    <script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
+
 
     <script>
         $(function(){

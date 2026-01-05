@@ -3,19 +3,28 @@
 @if (TempData.Peek<ResponseModel>("ResponseMessage") != null)
 {
     var response = TempData.Get<ResponseModel>("ResponseMessage");
-    <div id="topAlert"
-         class="alert alert-dismissible fade show top-center-alert
-                            alert-@response.Response"
-         role="alert">
 
-        <strong>
+    <div class="bs-toast toast fade show bg-info alert-dismissible
+                position-fixed top-0 end-0 m-3"
+         role="alert"
+         aria-live="assertive"
+         aria-atomic="true"
+         data-bs-autohide="true"
+         data-bs-delay="4000">
+
+        <div class="toast-header">
+            <i class="bx bx-bell me-2"></i>
+            <div class="me-auto fw-semibold">Successfull</div>
+            <small>Just now</small>
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+        </div>
+
+        <div class="toast-body">
             @(response.Message)
-        </strong>
-
-        <button type="button"
-                class="btn-close"
-                aria-label="Close"
-                onclick="closeTopAlert()">
-        </button>
+        </div>
     </div>
+
 }

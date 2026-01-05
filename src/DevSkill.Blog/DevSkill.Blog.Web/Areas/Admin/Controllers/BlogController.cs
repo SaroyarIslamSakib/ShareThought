@@ -47,7 +47,7 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
                         Message = "Blog Post Create Successfully",
                         Response = ResponseTypes.success
                     });
-                    return RedirectToAction("Create");
+                    return RedirectToAction("Index");
                 }
                 catch(Exception ex)
                 {
