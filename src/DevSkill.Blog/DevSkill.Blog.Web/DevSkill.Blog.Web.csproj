@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Admin\Data\**" />
+    <Content Remove="Areas\Admin\Data\**" />
+    <EmbeddedResource Remove="Areas\Admin\Data\**" />
+    <None Remove="Areas\Admin\Data\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Cortex.Mediator" Version="1.7.0" />
     <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.9" />
@@ -26,10 +33,6 @@
     <ProjectReference Include="..\DevSkill.Blog.Application\DevSkill.Blog.Application.csproj" />
     <ProjectReference Include="..\DevSkill.Blog.Domain\DevSkill.Blog.Domain.csproj" />
     <ProjectReference Include="..\DevSkill.Blog.Infrastructure\DevSkill.Blog.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Areas\Admin\Data\" />
   </ItemGroup>
 
 </Project>

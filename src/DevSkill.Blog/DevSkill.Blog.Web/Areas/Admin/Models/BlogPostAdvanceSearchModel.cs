@@ -2,10 +2,8 @@
 {
     public class BlogPostAdvanceSearchModel
     {
-        public string Name { get; set; }
-        public double PriceFrom { get; set; }
-        public double PriceTo { get; set; }
-        public bool IsAvailable { get; set; }
-
+        public string? Title { get; set; }
+        public DateTime? PublishFrom { get; set; } 
+        public DateTime? PublishTo { get; set; }
     }
 }

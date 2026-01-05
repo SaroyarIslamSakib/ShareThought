@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Application.Features.Blogs.Queries;
 using System.Web;
+using DevSkill.Blog.Domain.Dtos;
 
 namespace DevSkill.Blog.Web.Areas.Admin.Controllers
 {
@@ -66,13 +67,14 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
         {
             try
             {
-                var query = new GetBlogsQuery();
+                var query = new GetBlogsSPQuery();
+                query.Title = model.SearchItem.Title;
+                query.PublishFrom = model.SearchItem.PublishFrom;
                 query.PageIndex = model.PageIndex;
-                query.SearchText = model.Search.Value;
                 query.PageSize = model.PageSize;
                 query.SortOrder = model.FormatSortExpression("Title", "Body");
 
-                var (items, total, totalDisplay) = await _mediator.SendQueryAsync<GetBlogsQuery, (IList<BlogPost>, int total, int totalDisplay)>(query);
+                var (items, total, totalDisplay) = await _mediator.SendQueryAsync<GetBlogsSPQuery, (IList<BlogPostDto>, int total, int totalDisplay)>(query);
 
                 var blogs = new
                 {

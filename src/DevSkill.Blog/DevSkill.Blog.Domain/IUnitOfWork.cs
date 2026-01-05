@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DevSkill.Blog.Domain.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace DevSkill.Blog.Domain
 {
     public interface IUnitOfWork
     {
+        ISqlUtility SqlUtility { get; }
         void Save();
         Task SaveAsync();
     }

@@ -1,4 +1,5 @@
-﻿@{
+﻿@model BlogPostListModel
+@{
     ViewData["Title"] = "Index";
 }
 
@@ -34,15 +35,53 @@
         <div class="row">
             <!--begin::Col-->
             <div class="col-md-12">
+
                 <!--begin::Product List-->
                 <div class="card card-primary card-outline mb-4">
+                    <!--begin: Advance Search row-->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fa fa-search mr-1"></i> Search</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label>Title</label>
+                                                <input asp-for="SearchItem.Title" type="text" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label>Publish From</label>
+                                                <input asp-for="SearchItem.PublishFrom" class="form-control" type="date"  />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label>Publish To</label>
+                                                <input asp-for="SearchItem.PublishTo" class="form-control" type="date"   />
+                                            </div>
+                                        </div>
+                                       
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button id="searchButton" type="submit" class="btn btn-primary float-right">Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end: Advance Search row-->
                     <!--begin::Header-->
                     <div class="card-header"><div class="card-title">Products</div></div>
                     <!--end::Header-->
                     <!--begin::Datatables-->
                     <div class="card-body">
                         <partial name="_ResponsePartial" />
-                        <table id="blogs">
+                        <table id="blogs" class="table-bordered">
                             <thead>
                                 <tr>
                                     <th>Title</th>
@@ -82,6 +121,7 @@
                 responsive: true,
                 lengthChange: true,
                 autoWidth: false,
+                searching: false,
                 ajax: {
                     url: "/Admin/Blog/GetBlogPostJsonData",
                     type: "POST",
@@ -89,12 +129,20 @@
                     dataType: "json",
                     data: function(d){
                         d.SearchItem = {
+                                Title : $("#SearchItem_Title").val(),
+                                PublishFrom : $("#SearchItem_PublishFrom").val() === "" ? null : $("#SearchItem_PublishFrom").val(),
+                                PublishTo : $("#SearchItem_PublishTo").val() === "" ? null : $("#SearchItem_PublishTo").val()
 
                         };
                         return JSON.stringify(d);
                     },
                 }
             });
+
+            $("#searchButton").click(function(){
+            $("#blogs").DataTable().ajax.reload(null, false);
+            });
+
         });
     </script>
 }
