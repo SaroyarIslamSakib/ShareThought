@@ -74,7 +74,7 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
                 query.PublishFrom = model.SearchItem.PublishFrom;
                 query.PageIndex = model.PageIndex;
                 query.PageSize = model.PageSize;
-                query.SortOrder = model.FormatSortExpression("Title", "Body");
+                query.SortOrder = model.FormatSortExpression("Title", "Body" , "CreatedAt");
 
                 var (items, total, totalDisplay) = await _mediator.SendQueryAsync<GetBlogsSPQuery, (IList<BlogPostDto>, int total, int totalDisplay)>(query);
 
@@ -86,7 +86,10 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
                             select new string[]
                             {
                             HttpUtility.HtmlEncode(item.Title),
-                            HttpUtility.HtmlEncode(item.Body)
+                            HttpUtility.HtmlEncode(item.Body),
+                            HttpUtility.HtmlEncode(item.CreatedAt),
+                            item.Id.ToString()
+
                             }).ToArray()
                 };
                 return Json(blogs);
@@ -97,6 +100,94 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
                 return Json(DataTables.EmptyResult);
             }
         }
+
+        [HttpPost]
+        public async Task<JsonResult> GetBlogById(Guid id)
+        {
+            var blog = await _mediator.SendQueryAsync<BlogPostGetQuery, BlogPost>(
+                new BlogPostGetQuery { Id = id }
+            );
+
+            if (blog == null)
+                return Json(null);
+
+            return Json(new
+            {
+                title = blog.Title,
+                body = blog.Body,
+                createdAt = blog.CreatedAt.ToString("dd MMM yyyy")
+            });
+        }
+
+        public async Task<JsonResult> EditAsync(Guid id)
+        {
+            var blog = await _mediator.SendQueryAsync<BlogPostGetQuery, BlogPost>(
+                new BlogPostGetQuery { Id = id }
+            );
+
+            if (blog == null)
+                return Json(null);
+
+            return Json(new
+            {
+                id = blog.Id,
+                title = blog.Title,
+                body = blog.Body
+            });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> EditAsync([FromBody] UpdateBlogModel model)
+        {
+            var command = new BlogPostEditCommand
+            {
+                Id = model.Id,
+                Title = model.Title,
+                Body = model.Body
+            };
+            await _mediator.SendCommandAsync<BlogPostEditCommand, Guid>(command);
+
+            TempData.Put("ResponseMessage", new ResponseModel
+            {
+                Message = "Blog updated successfully",
+                Response = ResponseTypes.success
+            });
+            return Json(new { success = true });
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<JsonResult> DeleteAsync(Guid id)
+        {
+            try
+            {
+                var command = new BlogPostDeleteCommand
+                {
+                    Id = id
+                };
+                await _mediator.SendCommandAsync<BlogPostDeleteCommand, Guid>(command);
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Blog deleted successfully",
+                    Response = ResponseTypes.success
+                });
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to delete blog post");
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to delete blog post",
+                    Response = ResponseTypes.danger
+                });
+                return Json(new { success = false });
+            }
+        }
+        public IActionResult ResponsePartial()
+        {
+            return PartialView("_ResponsePartial");
+        }
+
     }
 
 }

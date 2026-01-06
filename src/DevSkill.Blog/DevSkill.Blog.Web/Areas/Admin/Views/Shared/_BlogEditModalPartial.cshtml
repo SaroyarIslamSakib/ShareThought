@@ -1,0 +1,49 @@
+﻿<!-- Edit Blog Modal -->
+<div class="modal fade" id="editBlogModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fa fa-pencil me-2"></i> Edit Blog
+                </h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" id="editBlogId" />
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Title</label>
+                    <input type="text"
+                           id="editBlogTitle"
+                           class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Body</label>
+                    <textarea id="editBlogBody"
+                              class="form-control"
+                              rows="6"></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <button type="button"
+                        id="updateBlogBtn"
+                        class="btn btn-primary">
+                    <i class="fa fa-save me-1"></i> Update
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>

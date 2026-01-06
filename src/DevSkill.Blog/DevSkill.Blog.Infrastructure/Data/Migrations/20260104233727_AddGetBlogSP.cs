@@ -14,7 +14,7 @@ namespace DevSkill.Blog.Infrastructure.Data.Migrations
                 CREATE OR ALTER PROCEDURE GetBlogPosts
                     @PageIndex INT,
                     @PageSize INT,
-                    @OrderBy NVARCHAR(50),
+                    @OrderBy NVARCHAR(50) = 'Title ASC',
                     @Title NVARCHAR(250) = NULL,
                     @PublishFrom DATE = NULL,
                     @PublishTo DATE = NULL,

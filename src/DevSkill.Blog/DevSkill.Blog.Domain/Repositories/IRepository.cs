@@ -15,6 +15,7 @@ namespace DevSkill.Blog.Domain.Repositories
         void Add(TAggregateRoot entity);
         Task AddAsync(TAggregateRoot entity);
         void Edit(TAggregateRoot entityToUpdate);
+        Task EditAsync(TAggregateRoot entityToUpdate);
         IList<TAggregateRoot> GetAll();
         Task<IList<TAggregateRoot>> GetAllAsync();
         TAggregateRoot GetById(TKey id);
