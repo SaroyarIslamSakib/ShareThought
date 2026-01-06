@@ -36,4 +36,8 @@
     <ProjectReference Include="..\DevSkill.Blog.Infrastructure\DevSkill.Blog.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\photos\" />
+  </ItemGroup>
+
 </Project>

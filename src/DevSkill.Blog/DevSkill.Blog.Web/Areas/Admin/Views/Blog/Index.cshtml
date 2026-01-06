@@ -82,8 +82,11 @@
 
         <!-- ================= DataTable Section ================= -->
         <div class="card card-primary card-outline shadow-sm">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Products</h5>
+                <a asp-area="Admin" asp-controller="Blog" asp-action="Create" class="btn btn-primary btn-sm">
+                    <i class="fa fa-plus me-1"></i> Create
+                </a>
             </div>
 
             <div class="card-body">
@@ -220,7 +223,7 @@
 
             $("#confirmDeleteBlogBtn").click(function () {
                 $.ajax({
-                    url: "/Admin/Blog/Delete", // ✅ important
+                    url: "/Admin/Blog/Delete",
                     type: "POST",
                     data: {
                         id: $("#deleteBlogId").val(),
