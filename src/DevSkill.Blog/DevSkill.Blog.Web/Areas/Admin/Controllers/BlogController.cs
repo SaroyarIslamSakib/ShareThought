@@ -10,10 +10,11 @@ using DevSkill.Blog.Application.Features.Blogs.Queries;
 using System.Web;
 using DevSkill.Blog.Domain.Dtos;
 using DevSkill.Blog.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DevSkill.Blog.Web.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize]
     public class BlogController : Controller
     {
         private readonly ILogger<BlogController> _logger;

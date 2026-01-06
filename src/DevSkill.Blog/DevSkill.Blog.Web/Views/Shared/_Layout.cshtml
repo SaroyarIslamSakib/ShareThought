@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="~/DevSkill.Blog.Web.styles.css" asp-append-version="true" />
 
     <!-- begin: Theme CSS-->
+        @await RenderSectionAsync("Styles", required: false)
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="~/sneat-1.0.0/img/favicon/favicon.ico" />
     <!-- Fonts -->
