@@ -1,0 +1,102 @@
+﻿@using DevSkill.Blog.Infrastructure.Identity
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<nav class="main-navbar navbar-expand-lg nav-colour navbar-dark">
+    <div class="container-fluid">
+
+        <!-- Logo -->
+        <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+            <img src="~/photos/blogpostblue.png"
+                 alt="Logo"
+                 class="navbar-logo">
+        </a>
+
+        <!-- Mobile Toggle -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Content -->
+        <div class="collapse navbar-collapse" id="mainNavbar">
+
+            <!-- Left Menu -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-2">
+
+                <li class="nav-item">
+                    <a asp-area="" asp-controller="Home" asp-action="Category" class="btn nav-colour fw-bold text-white px-3">
+                        Blogs
+                    </a>
+                </li>
+
+
+
+                <li class="nav-item">
+                    <a href="#" class="btn nav-colour fw-bold text-white px-3">
+                        Membership
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="btn nav-colour fw-bold text-white px-3">
+                        Newsletter
+                    </a>
+                </li>
+
+            </ul>
+
+            
+            <!-- Search -->
+            <form class="d-flex align-items-center nav-search-group" role="search">
+
+                <!-- Search -->
+                <div class="nav-search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="search"
+                           class="form-control nav-search-input"
+                           placeholder="Search articles..." />
+                </div>
+
+            </form>
+            <!-- Sign Up Button -->
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <div class="dropdown">
+                    <button class="btn nav-user-btn dropdown-toggle"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        <i class="fas fa-user-circle me-1"></i>
+                        @User.Identity?.Name!
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" asp-controller="Account" asp-action="Profile">
+                                Profile
+                            </a>
+                        </li>
+                        <li>
+                            <form class="form-inline" asp-area="" asp-controller="Account" asp-action="Logout" asp-antiforgery="true" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                <button type="submit" class="text-danger dropdown-item nav-link btn btn-link">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            }
+            else
+            {
+                <!-- Sign Up Button -->
+                <button type="button"
+                        class="btn nav-signup-btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#loginModal">
+                    Sign Up
+                    <i class="fas fa-user-plus"></i>
+                </button>
+            }
+
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,274 @@
+﻿.landing-body {
+    font-family: 'Inter', sans-serif;
+    background: #ffffff;
+}
+
+.hero {
+    position: relative;
+    overflow: hidden;
+    padding: 120px 0 160px;
+}
+
+.hero-title {
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1.1;
+    position: relative;
+    z-index: 2; /* text above ruler */
+}
+
+.hero-subtitle,
+.hero-actions {
+    position: relative;
+    z-index: 2;
+}
+/* Primary Button */
+.hero-btn-primary {
+    background-color: #566a7f; /* dark */
+    color: #ffffff;
+    border: 2px solid #212529;
+    padding: 12px 28px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+    /* Primary Hover */
+    .hero-btn-primary:hover {
+        background-color: #ffffff;
+        color: #566a7f;
+        border-color: #212529;
+    }
+
+/* Secondary Button */
+.hero-btn-secondary {
+    background-color: transparent;
+    color: #566a7f;
+    border: 2px solid #212529;
+    padding: 12px 28px;
+    font-weight: 500;
+    margin-left: 12px;
+    transition: all 0.3s ease;
+}
+
+    /* Secondary Hover */
+    .hero-btn-secondary:hover {
+        background-color: #566a7f;
+        color: #ffffff;
+        border-color: #212529;
+    }
+
+/* ===============================
+   Ruler
+================================ */
+.ruler {
+    position: absolute;
+    top: clamp(260px, 32vh, 380px); /* 👈 magic line */
+    right: -200px;
+    width: clamp(360px, 45vw, 560px);
+    height: auto;
+    z-index: 0; /* 👈 text এর নিচে */
+    opacity: 0.95;
+    pointer-events: none;
+}
+
+/* floating animation */
+.floating {
+    animation: float 6s ease-in-out infinite;
+}
+/* Tablet & below */
+@media (max-width: 992px) {
+    .ruler {
+        top: 320px;
+        width: 360px;
+        right: -160px;
+        opacity: 0.5;
+    }
+}
+@media (max-height: 820px) {
+    .ruler {
+        top: 420px;
+        opacity: 0.5;
+    }
+
+    .pencil {
+        top: 480px;
+        opacity: 0.45;
+    }
+}
+/* Mobile */
+@media (max-width: 768px) {
+    .ruler {
+        display: none; 
+    }
+
+    .hero {
+        padding: 100px 0 120px;
+    }
+
+    .hero-title {
+        font-size: 42px;
+    }
+}
+
+/* ===============================
+   Pencil Decoration
+================================ */
+.pencil {
+    position: absolute;
+    top: clamp(320px, 38vh, 460px); /* 👈 dynamic */
+    left: -160px;
+    width: clamp(320px, 45vw, 560px);
+    height: auto;
+    z-index: 0;
+    opacity: 0.95;
+    pointer-events: none;
+    animation: float 6s ease-in-out infinite;
+}
+
+/* ===============================
+   Tablet (≤ 992px)
+================================ */
+@media (max-width: 992px) {
+    .pencil {
+        top: 410px;
+        width: 360px;
+        left: -220px;
+        opacity: 0.6;
+    }
+}
+
+/* ===============================
+   Small Tablet / Large Mobile (≤ 768px)
+================================ */
+@media (max-width: 768px) {
+    .pencil {
+        top: 460px;
+        width: 300px;
+        left: -200px;
+        opacity: 0.45;
+    }
+}
+
+/* ===============================
+   Mobile (≤ 576px)
+================================ */
+@media (max-width: 576px) {
+    .pencil {
+        display: none; /* 👈 decoration off */
+    }
+}
+
+/* ===============================
+   Floating animation
+================================ */
+@keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+
+/* ===============================
+   Notebook-1
+================================ */
+
+.notebook-illustration {
+    position: absolute;
+    /* 👇 horizontal center */
+    left: 45%;
+    transform: translateX(-50%);
+    /* 👇 pencil এর নিচে */
+    top: 500px; /* pencil top (370px) + gap */
+
+    width: 120px; /* small & clean */
+    height: auto;
+    opacity: 0.95;
+    z-index: 1;
+    pointer-events: none;
+}
+@media (max-width: 992px) {
+    .notebook-illustration {
+        top: 520px;
+        width: 100px;
+        opacity: 0.7;
+    }
+}
+
+@media (max-width: 768px) {
+    .notebook-illustration {
+        display: none; /* decoration hide */
+    }
+}
+
+/* ===============================
+   Notebook - 2
+================================ */
+
+.notebook-Writing {
+    position: absolute;
+    /* 👇 horizontal center */
+    left: 55%;
+    transform: translateX(-50%);
+    /* 👇 pencil এর নিচে */
+    top: 500px; /* pencil top (370px) + gap */
+
+    width: 120px; /* small & clean */
+    height: auto;
+    opacity: 0.95;
+    z-index: 1;
+    pointer-events: none;
+}
+
+@media (max-width: 992px) {
+    .notebook-Writing {
+        top: 520px;
+        width: 100px;
+        opacity: 0.7;
+    }
+}
+
+@media (max-width: 768px) {
+    .notebook-Writing {
+        display: none; /* decoration hide */
+    }
+}
+/* ===============================
+   Search
+================================ */
+
+.search-box {
+    width: 600px;
+    max-width: 90%;
+}
+
+.search-input {
+    width: 100%;
+    padding: 16px 22px;
+    font-size: 18px;
+    border-radius: 14px;
+    border: 1.5px solid #9aa7b2;
+    outline: none;
+    background: #FFFFFF;
+    color: #333;
+}
+
+    .search-input::placeholder {
+        color: #9aa7b2;
+    }
+
+.search-wrapper {
+    display: flex;
+    margin: 0 auto;
+    align-items: stretch;
+    background: #fff;
+    overflow: hidden;
+}
+

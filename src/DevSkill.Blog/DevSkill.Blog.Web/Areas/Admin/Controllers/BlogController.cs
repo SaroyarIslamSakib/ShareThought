@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace DevSkill.Blog.Web.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize]
+    [Area("Admin")]
     public class BlogController : Controller
     {
         private readonly ILogger<BlogController> _logger;

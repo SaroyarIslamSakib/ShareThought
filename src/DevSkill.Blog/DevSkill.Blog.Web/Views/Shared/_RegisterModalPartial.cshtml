@@ -1,0 +1,68 @@
+﻿@model RegisterModel
+<div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 bg-transparent">
+
+            <div class="card">
+                <div class="card-body">
+
+                    <!-- Close -->
+                    <button type="button"
+                            class="btn-close position-absolute top-0 end-0 m-3"
+                            data-bs-dismiss="modal"></button>
+
+                    <h4 class="mb-2">Register to be a member</h4>
+                    <p class="mb-4">Create your account to continue.</p>
+
+                    <form asp-controller="Account"
+                          asp-action="Register"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email</label>
+                            <input asp-for="Email" class="form-control"
+                                   placeholder="Enter your email" />
+                            <span asp-validation-for="Email"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input asp-for="Password"
+                                   type="password"
+                                   class="form-control" />
+                            <span asp-validation-for="Password"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Confirm Password</label>
+                            <input asp-for="ConfirmPassword"
+                                   type="password"
+                                   class="form-control" />
+                            <span asp-validation-for="ConfirmPassword"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <button class="btn btn-primary w-100">
+                            Sign Up
+                        </button>
+                    </form>
+
+                    <p class="text-center mt-3">
+                        <span>Already have an account?</span>
+                        <a href="javascript:void(0)"
+                           id="openLoginFromRegister">
+                            Sign in instead
+                        </a>
+                    </p>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

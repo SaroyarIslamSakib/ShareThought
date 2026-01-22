@@ -212,7 +212,7 @@ namespace DevSkill.Blog.Web.Controllers
             }
         }
         [HttpPost,ValidateAntiForgeryToken]
-        public async Task<IActionResult> LogoutAsync(string returnUrl = null)
+        public async Task<IActionResult> Logout(string returnUrl = null)
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");

@@ -1,0 +1,49 @@
+﻿.why-section-wrapper {
+    background: linear-gradient(115deg, #3c8da9, #2c67f2);
+    padding: 80px 0;
+    color: #ffffff;
+}
+
+.why-header {
+    font-size: 36px;
+    font-weight: 600;
+    color:#ffffff;
+}
+
+.why-photo-section i {
+    font-size: 42px;
+    color: #ffffff;
+}
+
+.why-section h5 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #ffffff;
+}
+
+.why-section p {
+    font-size: 15px;
+    color: #e0e0e0;
+    line-height: 1.6;
+}
+
+.why-btn {
+    background-color: #ffffff;
+    color: #356cb1;
+    padding: 12px 40px;
+    font-size: 18px;
+    font-weight: 500;
+    border: 1px solid rgba(53, 108, 177, 0.25);
+    border-radius: 6px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease;
+}
+
+    .why-btn:hover {
+        background-color: #356cb1;
+        color: #ffffff;
+        border-color: transparent;
+        box-shadow: 0 12px 28px rgba(53, 108, 177, 0.35);
+        transform: translateY(-3px);
+    }
