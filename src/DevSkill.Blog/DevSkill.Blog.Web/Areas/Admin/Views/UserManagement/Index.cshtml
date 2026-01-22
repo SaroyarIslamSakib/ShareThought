@@ -1,0 +1,195 @@
+﻿@model UserListModel
+@{
+    ViewData["Title"] = "Index";
+}
+@Html.AntiForgeryToken()
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
+}
+
+<!-- ================= App Content Header ================= -->
+<div class="app-content-header">
+    <div class="container-fluid">
+
+        <!-- Alert / Response -->
+        <div class="row mb-3">
+            <div id="responseContainer" class="col-lg-4 col-md-6">
+                <partial name="_ResponsePartial" />
+
+            </div>
+            <div class="col-lg-4 col-md-6">
+                @* <partial name="_AssignRoleModalPartial" /> *@
+                <div id="assignRoleModalContainer"></div>
+            </div>
+        </div>
+
+        <!-- Title & Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb breadcrumb-style1">
+                <li class="breadcrumb-item">
+                    <a href="javascript:void(0);">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="javascript:void(0);">Users</a>
+                </li>
+                <li class="breadcrumb-item active">All Users</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- ================= App Content ================= -->
+<div class="app-content">
+    <div class="container-fluid">
+
+        <!-- ================= Search Section ================= -->
+        <div class="card shadow-sm mb-4 border-0">
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0">
+                    <i class="fa fa-search mr-1"></i> Search
+                </h5>
+            </div>
+
+            <div class="card-body">
+                <div class="row g-3">
+
+                    <div class="col-lg-4 col-md-6">
+                        <label class="form-label">Name</label>
+                        <input asp-for="SearchItem.Name" type="text" class="form-control" />
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <label class="form-label">Registration From</label>
+                        <input asp-for="SearchItem.RegistrationFrom" class="form-control" type="date" />
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <label class="form-label">Registration To</label>
+                        <input asp-for="SearchItem.RegistrationTo" class="form-control" type="date" />
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card-footer bg-white text-end">
+                <button id="searchButton" type="submit" class="btn btn-primary px-4">
+                    <i class="fa fa-search me-1"></i> Search
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= DataTable Section ================= -->
+        <div class="card card-primary card-outline shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Users</h5>
+                <a asp-area="Admin" asp-controller="Blog" asp-action="Create" class="btn btn-primary btn-sm">
+                    <i class="fa fa-plus me-1"></i> Create
+                </a>
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="users" class="table table-bordered table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Contact</th>
+                                <th>Roles</th>
+                                <th>Registration Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot class="table-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Contact</th>
+                                <th>Roles</th>
+                                <th>Registration Date</th>
+                                <th>Action</th>
+
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--end::App Content-->
+@section Scripts
+{
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
+    <script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
+
+
+    <script>
+        $(function () {
+
+            // ================= DataTable =================
+            const userTable = $("#users").DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                lengthChange: true,
+                autoWidth: false,
+                searching: false,
+                ajax: {
+                    url: "/Admin/UserManagement/GetUserJsonData",
+                    type: "POST",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: function (d) {
+                        d.SearchItem = {
+                            Name: $("#SearchItem_Name").val(),
+                            RegistrationFrom: $("#SearchItem_RegistrationFrom").val() || null,
+                            RegistrationTo: $("#SearchItem_RegistrationTo").val() || null
+                        };
+                        return JSON.stringify(d);
+                    }
+                },
+                columnDefs: [{
+                    orderable: false,
+                    targets: 5,
+                    render: function (data) {
+                        return `
+                        <div class="btn-group">
+                            <button class="btn btn-outline-secondary show-user-modal" data-id="${data}">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary edit-user-modal" data-id="${data}">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary delete-user-modal" data-id="${data}">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>`;
+                    }
+                }]
+            });
+
+            $("#searchButton").click(function () {
+                userTable.ajax.reload(null, false);
+            });
+
+            // ================= Show Assign Role Modal =================
+            $(document).on("click", ".edit-user-modal", function () {
+
+            const userId = $(this).data("id");
+
+            $.get("/Admin/UserManagement/AssignRoleModal", { userId: userId })
+                .done(function (html) {
+                    $("#assignRoleModalContainer").html(html);
+                    $("#assignRoleModal").modal("show");
+                });
+        });
+
+        });
+    </script>
+
+}
+

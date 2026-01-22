@@ -22,13 +22,17 @@ namespace DevSkill.Blog.Web.Controllers
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailUtility _emailUtility;
+        private readonly IServerTime _serverTime;
+        private readonly ApplicationRoleManager _roleManager;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailUtility emailUtility)
+            IEmailUtility emailUtility,
+            IServerTime serverTime,
+            ApplicationRoleManager roleManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -36,6 +40,8 @@ namespace DevSkill.Blog.Web.Controllers
             _signInManager = signInManager;
             _logger = logger;
             _emailUtility = emailUtility;
+            _serverTime = serverTime;
+            _roleManager = roleManager;
         }
         public async Task<IActionResult> RegisterAsync(string returnUrl = null)
         {
@@ -56,6 +62,8 @@ namespace DevSkill.Blog.Web.Controllers
                     var user = CreateUser();
                     user.FirstName = model.FirstName;
                     user.LastName = model.LastName;
+                    user.RegistrationDate = _serverTime.DateTime;
+                    user.PhoneNumber = model.PhoneNumber;
 
                     await _userStore.SetUserNameAsync(user, model.Email, CancellationToken.None);
                     await _emailStore.SetEmailAsync(user, model.Email, CancellationToken.None);
@@ -63,6 +71,8 @@ namespace DevSkill.Blog.Web.Controllers
 
                     if (result.Succeeded)
                     {
+                        await _userManager.AddToRoleAsync(user, "Blogger");
+
                         _logger.LogInformation("User created a new account with password.");
 
                         var userId = await _userManager.GetUserIdAsync(user);
@@ -249,7 +259,6 @@ namespace DevSkill.Blog.Web.Controllers
 
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
-            //StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
             string msg = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
 
             TempData.Put("ResponseMessage", new ResponseModel

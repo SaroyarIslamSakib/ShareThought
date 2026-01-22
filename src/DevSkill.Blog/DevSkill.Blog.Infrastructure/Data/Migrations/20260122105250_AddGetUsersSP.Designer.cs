@@ -4,6 +4,7 @@ using DevSkill.Blog.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DevSkill.Blog.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260122105250_AddGetUsersSP")]
+    partial class AddGetUsersSP
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,9 +55,6 @@ namespace DevSkill.Blog.Infrastructure.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -71,22 +71,6 @@ namespace DevSkill.Blog.Infrastructure.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("d290f1ee-6c54-4b01-90e6-d701748f0851"),
-                            ConcurrencyStamp = "d290f1ee-6c54-4b01-90e6-d701748f0851",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = new Guid("e13b3f4a-7c4b-4d2a-9f3b-1c2d3e4f5a6b"),
-                            ConcurrencyStamp = "e13b3f4a-7c4b-4d2a-9f3b-1c2d3e4f5a6b",
-                            Name = "Blogger",
-                            NormalizedName = "BLOGGER"
-                        });
                 });
 
             modelBuilder.Entity("DevSkill.Blog.Infrastructure.Identity.ApplicationRoleClaim", b =>

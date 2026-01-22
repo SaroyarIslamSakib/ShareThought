@@ -1,0 +1,83 @@
+﻿@model AssignRoleViewModel
+
+<div class="modal fade" id="assignRoleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fa fa-user-shield me-1"></i> Assign Roles
+                </h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <form asp-area="Admin"
+                      asp-controller="UserManagement"
+                      asp-action="AssignRoles"
+                      method="post"
+                      id="assignRoleForm">
+                    @Html.AntiForgeryToken()
+                    <!-- Hidden UserId -->
+                    <input type="hidden" asp-for="UserId" />
+
+                    <!-- User Info -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">User</label>
+                        <input type="text"
+                               class="form-control"
+                               asp-for="UserName"
+                               readonly />
+                    </div>
+
+                    <!-- Roles -->
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold">
+                            Select Roles
+                        </label>
+
+                        <div class="border rounded p-3" style="max-height:220px; overflow-y:auto;">
+                            @for (int i = 0; i < Model.Roles.Count; i++)
+                            {
+                                <div class="form-check mb-2">
+
+                                    <input type="hidden" asp-for="Roles[i].RoleId" />
+                                    <input type="hidden" asp-for="Roles[i].RoleName" />
+
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           asp-for="Roles[i].IsAssigned" />
+
+                                    <label class="form-check-label">
+                                        @Model.Roles[i].RoleName
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="modal-footer px-0">
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+                            <i class="fa fa-save me-1"></i> Save Changes
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -15,4 +15,8 @@
     <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Users\Commands\" />
+  </ItemGroup>
+
 </Project>

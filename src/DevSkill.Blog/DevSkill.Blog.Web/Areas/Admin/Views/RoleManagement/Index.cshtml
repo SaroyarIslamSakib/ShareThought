@@ -1,0 +1,71 @@
+﻿@model RoleIndexViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+<div>
+
+    <div class="app-content-header mb-2">
+        <div class="container-fluid">
+
+            <!-- Alert / Response -->
+            <div class="row mb-3">
+                <div id="responseContainer" class="col-lg-4 col-md-6">
+                    <partial name="_ResponsePartial" />
+
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <partial name="_AddRoleModalPartial" />
+                </div>
+            </div>
+
+            <!-- Title & Breadcrumb -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-style1 mb-2">
+                    <li class="breadcrumb-item">
+                        <a href="javascript:void(0);">Home</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="javascript:void(0);">Users</a>
+                    </li>
+                    <li class="breadcrumb-item active">All Users</li>
+                </ol>
+            </nav> 
+        </div>
+    </div>
+
+
+    <div class="app-content mt-2">
+        <div class="container-fluid">
+            <div class="container bg-white">
+                <div class="row">
+                    <div class="mt-4 mb-4">
+                        <div class="col-12 text-end">
+                            <button type="button"
+                                    class="btn btn-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#addRoleModal">
+                                Add Role
+                            </button>
+                        </div>
+                    </div>
+                    @foreach (var role in Model.Roles)
+                    {
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card text-center mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">@role.Name</h5>
+                                    <p class="card-text">@role.Description</p>
+                                    <a href="javascript:void(0)" class="btn btn-primary">See Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+
+</div>

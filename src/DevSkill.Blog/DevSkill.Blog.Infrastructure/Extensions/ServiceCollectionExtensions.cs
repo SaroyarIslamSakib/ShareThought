@@ -25,6 +25,7 @@ namespace DevSkill.Blog.Infrastructure.Extensions
             service.AddScoped<IBlogPostRepository, BlogPostRepository>();
             service.AddScoped<IApplicationUnitOfWork,  ApplicationUnitOfWork>();
             service.AddSingleton<IEmailUtility, EmailUtility>();
+            service.AddSingleton<IServerTime, ServerTime>();
         }
         //DbContext Configuration
         public static void AddDbContext(this IServiceCollection service,
