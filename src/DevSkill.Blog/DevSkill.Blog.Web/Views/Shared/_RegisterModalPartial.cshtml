@@ -21,8 +21,24 @@
                         @Html.AntiForgeryToken()
 
                         <div class="mb-3">
+                            <label asp-for="FirstName" class="form-label">First Name</label>
+                            <input asp-for="FirstName" class="form-control" type="text"
+                                   placeholder="Enter your first name" />
+                            <span asp-validation-for="FirstName"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="LastName" class="form-label">Last Name</label>
+                            <input asp-for="LastName" class="form-control" type="text"
+                                   placeholder="Enter your last name" />
+                            <span asp-validation-for="LastName"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
                             <label asp-for="Email" class="form-label">Email</label>
-                            <input asp-for="Email" class="form-control"
+                            <input asp-for="Email" class="form-control" type="email"
                                    placeholder="Enter your email" />
                             <span asp-validation-for="Email"
                                   class="text-danger"></span>

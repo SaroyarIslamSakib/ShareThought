@@ -1,8 +1,10 @@
 ﻿using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Repositories;
+using DevSkill.Blog.Domain.Utilities;
 using DevSkill.Blog.Infrastructure.Data;
 using DevSkill.Blog.Infrastructure.Identity;
 using DevSkill.Blog.Infrastructure.Repositories;
+using DevSkill.Blog.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +24,7 @@ namespace DevSkill.Blog.Infrastructure.Extensions
         {
             service.AddScoped<IBlogPostRepository, BlogPostRepository>();
             service.AddScoped<IApplicationUnitOfWork,  ApplicationUnitOfWork>();
+            service.AddSingleton<IEmailUtility, EmailUtility>();
         }
         //DbContext Configuration
         public static void AddDbContext(this IServiceCollection service,

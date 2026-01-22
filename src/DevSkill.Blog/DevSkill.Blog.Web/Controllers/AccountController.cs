@@ -1,4 +1,5 @@
-﻿using DevSkill.Blog.Infrastructure.Extensions;
+﻿using DevSkill.Blog.Domain.Utilities;
+using DevSkill.Blog.Infrastructure.Extensions;
 using DevSkill.Blog.Infrastructure.Identity;
 using DevSkill.Blog.Web.Areas.Admin.Models;
 using DevSkill.Blog.Web.Models;
@@ -7,7 +8,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Shared;
 using System.Text;
+using System.Text.Encodings.Web;
 
 namespace DevSkill.Blog.Web.Controllers
 {
@@ -18,20 +21,21 @@ namespace DevSkill.Blog.Web.Controllers
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        //private readonly IEmailSender _emailSender;
+        private readonly IEmailUtility _emailUtility;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger)
+            ILogger<RegisterModel> logger,
+            IEmailUtility emailUtility)
         {
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            //_emailSender = emailSender;
+            _emailUtility = emailUtility;
         }
         public async Task<IActionResult> RegisterAsync(string returnUrl = null)
         {
@@ -50,6 +54,8 @@ namespace DevSkill.Blog.Web.Controllers
                 if (ModelState.IsValid)
                 {
                     var user = CreateUser();
+                    user.FirstName = model.FirstName;
+                    user.LastName = model.LastName;
 
                     await _userStore.SetUserNameAsync(user, model.Email, CancellationToken.None);
                     await _emailStore.SetEmailAsync(user, model.Email, CancellationToken.None);
@@ -67,8 +73,9 @@ namespace DevSkill.Blog.Web.Controllers
                             values: new { area = "", userId = userId, code = code, returnUrl = model.ReturnUrl },
                             protocol: Request.Scheme);
 
-                        //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        await _emailUtility.SendEmailAsync($"{model.FirstName} {model.LastName}", model.Email, 
+                            "Confirm your email", $"<html><body><p>Please confirm your account by " +
+                            $"<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a></p></body></html>.");
 
 
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)
@@ -224,6 +231,35 @@ namespace DevSkill.Blog.Web.Controllers
             {
                 return RedirectToAction();
             }
+        }
+
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return RedirectToAction("Index", "Home");
+
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{userId}'.");
+            }
+
+            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+            //StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
+            string msg = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
+
+            TempData.Put("ResponseMessage", new ResponseModel
+            {
+                Message = msg,
+                Response = ResponseTypes.success
+            });
+            return RedirectToAction("Index", "Home");
+
+
         }
     }
 }

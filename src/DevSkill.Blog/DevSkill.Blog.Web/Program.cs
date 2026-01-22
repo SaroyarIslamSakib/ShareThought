@@ -1,5 +1,6 @@
 using Cortex.Mediator.DependencyInjection;
 using DevSkill.Blog.Application.Features.Blogs.Commands;
+using DevSkill.Blog.Domain;
 using DevSkill.Blog.Infrastructure.Data;
 using DevSkill.Blog.Infrastructure.Extensions;
 using Mapster;
@@ -55,6 +56,9 @@ try
 
     builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+    #region SMTP Configuration
+    builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+    #endregion
     #region Identity Configuration
     builder.Services.AddIdentity();
     #endregion
