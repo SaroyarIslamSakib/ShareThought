@@ -1,6 +1,6 @@
 ﻿@model UserListModel
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "User Management";
 }
 @Html.AntiForgeryToken()
 @section Styles
@@ -18,10 +18,10 @@
                 <partial name="_ResponsePartial" />
 
             </div>
-            <div class="col-lg-4 col-md-6">
-                @* <partial name="_AssignRoleModalPartial" /> *@
-                <div id="assignRoleModalContainer"></div>
+            <div class="col-lg-4 col-md-6" id="deleteUserModalContainer">
+                <partial name="_UserDeleteModalPartial" />
             </div>
+                <div id="assignRoleModalContainer"></div>
         </div>
 
         <!-- Title & Breadcrumb -->
@@ -44,76 +44,84 @@
     <div class="container-fluid">
 
         <!-- ================= Search Section ================= -->
-        <div class="card shadow-sm mb-4 border-0">
-            <div class="card-header bg-light">
-                <h5 class="card-title mb-0">
-                    <i class="fa fa-search mr-1"></i> Search
-                </h5>
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white border-bottom">
+                <h6 class="mb-0 fw-semibold text-primary">
+                    <i class="fa fa-filter me-1"></i> Filter Users
+                </h6>
             </div>
 
-            <div class="card-body">
-                <div class="row g-3">
+            <div class="card-body pt-3">
+                <div class="row g-3 align-items-end">
 
                     <div class="col-lg-4 col-md-6">
-                        <label class="form-label">Name</label>
-                        <input asp-for="SearchItem.Name" type="text" class="form-control" />
+                        <label class="form-label text-muted small">Name</label>
+                        <input asp-for="SearchItem.Name" class="form-control form-control-sm" placeholder="Search by name" />
                     </div>
 
-                    <div class="col-lg-4 col-md-6">
-                        <label class="form-label">Registration From</label>
-                        <input asp-for="SearchItem.RegistrationFrom" class="form-control" type="date" />
+                    <div class="col-lg-3 col-md-6">
+                        <label class="form-label text-muted small">Registered From</label>
+                        <input asp-for="SearchItem.RegistrationFrom" type="date" class="form-control form-control-sm" />
                     </div>
 
-                    <div class="col-lg-4 col-md-6">
-                        <label class="form-label">Registration To</label>
-                        <input asp-for="SearchItem.RegistrationTo" class="form-control" type="date" />
+                    <div class="col-lg-3 col-md-6">
+                        <label class="form-label text-muted small">Registered To</label>
+                        <input asp-for="SearchItem.RegistrationTo" type="date" class="form-control form-control-sm" />
+                    </div>
+
+                    <div class="col-lg-2 col-md-6 text-end">
+                        <button id="searchButton" class="btn btn-primary btn-sm w-100">
+                            <i class="fa fa-search me-1"></i> Apply
+                        </button>
                     </div>
 
                 </div>
             </div>
-
-            <div class="card-footer bg-white text-end">
-                <button id="searchButton" type="submit" class="btn btn-primary px-4">
-                    <i class="fa fa-search me-1"></i> Search
-                </button>
-            </div>
         </div>
 
         <!-- ================= DataTable Section ================= -->
-        <div class="card card-primary card-outline shadow-sm">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">Users</h5>
-                <a asp-area="Admin" asp-controller="Blog" asp-action="Create" class="btn btn-primary btn-sm">
-                    <i class="fa fa-plus me-1"></i> Create
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+                <h6 class="mb-0 fw-semibold">
+                    <i class="fa fa-users me-1 text-primary"></i> User List
+                </h6>
+
+                <a asp-area="Admin"
+                   asp-controller="Blog"
+                   asp-action="Create"
+                   class="btn btn-primary btn-sm">
+                    <i class="fa fa-plus me-1"></i> Create User
                 </a>
             </div>
+            <div class="container">
 
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table id="users" class="table table-bordered table-hover align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Contact</th>
-                                <th>Roles</th>
-                                <th>Registration Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                        <tfoot class="table-light">
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Contact</th>
-                                <th>Roles</th>
-                                <th>Registration Date</th>
-                                <th>Action</th>
-
-                            </tr>
-                        </tfoot>
-                    </table>
+            
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table id="users" class="table table-hover align-middle mb-0">
+                            <thead class="table-light text-muted small">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Contact</th>
+                                    <th>Roles</th>
+                                    <th>Registration Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot class="table-light small">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Contact</th>
+                                    <th>Roles</th>
+                                    <th>Registration Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -156,24 +164,62 @@
                     orderable: false,
                     targets: 5,
                     render: function (data) {
-                        return `
-                        <div class="btn-group">
-                            <button class="btn btn-outline-secondary show-user-modal" data-id="${data}">
-                                <i class="fa fa-eye"></i>
-                            </button>
-                            <button class="btn btn-outline-secondary edit-user-modal" data-id="${data}">
-                                <i class="fa fa-pencil"></i>
-                            </button>
-                            <button class="btn btn-outline-secondary delete-user-modal" data-id="${data}">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </div>`;
-                    }
+    return `
+    <div class="btn-group btn-group-sm">
+        <button class="btn btn-outline-secondary show-user-modal" data-id="${data}" title="View">
+            <i class="fa fa-eye"></i>
+        </button>
+        <button class="btn btn-outline-secondary edit-user-modal" data-id="${data}" title="Edit">
+            <i class="fa fa-pencil"></i>
+        </button>
+        <button class="btn btn-outline-danger delete-user-modal" data-id="${data}" title="Delete">
+            <i class="fa fa-trash"></i>
+        </button>
+    </div>`;
+}
                 }]
             });
 
             $("#searchButton").click(function () {
                 userTable.ajax.reload(null, false);
+            });
+
+                    // ================= Delete User =================
+            $("#users").on("click", ".delete-user-modal", function () {
+
+                const userId = $(this).data("id");
+
+                $.get("/Admin/UserManagement/GetUserForDelete", { userId: userId })
+                    .done(function (res) {
+
+                        $("#deleteUserId").val(res.userId);
+                        $("#deleteUserName").text(res.userName);
+
+                        new bootstrap.Modal("#deleteUserModal").show();
+                    });
+            });
+
+
+            // ================= Confirm Delete =================
+            $("#confirmDeleteUserBtn").click(function () {
+
+                $.ajax({
+                    url: "/Admin/UserManagement/Delete",
+                    type: "POST",
+                    data: {
+                        userId: $("#deleteUserId").val(),
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function () {
+
+                        bootstrap.Modal.getInstance("#deleteUserModal").hide();
+
+                        $("#responseContainer")
+                            .load("/Admin/UserManagement/ResponsePartial");
+
+                        $("#users").DataTable().ajax.reload(null, false);
+                    }
+                });
             });
 
             // ================= Show Assign Role Modal =================

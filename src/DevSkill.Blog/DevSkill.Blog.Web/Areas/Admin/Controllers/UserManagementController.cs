@@ -152,7 +152,68 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> GetUserForDelete(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
 
+            return Json(new
+            {
+                userId = user.Id,
+                userName = user.UserName
+            });
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+                return BadRequest();
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return NotFound();
+
+            // ================= Remove Roles =================
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Any())
+            {
+                var roleResult = await _userManager.RemoveFromRolesAsync(user, roles);
+                if (!roleResult.Succeeded)
+                    return BadRequest(roleResult.Errors);
+            }
+
+            // ================= Remove Claims =================
+            var claims = await _userManager.GetClaimsAsync(user);
+            if (claims.Any())
+            {
+                var claimResult = await _userManager.RemoveClaimsAsync(user, claims);
+                if (!claimResult.Succeeded)
+                    return BadRequest(claimResult.Errors);
+            }
+
+            // ================= Remove Logins =================
+            var logins = await _userManager.GetLoginsAsync(user);
+            foreach (var login in logins)
+            {
+                await _userManager.RemoveLoginAsync(
+                    user,
+                    login.LoginProvider,
+                    login.ProviderKey);
+            }
+
+            // ================= Finally Delete User =================
+            var result = await _userManager.DeleteAsync(user);
+
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            TempData.Put("ResponseMessage", new ResponseModel
+            {
+                Message = "User Deleted Successfully",
+                Response = ResponseTypes.danger
+            });
+            return Ok();
+        }
 
     }
 }

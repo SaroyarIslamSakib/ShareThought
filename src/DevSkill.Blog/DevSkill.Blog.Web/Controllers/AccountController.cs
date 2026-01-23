@@ -202,7 +202,7 @@ namespace DevSkill.Blog.Web.Controllers
                             Response = ResponseTypes.danger
                         });
                         ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                        return View(model);
+                        return RedirectToAction("Index", "Home");
                     }
                 }
                 else
@@ -212,7 +212,7 @@ namespace DevSkill.Blog.Web.Controllers
                         Message = "Login Failed",
                         Response = ResponseTypes.danger
                     });
-                    return View(model);
+                    return RedirectToAction("Index", "Home");
                 }
             }
             catch (Exception ex)
@@ -225,7 +225,7 @@ namespace DevSkill.Blog.Web.Controllers
                     Response = ResponseTypes.danger
                 });
 
-                return View(model);
+                return View("index",model:"Home");
             }
         }
         [HttpPost,ValidateAntiForgeryToken]

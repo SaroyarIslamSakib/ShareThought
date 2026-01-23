@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <Folder Include="Views\Account\" />
+    <Folder Include="wwwroot\Admin\js\" />
   </ItemGroup>
 
 </Project>

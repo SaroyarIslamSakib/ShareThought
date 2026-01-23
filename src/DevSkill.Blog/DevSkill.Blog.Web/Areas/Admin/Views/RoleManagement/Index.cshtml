@@ -1,6 +1,10 @@
 ﻿@model RoleIndexViewModel
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Role Management";
+}
+@section Styles
+{
+    <link rel="stylesheet" href="~/Admin/css/role-card.css" />
 }
 <div>
 
@@ -15,7 +19,11 @@
                 </div>
                 <div class="col-lg-4 col-md-6">
                     <partial name="_AddRoleModalPartial" />
+
                 </div>
+                <div id="editRoleModalContainer"></div>
+                <div id="deleteRoleModalContainer"></div>
+
             </div>
 
             <!-- Title & Breadcrumb -->
@@ -51,15 +59,51 @@
                     @foreach (var role in Model.Roles)
                     {
                         <div class="col-md-6 col-lg-4">
-                            <div class="card text-center mb-3">
-                                <div class="card-body">
-                                    <h5 class="card-title">@role.Name</h5>
-                                    <p class="card-text">@role.Description</p>
-                                    <a href="javascript:void(0)" class="btn btn-primary">See Details</a>
+                            <div class="card role-card mb-3 position-relative border-0 shadow-sm">
+
+                                <!-- 3 Dot Dropdown -->
+                                <div class="dropdown position-absolute top-0 end-0 m-2">
+                                    <button class="btn btn-sm btn-light"
+                                            type="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                        <i class="fa fa-ellipsis-v"></i>
+                                    </button>
+
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                        <li>
+                                            <a class="dropdown-item edit-role-btn"
+                                               data-id="@role.Id"
+                                               href="javascript:void(0)">
+                                                <i class="fa fa-pencil me-2 text-primary"></i> Edit
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-danger delete-role-btn"
+                                               data-id="@role.Id"
+                                               href="javascript:void(0)">
+                                                <i class="fa fa-trash me-2"></i> Delete
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Card Body -->
+                                <div class="card-body text-center pt-4 pb-4">
+                                    <h5 class="card-title mb-2">@role.Name</h5>
+                                    <p class="card-text text-muted small">
+                                        @role.Description
+                                    </p>
+
+                                    <a href="javascript:void(0)"
+                                       class="btn btn-outline-primary btn-sm mt-2">
+                                        See Details
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     }
+
                     
                 </div>
             </div>
@@ -69,3 +113,35 @@
     </div>
 
 </div>
+@section Scripts {
+    <script>
+                $(document).on("click", ".edit-role-btn", function () {
+            const roleId = $(this).data("id");
+
+            $.get('/Admin/RoleManagement/Edit', { id: roleId })
+                .done(function (html) {
+                    $("#editRoleModalContainer").html(html);
+                    const modal = new bootstrap.Modal(
+                        document.getElementById('editRoleModal')
+                    );
+                    modal.show();
+                });
+                });
+
+
+             // Delete Role Button Click
+             $(document).on("click", ".delete-role-btn", function () {
+            const roleId = $(this).data("id");
+
+            $.get('/Admin/RoleManagement/Delete', { id: roleId })
+                .done(function (html) {
+                    $("#deleteRoleModalContainer").html(html);
+
+                    const modal = new bootstrap.Modal(
+                        document.getElementById('deleteRoleModal')
+                    );
+                    modal.show();
+                });
+        });
+    </script>
+}

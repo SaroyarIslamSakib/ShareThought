@@ -1,0 +1,22 @@
+﻿
+.role-card {
+    background: #f8f9fb !important; /* soft off-white */
+    border: 1px solid #e9ecf1;
+    transition: all 0.25s ease;
+}
+
+.role-card:hover {
+    background: #ffffff;
+    transform: translateY(-4px);
+    box-shadow: 0 .75rem 1.25rem rgba(0, 0, 0, 0.08);
+}
+
+.role-card .card-title {
+    font-weight: 600;
+    letter-spacing: .3px;
+}
+
+    .role-card .dropdown .btn {
+        background-color: #f8f9fb !important;
+    }
+

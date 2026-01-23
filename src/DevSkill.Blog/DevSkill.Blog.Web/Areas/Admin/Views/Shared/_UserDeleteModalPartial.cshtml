@@ -1,0 +1,51 @@
+﻿@model DeleteUserViewModel
+
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Header -->
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">
+                    <i class="fa fa-trash me-1"></i> Confirm Delete
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body text-center">
+                <input type="hidden" id="deleteUserId" />
+
+                <p class="mb-2">
+                    Are you sure you want to delete the user
+                </p>
+
+                <h6 class="fw-bold text-danger" id="deleteUserName"></h6>
+
+                <p class="mb-3">
+                    from the system?
+                </p>
+
+                <small class="text-muted">
+                    This action cannot be undone.
+                </small>
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <button type="button"
+                        class="btn btn-danger"
+                        id="confirmDeleteUserBtn">
+                    <i class="fa fa-trash me-1"></i> Delete
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>

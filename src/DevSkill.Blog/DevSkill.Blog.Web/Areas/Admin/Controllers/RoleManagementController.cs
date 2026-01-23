@@ -58,5 +58,84 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
             });
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var role = await _roleManager.FindByIdAsync(id.ToString());
+            if (role == null) return NotFound();
+
+            var vm = new RoleIndexViewModel
+            {
+                EditRole = new EditRoleModel
+                {
+                    Id = role.Id,
+                    RoleName = role.Name,
+                    Description = role.Description
+                }
+            };
+
+            return PartialView("_EditRoleModalPartial", vm);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(RoleIndexViewModel model)
+        {
+            var role = await _roleManager.FindByIdAsync(model.EditRole.Id.ToString());
+            if (role == null) return NotFound();
+
+            role.Name = model.EditRole.RoleName;
+            role.Description = model.EditRole.Description;
+
+            await _roleManager.UpdateAsync(role);
+
+            TempData.Put("ResponseMessage", new ResponseModel
+            {
+                Message = "Role updated successfully",
+                Response = ResponseTypes.success
+            });
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var role = await _roleManager.FindByIdAsync(id.ToString());
+            if (role == null) return NotFound();
+
+            var vm = new RoleIndexViewModel
+            {
+                DeleteRole = new DeleteRoleModel
+                {
+                    Id = role.Id,
+                    RoleName = role.Name
+                }
+            };
+
+            return PartialView("_DeleteRoleModalPartial", vm);
+        }
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(RoleIndexViewModel model)
+        {
+            var role = await _roleManager.FindByIdAsync(model.DeleteRole.Id.ToString());
+            if (role == null) return NotFound();
+
+            var usersInRole = await _userManager.GetUsersInRoleAsync(role.Name);
+
+            foreach (var user in usersInRole)
+            {
+                await _userManager.RemoveFromRoleAsync(user, role.Name);
+            }
+
+            await _roleManager.DeleteAsync(role);
+
+            TempData.Put("ResponseMessage", new ResponseModel
+            {
+                Message = "Role deleted successfully",
+                Response = ResponseTypes.success
+            });
+
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }
