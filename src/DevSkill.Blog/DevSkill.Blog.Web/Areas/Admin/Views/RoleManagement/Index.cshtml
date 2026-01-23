@@ -23,6 +23,7 @@
                 </div>
                 <div id="editRoleModalContainer"></div>
                 <div id="deleteRoleModalContainer"></div>
+                <div id="roleUserModalContainer"></div>
 
             </div>
 
@@ -96,7 +97,8 @@
                                     </p>
 
                                     <a href="javascript:void(0)"
-                                       class="btn btn-outline-primary btn-sm mt-2">
+                                       class="btn btn-outline-primary btn-sm mt-2"
+                                       onclick="openRoleUsers('@role.Id')">
                                         See Details
                                     </a>
                                 </div>
@@ -143,5 +145,28 @@
                     modal.show();
                 });
         });
+
+
     </script>
+    <script>
+               function openRoleUsers(roleId) {
+
+            $.get('/Admin/RoleManagement/RoleUsersModal', { roleId: roleId })
+                .done(function (html) {
+
+                    $("#roleUserModalContainer").html(html);
+
+                    const modal = new bootstrap.Modal(
+                        document.getElementById('roleUserModal')
+                    );
+
+                    modal.show();
+                })
+                .fail(function () {
+                    alert("Failed to load role users modal");
+                });
+        }
+
+    </script>
+
 }

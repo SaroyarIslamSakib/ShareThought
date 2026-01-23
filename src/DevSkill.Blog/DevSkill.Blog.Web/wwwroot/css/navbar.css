@@ -2,9 +2,10 @@
    CSS VARIABLES
 ================================ */
 :root {
-    --main-navbar-height: 85px;
+    --main-navbar-height: 56px;
     --brand-red: #519bf7;
     --brand-red-dark: #356cb1;
+    --nav-search-height: 44px;
 }
 
 /* ===============================
@@ -14,13 +15,10 @@
     position: sticky;
     top: 0;
     z-index: 1050;
-
-    min-height: var(--main-navbar-height);
+    height: var(--main-navbar-height);
     padding: 10px 0;
-
     display: flex;
     align-items: center;
-
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-size: 16px;
     font-weight: 600;
@@ -168,7 +166,7 @@
     }
 
 
-
+/* Wrapper */
 .nav-search-wrapper {
     position: relative;
     width: 100%;
@@ -178,36 +176,37 @@
 
 /* Search input */
 .nav-search-input {
-    height: 54px;
-    padding-left: 52px !important;
+    height: var(--nav-search-height);
+    padding-left: calc(var(--nav-search-height) - 2px);
     padding-right: 16px;
-    border-radius: 14px;
-    font-size: 16px;
+    border-radius: calc(var(--nav-search-height) / 3);
     border: none;
     outline: none;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
-    font-size: 16.5px;
+    font-size: calc(var(--nav-search-height) / 2.7);
     font-weight: 500;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
 }
 
-.nav-search-input::placeholder {
-    color: #6c757d;
-    font-weight: 500;
-}
+    /* Placeholder */
+    .nav-search-input::placeholder {
+        font-size: calc(var(--nav-search-height) / 2.8);
+        color: #6c757d;
+        font-weight: 500;
+    }
 
-/* Search icon */
-/* Font Awesome icon */
+/* Search icon (Font Awesome) */
 .nav-search-wrapper .fa-search {
     position: absolute;
-    left: 18px;
+    left: calc(var(--nav-search-height) / 3);
     top: 50%;
     transform: translateY(-50%);
+    font-size: calc(var(--nav-search-height) / 2.6);
     color: var(--brand-red-dark);
-    font-size: 18px;
     z-index: 2;
     pointer-events: none;
 }
 
+/* Focus state */
 .nav-search-input:focus {
     box-shadow: 0 0 0 3px rgba(211, 58, 44, 0.25);
 }

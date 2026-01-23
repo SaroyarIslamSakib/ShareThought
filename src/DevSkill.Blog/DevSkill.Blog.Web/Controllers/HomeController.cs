@@ -15,25 +15,23 @@ namespace DevSkill.Blog.Web.Controllers
         private readonly IApplicationUnitOfWork _unitOfWork;
         private readonly IMediator _mediator;
 
-        public HomeController(ILogger<HomeController> logger,IMediator mediator)
+        public HomeController(ILogger<HomeController> logger,IMediator mediator, IApplicationUnitOfWork unitOfWork)
         {
             _logger = logger;
             _mediator = mediator;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IActionResult> Index()
-        {
-            //var command = new BlogPostAddCommand()
-            //{
-            //    Title = "C++",
-            //    Body = "C++ is a Programming language",
-            //};
-            //var post = await _mediator.SendCommandAsync<BlogPostAddCommand, BlogPost>(command);
-
-            //var query = new BlogPostGetQuery() { Id = new Guid("07f5012e-6ffd-cd75-aabe-08ddffa9f2d5") };
-            //var post = await _mediator.SendQueryAsync<BlogPostGetQuery, BlogPost>(query);
+        { 
             return View();
         }
+
+        public async Task<IActionResult> ContactUs()
+        {
+            return View();
+        }
+
 
         public IActionResult Privacy()
         {

@@ -136,6 +136,33 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> RoleUsersModal(string roleId)
+        {
+            var role = await _roleManager.FindByIdAsync(roleId);
+
+            var usersInRole = await _userManager.GetUsersInRoleAsync(role.Name);
+
+            var model = new RoleIndexViewModel
+            {
+                RoleUser = new UserListByRoleModel
+                {
+                    RoleName = role.Name,
+                    Users = usersInRole.Select(u => new UserViewModel
+                    {
+                        Name = $"{u.FirstName} {u.LastName}",
+                        Email = u.Email,
+                        PhoneNumber = u.PhoneNumber
+                        
+                    }).ToList()
+                }
+            };
+
+            return PartialView("_RoleUserModalPartial", model);
+        }
+
+
+
+
 
     }
 }
