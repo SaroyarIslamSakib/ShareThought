@@ -27,5 +27,6 @@ namespace DevSkill.Blog.Infrastructure.Data
         }
 
         public DbSet<BlogPost> BlogPosts { get; set; }
+        public DbSet<ContactMessage> ContactMessages { get; set; }
     }
 }

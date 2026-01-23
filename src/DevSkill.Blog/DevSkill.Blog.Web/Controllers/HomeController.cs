@@ -3,7 +3,6 @@ using Cortex.Mediator;
 using DevSkill.Blog.Application.Features.Blogs.Commands;
 using DevSkill.Blog.Application.Features.Blogs.Queries;
 using DevSkill.Blog.Domain;
-using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,6 +27,11 @@ namespace DevSkill.Blog.Web.Controllers
         }
 
         public async Task<IActionResult> ContactUs()
+        {
+            return View();
+        }
+        [HttpPost,ValidateAntiForgeryToken]
+        public async Task<IActionResult> ContactUs(ContactMessageModel model)
         {
             return View();
         }
