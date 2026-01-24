@@ -3,6 +3,7 @@ using DevSkill.Blog.Infrastructure.Data.Seeds;
 using DevSkill.Blog.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace DevSkill.Blog.Infrastructure.Data
 {
@@ -24,6 +25,14 @@ namespace DevSkill.Blog.Infrastructure.Data
         {
             builder.Entity<ApplicationRole>().HasData(RoleSeed.GetRoles());
             base.OnModelCreating(builder);
+
+            //Enum int to string convertion
+            builder.Entity<ContactMessage>()
+                   .Property(x => x.Status)
+                   .HasConversion<string>();
+            builder.Entity<ContactMessage>()
+                   .Property(x => x.Topic)
+                   .HasConversion<string>();
         }
 
         public DbSet<BlogPost> BlogPosts { get; set; }

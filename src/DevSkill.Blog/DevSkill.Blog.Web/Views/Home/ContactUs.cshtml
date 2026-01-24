@@ -6,10 +6,10 @@
     <link rel="stylesheet" href="~/css/navbar.css" />
     <link rel="stylesheet" href="~/css/categoryhead.css" />
     <link rel="stylesheet" href="~/css/contact-us.css"/>
-
-
 }
 <main>
+    <partial name="_ResponsePartial" />
+
     <section class="tab-content-area">
 
         <div class="tab-content-item">
@@ -58,13 +58,13 @@
                                     <div class="mt-4">
                                         <div class="mb-3">
                                             <label asp-for="Name" class="form-label">What's your name?</label>
-                                            <input asp-for="Name" type="text" class="form-control">
+                                            <input asp-for="Name" type="text" class="form-control contact-form-control">
                                             <span asp-validation-for="Name" class="text-danger"></span>
                                         </div>
 
                                         <div>
                                             <label asp-for="Email" class="form-label">What email can we reach you at?</label>
-                                            <input asp-for="Email" type="email" class="form-control">
+                                            <input asp-for="Email" type="email" class="form-control contact-form-control">
                                         </div>
                                     </div>
                                 </div>
@@ -164,7 +164,7 @@
                                         <label asp-for="Message" class="form-label">
                                             How can we help you? We are listening
                                         </label>
-                                        <textarea asp-for="Message" class="form-control" rows="5"></textarea>
+                                        <textarea asp-for="Message" class="form-control contact-form-control" rows="5"></textarea>
                                     </div>
                                 </div>
 
@@ -184,3 +184,4 @@
     </section>
 </main>
 
+<script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>

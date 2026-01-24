@@ -1,0 +1,48 @@
+﻿@model ContactMessageModel
+
+<div class="modal fade" id="viewMessageModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fa fa-envelope text-primary me-1"></i>
+                    Message Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3">Name</dt>
+                    <dd class="col-sm-9">@Model.Name</dd>
+
+                    <dt class="col-sm-3">Email</dt>
+                    <dd class="col-sm-9">@Model.Email</dd>
+
+                    <dt class="col-sm-3">Topic</dt>
+                    <dd class="col-sm-9">@Model.Topic</dd>
+
+                    <dt class="col-sm-3">Message</dt>
+                    <dd class="col-sm-9">
+                        <div class="border rounded p-2 bg-light">
+                            @Model.Message
+                        </div>
+                    </dd>
+
+                    <dt class="col-sm-3">Received</dt>
+                    <dd class="col-sm-9">
+                        @Model.CreatedAt.ToString("dd MMM yyyy hh:mm tt")
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>

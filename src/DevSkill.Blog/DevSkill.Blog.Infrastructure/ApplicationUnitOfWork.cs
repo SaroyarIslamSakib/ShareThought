@@ -13,11 +13,13 @@ namespace DevSkill.Blog.Infrastructure
     public class ApplicationUnitOfWork : UnitOfWork, IApplicationUnitOfWork
     {
         public IBlogPostRepository BlogPostRepository { get; private set; }
+        public IContactMessageRepository ContactMessageRepository { get; private set; }
 
-        public ApplicationUnitOfWork(ApplicationDbContext context, IBlogPostRepository blogPostRepository)
+        public ApplicationUnitOfWork(ApplicationDbContext context, IBlogPostRepository blogPostRepository, IContactMessageRepository contactMessageRepository)
             : base(context)
         {
             BlogPostRepository = blogPostRepository;
+            ContactMessageRepository = contactMessageRepository;
         }
     }
 

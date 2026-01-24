@@ -35,14 +35,14 @@
 /* ===============================
    Inputs
 ================================ */
-.form-control {
+.contact-form-control {
     border-radius: 10px;
     border: 1px solid #d6ddf0;
     padding: 10px 14px;
     transition: border-color .2s ease, box-shadow .2s ease;
 }
 
-    .form-control:focus {
+    .contact-form-control:focus {
         border-color: #519bf7;
         box-shadow: 0 0 0 .2rem rgba(81,155,247,.15);
     }

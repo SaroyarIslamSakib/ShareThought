@@ -23,6 +23,7 @@ namespace DevSkill.Blog.Infrastructure.Extensions
         public static void AddDependencyInjection(this IServiceCollection service)
         {
             service.AddScoped<IBlogPostRepository, BlogPostRepository>();
+            service.AddScoped<IContactMessageRepository, ContactMessageRepository>();
             service.AddScoped<IApplicationUnitOfWork,  ApplicationUnitOfWork>();
             service.AddSingleton<IEmailUtility, EmailUtility>();
             service.AddSingleton<IServerTime, ServerTime>();

@@ -1,0 +1,177 @@
+﻿@{
+    ViewData["Title"] = "Contact Messages";
+}
+@Html.AntiForgeryToken()
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
+}
+
+<!-- ================= App Content Header ================= -->
+<div class="app-content-header">
+    <div class="container-fluid">
+
+        <!-- Alert / Response -->
+        <div class="row mb-3">
+            <div id="responseContainer" class="col-lg-4 col-md-6">
+                <partial name="_ResponsePartial" />
+            </div>
+            <partial name="_DeleteMessageModal" />
+            <partial name="DeleteAllMessageModal" />
+
+            <div id="messageViewModalContainer"></div>
+        </div>
+
+        <!-- Title & Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb breadcrumb-style1">
+                <li class="breadcrumb-item">
+                    <a href="javascript:void(0);">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="javascript:void(0);">Users</a>
+                </li>
+                <li class="breadcrumb-item active">All Users</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- ================= App Content ================= -->
+<div class="app-content">
+    <div class="container-fluid">
+        <!-- ================= DataTable Section ================= -->
+        <div class="card card-primary card-outline shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-semibold">
+                    <i class="fa fa-users me-1 text-primary"></i> Messages
+                </h5>
+
+                <button type="button"
+                        class="btn btn-danger btn-sm delete-all-msg-modal">
+                    <i class="fa fa-trash"></i> Delete all
+                </button>
+            </div>
+            <div class="mx-3">
+
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="messages" class="table table-hover align-middle table-bordered">
+                            <thead class="table-light text-muted small">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Topic</th>
+                                    <th>Status</th>
+                                    <th>Recieved Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot class="table-light small">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Topic</th>
+                                    <th>Status</th>
+                                    <th>Recieved Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--end::App Content-->
+@section Scripts
+{
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
+    <script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
+
+
+   <script>
+               $(function () {
+
+            // ================= DataTable =================
+            const messagesTable = $("#messages").DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                lengthChange: true,
+                autoWidth: false,
+                ajax: {
+                    url: "/Admin/ContactMessages/GetMessagesJsonData",
+                    type: "POST",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: function (d) {
+                        d.SearchItem = {};
+                        return JSON.stringify(d);
+                    }
+                },
+                columnDefs: [{
+                    orderable: false,
+                    targets: 5,
+                    render: function (data) {
+                        return `
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-secondary show-message-modal" data-id="${data}" title="View">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary edit-message-modal" data-id="${data}" title="Edit">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary delete-message-modal" data-id="${data}" title="Delete">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>`;
+                    }
+                }]
+            });
+
+
+
+            $(document).on("click", ".show-message-modal", function () {
+            const id = $(this).data("id");
+
+            $.get("/Admin/ContactMessages/ViewMessage", { id: id })
+                .done(function (html) {
+                    $("#messageViewModalContainer").html(html);
+
+                    const modal = new bootstrap.Modal(
+                        document.getElementById("viewMessageModal")
+                    );
+                    modal.show();
+                })
+                .fail(function () {
+                    alert("Failed to load message.");
+                });
+        });
+
+                $(document).on("click", ".delete-message-modal", function () {
+            const id = $(this).data("id");
+
+            $("#deleteMessageId").val(id);
+
+            const modal = new bootstrap.Modal(
+                document.getElementById("deleteConfirmModal")
+            );
+            modal.show();
+        });
+
+                $(document).on("click", ".delete-all-msg-modal", function () {
+            const modal = new bootstrap.Modal(
+                document.getElementById("deleteAllMessagesModal")
+            );
+            modal.show();
+        });
+
+        });
+   </script>
+
+}

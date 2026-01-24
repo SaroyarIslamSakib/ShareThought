@@ -29,6 +29,7 @@ namespace DevSkill.Blog.Domain.Repositories
         Task RemoveAsync(Expression<Func<TAggregateRoot, bool>> filter);
         Task RemoveAsync(TAggregateRoot entityToDelete);
         Task RemoveAsync(TKey id);
+        Task RemoveAllAsync();
 
     }
 }

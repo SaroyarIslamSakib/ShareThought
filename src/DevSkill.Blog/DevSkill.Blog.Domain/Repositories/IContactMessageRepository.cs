@@ -9,5 +9,6 @@ namespace DevSkill.Blog.Domain.Repositories
 {
     public interface IContactMessageRepository :IRepository<ContactMessage, Guid>
     {
+        Task<(IList<ContactMessage>, int total, int totalDisplay)> GetPagedContactMessagesAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder);
     }
 }

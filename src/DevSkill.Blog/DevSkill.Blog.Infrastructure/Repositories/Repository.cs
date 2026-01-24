@@ -55,6 +55,15 @@ namespace DevSkill.Blog.Infrastructure.Repositories
                 _dbSet.RemoveRange(_dbSet.Where(filter));
             });
         }
+        public async Task RemoveAllAsync()
+        {
+            var entities = await _dbSet.ToListAsync();
+
+            if (entities.Any())
+            {
+                _dbSet.RemoveRange(entities);
+            }
+        }
 
         public virtual async Task EditAsync(TAggregateRoot entityToUpdate)
         {
