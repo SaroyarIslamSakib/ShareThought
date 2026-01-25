@@ -14,12 +14,15 @@ namespace DevSkill.Blog.Infrastructure
     {
         public IBlogPostRepository BlogPostRepository { get; private set; }
         public IContactMessageRepository ContactMessageRepository { get; private set; }
+        public IBlogAreaRepository BlogAreaRepository { get; private set; }
 
-        public ApplicationUnitOfWork(ApplicationDbContext context, IBlogPostRepository blogPostRepository, IContactMessageRepository contactMessageRepository)
+
+        public ApplicationUnitOfWork(ApplicationDbContext context, IBlogPostRepository blogPostRepository, IContactMessageRepository contactMessageRepository, IBlogAreaRepository blogAreaRepository)
             : base(context)
         {
             BlogPostRepository = blogPostRepository;
             ContactMessageRepository = contactMessageRepository;
+            BlogAreaRepository = blogAreaRepository;
         }
     }
 

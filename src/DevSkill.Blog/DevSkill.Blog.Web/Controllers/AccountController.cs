@@ -88,22 +88,24 @@ namespace DevSkill.Blog.Web.Controllers
                             $"<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a></p></body></html>.");
 
 
-                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                        if (_userManager.Options.SignIn.RequireConfirmedEmail)
                         {
                             TempData.Put("ResponseMessage", new ResponseModel
                             {
-                                Message = "Registration Successfull",
+                                Message = "Registration successful. Please confirm your email to login.",
                                 Response = ResponseTypes.success
                             });
-                            return RedirectToPage("RegisterConfirmation", new { email = model.Email, returnUrl = model.ReturnUrl });
+                            return RedirectToAction("MailConfirmation");
                         }
                         else
                         {
                             TempData.Put("ResponseMessage", new ResponseModel
                             {
-                                Message = "Registration Successfull",
+                                Message = "Registration successful. Please confirm your email to login.",
                                 Response = ResponseTypes.success
                             });
+
+
                             await _signInManager.SignInAsync(user, isPersistent: false);
                             return LocalRedirect(model.ReturnUrl);
                         }
@@ -174,6 +176,31 @@ namespace DevSkill.Blog.Web.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+
+                    if (user == null)
+                    {
+                        TempData.Put("ResponseMessage", new ResponseModel
+                        {
+                            Message = "Invalid login attempt",
+                            Response = ResponseTypes.danger
+                        });
+                        return RedirectToAction("Index", "Home");
+                    }
+
+                    // Email confirmed
+                    if (!await _userManager.IsEmailConfirmedAsync(user))
+                    {
+                        TempData.Put("ResponseMessage", new ResponseModel
+                        {
+                            Message = "Please confirm your email before login",
+                            Response = ResponseTypes.danger
+                        });
+                        return RedirectToAction("Index", "Home");
+                    }
+
+
+
                     var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                     if (result.Succeeded)
                     {
@@ -192,7 +219,12 @@ namespace DevSkill.Blog.Web.Controllers
                     if (result.IsLockedOut)
                     {
                         _logger.LogWarning("User account locked out.");
-                        return RedirectToPage("./Lockout");
+                        TempData.Put("ResponseMessage", new ResponseModel
+                        {
+                            Message = "Account is locked",
+                            Response = ResponseTypes.danger
+                        });
+                        return RedirectToAction("Index", "Home");
                     }
                     else
                     {
@@ -266,9 +298,19 @@ namespace DevSkill.Blog.Web.Controllers
                 Message = msg,
                 Response = ResponseTypes.success
             });
+            await _signInManager.SignInAsync(user, isPersistent: false);
+            //return LocalRedirect(model.ReturnUrl);
             return RedirectToAction("Index", "Home");
 
 
+        }
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+        public IActionResult MailConfirmation()
+        {
+            return View();
         }
     }
 }

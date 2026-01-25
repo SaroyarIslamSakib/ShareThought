@@ -22,6 +22,7 @@ namespace DevSkill.Blog.Infrastructure.Extensions
     {
         public static void AddDependencyInjection(this IServiceCollection service)
         {
+            service.AddScoped<IBlogAreaRepository, BlogAreaRepository>();
             service.AddScoped<IBlogPostRepository, BlogPostRepository>();
             service.AddScoped<IContactMessageRepository, ContactMessageRepository>();
             service.AddScoped<IApplicationUnitOfWork,  ApplicationUnitOfWork>();
@@ -47,6 +48,18 @@ namespace DevSkill.Blog.Infrastructure.Extensions
                 .AddSignInManager<ApplicationSignInManager>()
                 .AddDefaultTokenProviders();
 
+            //Configure Unauthorize login path
+            service.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Home/Index";
+                options.AccessDeniedPath = "/Home/Index";
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.Redirect("/Home/Index?loginRequired=true");
+                    return Task.CompletedTask;
+                };
+            });
+
             service.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -61,6 +74,9 @@ namespace DevSkill.Blog.Infrastructure.Extensions
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
+
+                // Signin settings modified.
+                options.SignIn.RequireConfirmedEmail = true;
 
                 // User settings.
                 options.User.AllowedUserNameCharacters =

@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\BlogsArea\Queries\" />
     <Folder Include="Features\Users\Commands\" />
   </ItemGroup>
 

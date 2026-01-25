@@ -7,13 +7,14 @@ using DevSkill.Blog.Infrastructure.Extensions;
 using DevSkill.Blog.Web.Areas.Admin.Models;
 using DevSkill.Blog.Web.Models;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Web;
 
 namespace DevSkill.Blog.Web.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize]
     public class ContactMessagesController : Controller
     {
         private readonly ILogger<ContactMessage> _logger;

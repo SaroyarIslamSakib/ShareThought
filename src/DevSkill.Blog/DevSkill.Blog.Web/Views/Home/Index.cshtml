@@ -16,6 +16,8 @@
 <partial name="_LoginModalPartial" />
 <partial name="_RegisterModalPartial" model="Model" />
 <partial name="_ResponsePartial" />
+<partial name="_CreateBlogModalPartial" model="new CreateBlogAreaModel()" />
+
 <main>
     <div class="landing-body">
         <section class="hero">
@@ -37,8 +39,13 @@
                 </div>
 
                 <div class="hero-actions mb-5">
-                    <a href="#" class="btn hero-btn-primary">Login</a>
-                    <a href="#" class="btn hero-btn-secondary">Sign up</a>
+                    <button type="button"
+                            class="btn hero-btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#createBlogModal">
+                        Create
+                    </button>
+                    <button type="button" class="btn hero-btn-secondary">Sign up</button>
                 </div>
             </div>
             <!-- Dark section -->
@@ -379,5 +386,24 @@
                     loginModal.show();
                 }, 300);
             });
+    });
+</script>
+
+
+<!--begin: When Unauthorize then automatic open modal-->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const loginModalElement = document.getElementById("loginModal");
+
+        if (!loginModalElement) return;
+
+        const loginModal = new bootstrap.Modal(loginModalElement);
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if (urlParams.get("loginRequired") === "true") {
+            loginModal.show();
+        }
     });
 </script>

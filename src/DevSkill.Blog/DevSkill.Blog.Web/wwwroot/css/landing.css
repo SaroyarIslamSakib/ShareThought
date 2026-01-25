@@ -30,6 +30,9 @@
     padding: 12px 28px;
     font-weight: 500;
     transition: all 0.3s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    border-radius: 0;
 }
 
     /* Primary Hover */
@@ -48,6 +51,9 @@
     font-weight: 500;
     margin-left: 12px;
     transition: all 0.3s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    border-radius: 0;
 }
 
     /* Secondary Hover */
