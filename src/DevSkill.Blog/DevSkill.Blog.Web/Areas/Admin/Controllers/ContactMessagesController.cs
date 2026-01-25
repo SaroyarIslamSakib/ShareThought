@@ -3,6 +3,7 @@ using DevSkill.Blog.Application.Features.Contacts.Commands;
 using DevSkill.Blog.Application.Features.Contacts.Queries;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Entities;
+using DevSkill.Blog.Infrastructure.Extensions;
 using DevSkill.Blog.Web.Areas.Admin.Models;
 using DevSkill.Blog.Web.Models;
 using MapsterMapper;
@@ -71,36 +72,90 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
 
         public async Task<IActionResult> ViewMessage(Guid Id)
         {
-            var query = new GetContactMessageByIdQuery { Id = Id };
-            var message = await _mediator.SendQueryAsync<GetContactMessageByIdQuery, ContactMessage>(query);
-            if (message == null)
+            try
             {
-                return NotFound();
+                var query = new GetContactMessageByIdQuery { Id = Id };
+                var message = await _mediator
+                    .SendQueryAsync<GetContactMessageByIdQuery, ContactMessage>(query);
+
+                if (message == null)
+                {
+                    return NotFound();
+                }
+
+                var command = new MarkContactMessageAsReadCommand { Id = Id };
+                await _mediator
+                    .SendCommandAsync<MarkContactMessageAsReadCommand, Guid>(command);
+
+                var model = _mapper.Map<ContactMessageModel>(message);
+                return PartialView("_ViewMessageModal", model);
             }
-
-            var command = new MarkContactMessageAsReadCommand { Id = Id };
-            var id = await _mediator.SendCommandAsync<MarkContactMessageAsReadCommand, Guid>(command);
-
-            var model = _mapper.Map<ContactMessageModel>(message);
-            return PartialView("_ViewMessageModal", model);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to view contact message. Id: {Id}");
+                return StatusCode(500);
+            }
         }
 
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var command = new DeleteContactMessageCommand { Id = id };
-            await _mediator.SendCommandAsync<DeleteContactMessageCommand, Guid>(command);
-            return RedirectToAction("Index");
+            try
+            {
+                var command = new DeleteContactMessageCommand { Id = id };
+                await _mediator.SendCommandAsync<DeleteContactMessageCommand, Guid>(command);
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Message deleted successfully",
+                    Response = ResponseTypes.success
+                });
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to delete contact message. Id: {id}");
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to delete message",
+                    Response = ResponseTypes.danger
+                });
+
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteAll()
         {
-            var command = new DeleteAllContactMessageCommand();
-            await _mediator.SendCommandAsync<DeleteAllContactMessageCommand, Task>(command);
-            return RedirectToAction("Index");
+            try
+            {
+                var command = new DeleteAllContactMessageCommand();
+                await _mediator.SendCommandAsync<DeleteAllContactMessageCommand, Task>(command);
 
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "All messages deleted successfully",
+                    Response = ResponseTypes.success
+                });
 
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to delete all contact messages");
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to delete all messages",
+                    Response = ResponseTypes.danger
+                });
+
+                return RedirectToAction("Index");
+            }
         }
+
     }
 }

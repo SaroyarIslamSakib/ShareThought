@@ -83,27 +83,36 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
             if (userId == Guid.Empty)
                 return BadRequest();
 
-            var user = await _userManager.FindByIdAsync(userId.ToString());
-            if (user == null)
-                return NotFound();
-
-            var userRoles = await _userManager.GetRolesAsync(user);
-            var roles = _roleManager.Roles.ToList();
-
-            var model = new AssignRoleViewModel
+            try
             {
-                UserId = user.Id,
-                UserName = user.UserName!,
-                Roles = roles.Select(r => new RoleItemModel
-                {
-                    RoleId = r.Id,
-                    RoleName = r.Name!,
-                    IsAssigned = userRoles.Contains(r.Name!)
-                }).ToList()
-            };
+                var user = await _userManager.FindByIdAsync(userId.ToString());
+                if (user == null)
+                    return NotFound();
 
-            return PartialView("_AssignRoleModalPartial", model);
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var roles = _roleManager.Roles.ToList();
+
+                var model = new AssignRoleViewModel
+                {
+                    UserId = user.Id,
+                    UserName = user.UserName!,
+                    Roles = roles.Select(r => new RoleItemModel
+                    {
+                        RoleId = r.Id,
+                        RoleName = r.Name!,
+                        IsAssigned = userRoles.Contains(r.Name!)
+                    }).ToList()
+                };
+
+                return PartialView("_AssignRoleModalPartial", model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to load assign role modal. UserId: {userId}");
+                return StatusCode(500);
+            }
         }
+
 
 
         [HttpPost]
@@ -113,55 +122,82 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return RedirectToAction(nameof(Index));
 
-            var user = await _userManager.FindByIdAsync(model.UserId.ToString());
-            if (user == null)
-                return RedirectToAction(nameof(Index));
-
-            var currentRoles = await _userManager.GetRolesAsync(user);
-
-            if (model.Roles == null || !model.Roles.Any())
+            try
             {
+                var user = await _userManager.FindByIdAsync(model.UserId.ToString());
+                if (user == null)
+                    return RedirectToAction(nameof(Index));
+
+                var currentRoles = await _userManager.GetRolesAsync(user);
+
+                if (model.Roles == null || !model.Roles.Any())
+                {
+                    TempData.Put("ResponseMessage", new ResponseModel
+                    {
+                        Message = "No roles selected",
+                        Response = ResponseTypes.danger
+                    });
+
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // Get selected roles from model
+                var selectedRoles = model.Roles
+                    .Where(r => r.IsAssigned)
+                    .Select(r => r.RoleName)
+                    .ToList();
+
+                // Remove unselected roles
+                var rolesToRemove = currentRoles.Except(selectedRoles);
+                await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+
+                // Add newly selected roles
+                var rolesToAdd = selectedRoles.Except(currentRoles);
+                await _userManager.AddToRolesAsync(user, rolesToAdd);
+
                 TempData.Put("ResponseMessage", new ResponseModel
                 {
-                    Message = "No roles selected",
+                    Message = "Role Updated Successfully",
+                    Response = ResponseTypes.success
+                });
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to assign roles. UserId: {model.UserId}");
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to update roles",
                     Response = ResponseTypes.danger
                 });
 
                 return RedirectToAction(nameof(Index));
             }
-
-            // Get selected roles from model
-            var selectedRoles = model.Roles
-                .Where(r => r.IsAssigned)
-                .Select(r => r.RoleName)
-                .ToList();
-
-            // Remove unselected roles
-            var rolesToRemove = currentRoles.Except(selectedRoles);
-            await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
-
-            // Add newly selected roles
-            var rolesToAdd = selectedRoles.Except(currentRoles);
-            await _userManager.AddToRolesAsync(user, rolesToAdd);
-
-            TempData.Put("ResponseMessage", new ResponseModel
-            {
-                Message = "Role Updated Successfully",
-                Response = ResponseTypes.success
-            });
-
-            return RedirectToAction(nameof(Index));
         }
+
         public async Task<IActionResult> GetUserForDelete(string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
-
-            return Json(new
+            try
             {
-                userId = user.Id,
-                userName = user.UserName
-            });
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                    return Json(null);
+
+                return Json(new
+                {
+                    userId = user.Id,
+                    userName = user.UserName
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to load user for delete. UserId: {userId}");
+                return Json(null);
+            }
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string userId)
@@ -169,51 +205,70 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
             if (string.IsNullOrEmpty(userId))
                 return BadRequest();
 
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-                return NotFound();
-
-            // ================= Remove Roles =================
-            var roles = await _userManager.GetRolesAsync(user);
-            if (roles.Any())
+            try
             {
-                var roleResult = await _userManager.RemoveFromRolesAsync(user, roles);
-                if (!roleResult.Succeeded)
-                    return BadRequest(roleResult.Errors);
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                    return NotFound();
+
+                // ================= Remove Roles =================
+                var roles = await _userManager.GetRolesAsync(user);
+                if (roles.Any())
+                {
+                    var roleResult = await _userManager.RemoveFromRolesAsync(user, roles);
+                    if (!roleResult.Succeeded)
+                        return BadRequest(roleResult.Errors);
+                }
+
+                // ================= Remove Claims =================
+                var claims = await _userManager.GetClaimsAsync(user);
+                if (claims.Any())
+                {
+                    var claimResult = await _userManager.RemoveClaimsAsync(user, claims);
+                    if (!claimResult.Succeeded)
+                        return BadRequest(claimResult.Errors);
+                }
+
+                // ================= Remove Logins =================
+                var logins = await _userManager.GetLoginsAsync(user);
+                foreach (var login in logins)
+                {
+                    await _userManager.RemoveLoginAsync(
+                        user,
+                        login.LoginProvider,
+                        login.ProviderKey);
+                }
+
+                // ================= Finally Delete User =================
+                var result = await _userManager.DeleteAsync(user);
+                if (!result.Succeeded)
+                    return BadRequest(result.Errors);
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "User Deleted Successfully",
+                    Response = ResponseTypes.danger
+                });
+
+                return Ok();
             }
-
-            // ================= Remove Claims =================
-            var claims = await _userManager.GetClaimsAsync(user);
-            if (claims.Any())
+            catch (Exception ex)
             {
-                var claimResult = await _userManager.RemoveClaimsAsync(user, claims);
-                if (!claimResult.Succeeded)
-                    return BadRequest(claimResult.Errors);
+                _logger.LogError(ex, $"Failed to delete user. UserId: {userId}");
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to delete user",
+                    Response = ResponseTypes.danger
+                });
+
+                return StatusCode(500);
             }
-
-            // ================= Remove Logins =================
-            var logins = await _userManager.GetLoginsAsync(user);
-            foreach (var login in logins)
-            {
-                await _userManager.RemoveLoginAsync(
-                    user,
-                    login.LoginProvider,
-                    login.ProviderKey);
-            }
-
-            // ================= Finally Delete User =================
-            var result = await _userManager.DeleteAsync(user);
-
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
-
-            TempData.Put("ResponseMessage", new ResponseModel
-            {
-                Message = "User Deleted Successfully",
-                Response = ResponseTypes.danger
-            });
-            return Ok();
         }
 
+        public IActionResult ResponsePartial()
+        {
+            return PartialView("_ResponsePartial");
+        }
     }
 }

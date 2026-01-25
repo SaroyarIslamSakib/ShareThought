@@ -53,17 +53,19 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
                 }
                 catch(Exception ex)
                 {
+                    _logger.LogError(ex, "Error occurred while creating blog post");
+
                     ModelState.AddModelError("Error", "Failed to create Blog Post");
                     TempData.Put("ResponseMessage", new ResponseModel
                     {
                         Message = "Failed to create Blog Post",
                         Response = ResponseTypes.danger
                     });
-
                 }
             }
-            return View();
+            return View(model);
         }
+
         [HttpPost]
         public async Task<JsonResult> GetBlogPostJsonData([FromBody] BlogPostListModel model)
         {
@@ -101,58 +103,96 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
             }
         }
 
+
+
         [HttpPost]
         public async Task<JsonResult> GetBlogById(Guid id)
         {
-            var blog = await _mediator.SendQueryAsync<BlogPostGetQuery, BlogPost>(
-                new BlogPostGetQuery { Id = id }
-            );
-
-            if (blog == null)
-                return Json(null);
-
-            return Json(new
+            try
             {
-                title = blog.Title,
-                body = blog.Body,
-                createdAt = blog.CreatedAt.ToString("dd MMM yyyy")
-            });
+                var blog = await _mediator.SendQueryAsync<BlogPostGetQuery, BlogPost>(
+                    new BlogPostGetQuery { Id = id }
+                );
+
+                if (blog == null)
+                    return Json(null);
+
+                return Json(new
+                {
+                    title = blog.Title,
+                    body = blog.Body,
+                    createdAt = blog.CreatedAt.ToString("dd MMM yyyy")
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to get blog by id: {id}");
+                return Json(null);
+            }
         }
 
         public async Task<JsonResult> EditAsync(Guid id)
         {
-            var blog = await _mediator.SendQueryAsync<BlogPostGetQuery, BlogPost>(
-                new BlogPostGetQuery { Id = id }
-            );
-
-            if (blog == null)
-                return Json(null);
-
-            return Json(new
+            try
             {
-                id = blog.Id,
-                title = blog.Title,
-                body = blog.Body
-            });
+                var blog = await _mediator.SendQueryAsync<BlogPostGetQuery, BlogPost>(
+                    new BlogPostGetQuery { Id = id }
+                );
+
+                if (blog == null)
+                    return Json(null);
+
+                return Json(new
+                {
+                    id = blog.Id,
+                    title = blog.Title,
+                    body = blog.Body
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to load blog for edit. Id: {id}");
+                return Json(null);
+            }
         }
 
         [HttpPost]
         public async Task<JsonResult> EditAsync([FromBody] UpdateBlogModel model)
         {
-            var command = new BlogPostEditCommand
+            if (!ModelState.IsValid)
             {
-                Id = model.Id,
-                Title = model.Title,
-                Body = model.Body
-            };
-            await _mediator.SendCommandAsync<BlogPostEditCommand, Guid>(command);
+                return Json(new { success = false, message = "Invalid data" });
+            }
 
-            TempData.Put("ResponseMessage", new ResponseModel
+            try
             {
-                Message = "Blog updated successfully",
-                Response = ResponseTypes.success
-            });
-            return Json(new { success = true });
+                var command = new BlogPostEditCommand
+                {
+                    Id = model.Id,
+                    Title = model.Title,
+                    Body = model.Body
+                };
+
+                await _mediator.SendCommandAsync<BlogPostEditCommand, Guid>(command);
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Blog updated successfully",
+                    Response = ResponseTypes.success
+                });
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to update blog. Id: {model.Id}");
+
+                return Json(new
+                {
+                    success = false,
+                    message = "Failed to update blog"
+                });
+            }
         }
 
         [HttpPost, ValidateAntiForgeryToken]

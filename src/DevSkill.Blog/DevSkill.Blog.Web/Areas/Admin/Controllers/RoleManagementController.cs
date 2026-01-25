@@ -19,150 +19,253 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IServerTime _serverTime;
         private readonly ApplicationRoleManager _roleManager;
+        private readonly ILogger<RoleManagementController> _logger;
+
         public RoleManagementController(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             IEmailUtility emailUtility,
             IServerTime serverTime,
-            ApplicationRoleManager roleManager)
+            ApplicationRoleManager roleManager,
+            ILogger<RoleManagementController> logger)
         {
             _userManager = userManager;
             _userStore = userStore;
             _signInManager = signInManager;
             _serverTime = serverTime;
             _roleManager = roleManager;
+            _logger = logger;
         }
         public async Task<IActionResult> Index()
         {
-            var model = new RoleIndexViewModel
+            try
             {
-                Roles = await _roleManager.Roles.ToListAsync(),
-                CreateRole = new CreateRoleModel()
-            };
-            return View(model);
+                var model = new RoleIndexViewModel
+                {
+                    Roles = await _roleManager.Roles.ToListAsync(),
+                    CreateRole = new CreateRoleModel(),
+                    EditRole = new EditRoleModel(),
+                    DeleteRole = new DeleteRoleModel()
+                };
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to load roles");
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to load roles",
+                    Response = ResponseTypes.danger
+                });
+
+                return View(new RoleIndexViewModel
+                {
+                    Roles = new List<ApplicationRole>(),
+                    CreateRole = new CreateRoleModel()
+                });
+            }
         }
-        [HttpPost,ValidateAntiForgeryToken]
+
+
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RoleIndexViewModel model)
         {
-            await _roleManager.CreateAsync(new ApplicationRole
+            try
             {
-                Name = model.CreateRole.RoleName,
-                Description = model.CreateRole.Description,
-                ConcurrencyStamp = IdentityGenerator.NewSequentialGuid().ToString()
-            });
-            TempData.Put("ResponseMessage", new ResponseModel
+                await _roleManager.CreateAsync(new ApplicationRole
+                {
+                    Name = model.CreateRole.RoleName,
+                    Description = model.CreateRole.Description,
+                    ConcurrencyStamp = IdentityGenerator.NewSequentialGuid().ToString()
+                });
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Add Role Successfully",
+                    Response = ResponseTypes.success
+                });
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
             {
-                Message = "Add Role Successfully",
-                Response = ResponseTypes.success
-            });
-            return RedirectToAction("Index");
+                _logger.LogError(ex, "Failed to create role");
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to add role",
+                    Response = ResponseTypes.danger
+                });
+
+                return RedirectToAction("Index");
+            }
         }
 
         public async Task<IActionResult> Edit(Guid id)
         {
-            var role = await _roleManager.FindByIdAsync(id.ToString());
-            if (role == null) return NotFound();
-
-            var vm = new RoleIndexViewModel
+            try
             {
-                EditRole = new EditRoleModel
-                {
-                    Id = role.Id,
-                    RoleName = role.Name,
-                    Description = role.Description
-                }
-            };
+                var role = await _roleManager.FindByIdAsync(id.ToString());
+                if (role == null) return NotFound();
 
-            return PartialView("_EditRoleModalPartial", vm);
+                var vm = new RoleIndexViewModel
+                {
+                    EditRole = new EditRoleModel
+                    {
+                        Id = role.Id,
+                        RoleName = role.Name,
+                        Description = role.Description
+                    }
+                };
+
+                return PartialView("_EditRoleModalPartial", vm);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to load role for edit. Id: {id}");
+                return StatusCode(500);
+            }
         }
+
 
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(RoleIndexViewModel model)
         {
-            var role = await _roleManager.FindByIdAsync(model.EditRole.Id.ToString());
-            if (role == null) return NotFound();
-
-            role.Name = model.EditRole.RoleName;
-            role.Description = model.EditRole.Description;
-
-            await _roleManager.UpdateAsync(role);
-
-            TempData.Put("ResponseMessage", new ResponseModel
+            try
             {
-                Message = "Role updated successfully",
-                Response = ResponseTypes.success
-            });
+                var role = await _roleManager.FindByIdAsync(model.EditRole.Id.ToString());
+                if (role == null) return NotFound();
 
-            return RedirectToAction(nameof(Index));
+                role.Name = model.EditRole.RoleName;
+                role.Description = model.EditRole.Description;
+
+                await _roleManager.UpdateAsync(role);
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Role updated successfully",
+                    Response = ResponseTypes.success
+                });
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to update role. Id: {model.EditRole.Id}");
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to update role",
+                    Response = ResponseTypes.danger
+                });
+
+                return RedirectToAction(nameof(Index));
+            }
         }
+
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            var role = await _roleManager.FindByIdAsync(id.ToString());
-            if (role == null) return NotFound();
-
-            var vm = new RoleIndexViewModel
+            try
             {
-                DeleteRole = new DeleteRoleModel
-                {
-                    Id = role.Id,
-                    RoleName = role.Name
-                }
-            };
+                var role = await _roleManager.FindByIdAsync(id.ToString());
+                if (role == null) return NotFound();
 
-            return PartialView("_DeleteRoleModalPartial", vm);
+                var vm = new RoleIndexViewModel
+                {
+                    DeleteRole = new DeleteRoleModel
+                    {
+                        Id = role.Id,
+                        RoleName = role.Name
+                    }
+                };
+
+                return PartialView("_DeleteRoleModalPartial", vm);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to load role for delete. Id: {id}");
+                return StatusCode(500);
+            }
         }
+
+
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(RoleIndexViewModel model)
         {
-            var role = await _roleManager.FindByIdAsync(model.DeleteRole.Id.ToString());
-            if (role == null) return NotFound();
-
-            var usersInRole = await _userManager.GetUsersInRoleAsync(role.Name);
-
-            foreach (var user in usersInRole)
+            try
             {
-                await _userManager.RemoveFromRoleAsync(user, role.Name);
+                var role = await _roleManager.FindByIdAsync(model.DeleteRole.Id.ToString());
+                if (role == null) return NotFound();
+
+                var usersInRole = await _userManager.GetUsersInRoleAsync(role.Name);
+
+                foreach (var user in usersInRole)
+                {
+                    await _userManager.RemoveFromRoleAsync(user, role.Name);
+                }
+
+                await _roleManager.DeleteAsync(role);
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Role deleted successfully",
+                    Response = ResponseTypes.success
+                });
+
+                return RedirectToAction(nameof(Index));
             }
-
-            await _roleManager.DeleteAsync(role);
-
-            TempData.Put("ResponseMessage", new ResponseModel
+            catch (Exception ex)
             {
-                Message = "Role deleted successfully",
-                Response = ResponseTypes.success
-            });
+                _logger.LogError(ex, $"Failed to delete role. Id: {model.DeleteRole.Id}");
 
-            return RedirectToAction(nameof(Index));
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to delete role",
+                    Response = ResponseTypes.danger
+                });
+
+                return RedirectToAction(nameof(Index));
+            }
         }
+
+
+
+
         public async Task<IActionResult> RoleUsersModal(string roleId)
         {
-            var role = await _roleManager.FindByIdAsync(roleId);
-
-            var usersInRole = await _userManager.GetUsersInRoleAsync(role.Name);
-
-            var model = new RoleIndexViewModel
+            try
             {
-                RoleUser = new UserListByRoleModel
+                var role = await _roleManager.FindByIdAsync(roleId);
+                if (role == null)
+                    return NotFound();
+
+                var usersInRole = await _userManager.GetUsersInRoleAsync(role.Name);
+
+                var model = new RoleIndexViewModel
                 {
-                    RoleName = role.Name,
-                    Users = usersInRole.Select(u => new UserViewModel
+                    RoleUser = new UserListByRoleModel
                     {
-                        Name = $"{u.FirstName} {u.LastName}",
-                        Email = u.Email,
-                        PhoneNumber = u.PhoneNumber
-                        
-                    }).ToList()
-                }
-            };
+                        RoleName = role.Name,
+                        Users = usersInRole.Select(u => new UserViewModel
+                        {
+                            Name = $"{u.FirstName} {u.LastName}",
+                            Email = u.Email,
+                            PhoneNumber = u.PhoneNumber
+                        }).ToList()
+                    }
+                };
 
-            return PartialView("_RoleUserModalPartial", model);
+                return PartialView("_RoleUserModalPartial", model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to load users for role. RoleId: {roleId}");
+                return StatusCode(500);
+            }
         }
-
-
-
-
-
     }
 }
