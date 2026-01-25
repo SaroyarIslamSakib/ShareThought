@@ -114,7 +114,24 @@
                         return JSON.stringify(d);
                     }
                 },
-                columnDefs: [{
+                columnDefs: [
+                {
+                    orderable: false,
+                        targets : 3,
+                        render:function(data, type, row)
+                        {
+                            if(data == "True" || data == "true")
+                            {
+                                 return '<span class="badge bg-success">Seen</span>';
+                            }
+                            else
+                            {
+                                return '<span class="badge bg-warning text-dark">Unseen</span>';
+                            }
+
+                        }
+                },
+                {
                     orderable: false,
                     targets: 5,
                     render: function (data) {
@@ -131,7 +148,11 @@
                             </button>
                         </div>`;
                     }
-                }]
+                }
+            ]
+
+                        
+
             });
 
 

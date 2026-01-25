@@ -54,7 +54,7 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
                         HttpUtility.HtmlEncode(item.Name),
                         HttpUtility.HtmlEncode(item.Email),
                         item.Topic.ToString(),
-                        item.Status.ToString(),
+                        item.IsRead.ToString(),
                         item.CreatedAt.ToString("dd-MM-yyyy HH:mm:ss"),
                         item.Id.ToString()
                             }).ToArray()
