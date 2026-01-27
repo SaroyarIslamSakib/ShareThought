@@ -1,0 +1,16 @@
+﻿
+.navbar h4 {
+    letter-spacing: 0.5px;
+}
+.write-btn {
+    color: #6b6b6b;
+    font-size: 15px;
+}
+
+    .write-btn svg {
+        margin-top: -1px; /* micro optical alignment */
+    }
+
+    .write-btn:hover {
+        color: #000;
+    }

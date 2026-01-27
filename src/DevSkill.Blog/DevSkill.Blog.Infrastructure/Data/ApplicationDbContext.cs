@@ -34,22 +34,11 @@ namespace DevSkill.Blog.Infrastructure.Data
                    .Property(x => x.Topic)
                    .HasConversion<string>();
             //Configure BlogArea
-            builder.Entity<BlogArea>(b =>
-            {
-                b.HasKey(x => x.Id);
-
-                b.Property(x => x.Name)
-                    .IsRequired()
-                    .HasMaxLength(20);
-
-                b.HasOne<ApplicationUser>()
-                    .WithOne()
-                    .HasForeignKey<BlogArea>(x => x.OwnerId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                b.HasIndex(x => x.OwnerId)
-                    .IsUnique(); //ensures one user = one blog
-            });
+            builder.Entity<ApplicationUser>()
+                   .HasOne(u => u.BlogArea)
+                   .WithOne()
+                   .HasForeignKey<BlogArea>(b => b.UserId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
 
         public DbSet<BlogPost> BlogPosts { get; set; }

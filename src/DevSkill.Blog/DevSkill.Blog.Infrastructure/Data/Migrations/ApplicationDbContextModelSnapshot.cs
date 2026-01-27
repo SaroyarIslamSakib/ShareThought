@@ -36,19 +36,14 @@ namespace DevSkill.Blog.Infrastructure.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<Guid>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("OwnerName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId")
+                    b.HasIndex("UserId")
                         .IsUnique();
 
                     b.ToTable("BlogArea");
@@ -342,8 +337,8 @@ namespace DevSkill.Blog.Infrastructure.Data.Migrations
             modelBuilder.Entity("DevSkill.Blog.Domain.Entities.BlogArea", b =>
                 {
                     b.HasOne("DevSkill.Blog.Infrastructure.Identity.ApplicationUser", null)
-                        .WithOne()
-                        .HasForeignKey("DevSkill.Blog.Domain.Entities.BlogArea", "OwnerId")
+                        .WithOne("BlogArea")
+                        .HasForeignKey("DevSkill.Blog.Domain.Entities.BlogArea", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -397,6 +392,11 @@ namespace DevSkill.Blog.Infrastructure.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DevSkill.Blog.Infrastructure.Identity.ApplicationUser", b =>
+                {
+                    b.Navigation("BlogArea");
                 });
 #pragma warning restore 612, 618
         }

@@ -59,6 +59,16 @@ namespace DevSkill.Blog.Web.Controllers
                 model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
                 if (ModelState.IsValid)
                 {
+                    var existingUser = await _userManager.FindByEmailAsync(model.Email);
+                    if (existingUser != null)
+                    {
+                        TempData.Put("ResponseMessage", new ResponseModel
+                        {
+                            Message = "You have already an account",
+                            Response = ResponseTypes.danger
+                        });
+                        return RedirectToAction("Index", "Home");
+                    }
                     var user = CreateUser();
                     user.FirstName = model.FirstName;
                     user.LastName = model.LastName;
@@ -116,7 +126,7 @@ namespace DevSkill.Blog.Web.Controllers
                     }
                 }
 
-                return View();
+                return RedirectToAction("Index","Home");
             }
             catch(Exception ex)
             {
@@ -126,7 +136,7 @@ namespace DevSkill.Blog.Web.Controllers
                     Response = ResponseTypes.danger
                 });
             }
-            return View();
+            return View("Index", "Home");
         }
         private ApplicationUser CreateUser()
         {

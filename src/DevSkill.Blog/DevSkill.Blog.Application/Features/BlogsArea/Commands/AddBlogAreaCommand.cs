@@ -12,8 +12,7 @@ namespace DevSkill.Blog.Application.Features.BlogsArea.Commands
     {
         public string Name { get; set; } = null!;
         public string? Description { get; set; }
-        public Guid OwnerId { get; set; }
-        public string OwnerName { get; set; }
+        public Guid UserId { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

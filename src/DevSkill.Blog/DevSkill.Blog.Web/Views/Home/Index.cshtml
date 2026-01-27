@@ -22,7 +22,7 @@
     <div class="landing-body">
         <section class="hero">
 
-            <!-- 🔹 MAIN CONTENT -->
+            <!-- MAIN CONTENT -->
             <div class="container text-center">
                 <h1 class="hero-title">
                     Welcome<br />What do you want to learn
@@ -41,15 +41,14 @@
                 <div class="hero-actions mb-5">
                     <button type="button"
                             class="btn hero-btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#createBlogModal">
+                            id="openCreateBlog">
                         Create
                     </button>
                     <button type="button" class="btn hero-btn-secondary">Sign up</button>
                 </div>
             </div>
             <!-- Dark section -->
-            <!-- 🔹 RULER SVG HERE -->
+            <!--  RULER SVG HERE -->
             <svg class="ruler" width="700" height="90" viewBox="0 0 700 90" xmlns="http://www.w3.org/2000/svg">
                 <!-- Background -->
                 <rect x="2" y="2" rx="18" ry="18" width="896" height="86"
@@ -360,14 +359,16 @@
 <script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
 
 <script>
+    const isUserLoggedIn = @(User.Identity.IsAuthenticated.ToString().ToLower());
     document.addEventListener("DOMContentLoaded", function () {
 
-        const loginModal = new bootstrap.Modal(
-            document.getElementById("loginModal")
-        );
-        const registerModal = new bootstrap.Modal(
-            document.getElementById("registerModal")
-        );
+        const loginModalEl = document.getElementById("loginModal");
+        const registerModalEl = document.getElementById("registerModal");
+        const createBlogModalEl = document.getElementById("createBlogModal");
+
+        const loginModal = new bootstrap.Modal(loginModalEl);
+        const registerModal = new bootstrap.Modal(registerModalEl);
+        const createBlogModal = new bootstrap.Modal(createBlogModalEl);
 
         // Login → Register
         document.getElementById("openRegisterFromLogin")
@@ -375,6 +376,7 @@
                 loginModal.hide();
                 setTimeout(() => {
                     registerModal.show();
+                    $.validator.unobtrusive.parse($(this).find('form'));
                 }, 300);
             });
 
@@ -384,7 +386,21 @@
                 registerModal.hide();
                 setTimeout(() => {
                     loginModal.show();
+                    $.validator.unobtrusive.parse($(this).find('form'));
                 }, 300);
+            });
+
+        // Create Blog Button Logic
+        document.getElementById("openCreateBlog")
+            .addEventListener("click", function () {
+
+                if (!isUserLoggedIn) {
+                    // User NOT logged in → open login modal
+                    loginModal.show();
+                } else {
+                    // User logged in → open create blog modal
+                    createBlogModal.show();
+                }
             });
     });
 </script>
@@ -407,3 +423,8 @@
         }
     });
 </script>
+@section Scripts {
+    <!--begin: Client Side Validation-->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist//jquery.validate.unobtrusive.min.js"></script>
+}

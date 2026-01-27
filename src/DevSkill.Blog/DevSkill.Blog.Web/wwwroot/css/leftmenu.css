@@ -1,0 +1,91 @@
+﻿/* ===== LEFT MENU ===== */
+:root {
+    --navbar-height: 85px;
+    --subnavbar-height: 57px;
+}
+aside {
+    position: relative;
+}
+.page-layout .row {
+    align-items: stretch;
+}
+.left-menu,
+.layout-menu {
+    position: sticky;
+    top: 72px;
+    width: 100%; /* 🔥 MOST IMPORTANT */
+    max-width: 100%;
+    height: calc(100vh - 72px);
+    overflow-y: auto;
+}
+/* 🔥 subnavbar gone */
+body.subnav-hidden .left-menu {
+    top: var(--navbar-height);
+    height: calc(100vh - var(--navbar-height));
+}
+/* ===============================
+   Search Box
+================================ */
+
+.search-box {
+    max-width: 460px; /* আগের 520px থেকে ছোট */
+    margin: 0 auto;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px 12px 8px 34px; /* 👈 কম padding */
+    font-size: 13px; /* 👈 ছোট font */
+    font-family: 'Inter', system-ui, sans-serif;
+    border-radius: 8px; /* 👈 slightly smaller radius */
+    border: 1px solid #ddd;
+    background-color: #F5F6F7;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+    /* Hover */
+    .search-input:hover {
+        border-color: #bbb;
+    }
+
+    /* Focus */
+    .search-input:focus {
+        border-color: #111;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.08); /* 👈 softer shadow */
+    }
+
+    /* Placeholder */
+    .search-input::placeholder {
+        color: #aaa;
+    }
+
+/* Mobile */
+@media (max-width: 576px) {
+    .search-box {
+        max-width: 100%;
+    }
+
+    .search-input {
+        padding: 6px 10px 6px 30px; /* 👈 আরও ছোট */
+        font-size: 12px;
+        border-radius: 7px;
+    }
+    .search-icon {
+        left: 9px;
+        font-size: 12px;
+    }
+}
+.search-input-wrapper {
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #888;
+    pointer-events: none; /* icon click block করবে না */
+}

@@ -15,5 +15,9 @@ namespace DevSkill.Blog.Infrastructure.Repositories
         {
 
         }
+        public async Task<IList<BlogArea>> GetByUserIdAsync(Guid userId)
+        {
+            return await GetAsync(b => b.UserId == userId,null);
+        }
     }
 }

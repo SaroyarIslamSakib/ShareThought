@@ -10,6 +10,6 @@ namespace DevSkill.Blog.Domain.Repositories
 {
     public interface IBlogAreaRepository : IRepository<BlogArea, Guid>
     {
-       
+        Task<IList<BlogArea>> GetByUserIdAsync(Guid userId);    
     }
 }
