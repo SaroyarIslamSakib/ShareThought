@@ -46,7 +46,7 @@ namespace DevSkill.Blog.Infrastructure.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("BlogArea");
+                    b.ToTable("BlogArea", (string)null);
                 });
 
             modelBuilder.Entity("DevSkill.Blog.Domain.Entities.BlogPost", b =>
@@ -66,7 +66,7 @@ namespace DevSkill.Blog.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BlogPosts");
+                    b.ToTable("BlogPosts", (string)null);
                 });
 
             modelBuilder.Entity("DevSkill.Blog.Domain.Entities.ContactMessage", b =>
@@ -103,7 +103,7 @@ namespace DevSkill.Blog.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContactMessages");
+                    b.ToTable("ContactMessages", (string)null);
                 });
 
             modelBuilder.Entity("DevSkill.Blog.Infrastructure.Identity.ApplicationRole", b =>

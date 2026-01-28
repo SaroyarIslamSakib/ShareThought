@@ -13,5 +13,10 @@ namespace DevSkill.Blog.Domain.Entities
         public string? Description { get; set; }
         public Guid UserId { get; set; }
         public DateTime CreatedAt { get; set; }
+        public bool IsSuspended { get; set; }
+
+        // Navigation Properties
+        public ICollection<Post> Posts { get; set; } = new List<Post>();
+
     }
 }

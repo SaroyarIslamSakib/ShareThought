@@ -23,9 +23,6 @@ namespace DevSkill.Blog.Infrastructure.Data
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<ApplicationRole>().HasData(RoleSeed.GetRoles());
-            base.OnModelCreating(builder);
-
             //Enum int to string convertion
             builder.Entity<ContactMessage>()
                    .Property(x => x.Status)
@@ -39,9 +36,16 @@ namespace DevSkill.Blog.Infrastructure.Data
                    .WithOne()
                    .HasForeignKey<BlogArea>(b => b.UserId)
                    .OnDelete(DeleteBehavior.Cascade);
-        }
+            // BlogArea ↔ Posts (One-to-Many)
+            builder.Entity<BlogArea>()
+                   .HasMany(b => b.Posts)
+                   .WithOne(p => p.BlogArea)
+                   .HasForeignKey(p => p.BlogAreaId)
+                   .OnDelete(DeleteBehavior.Cascade);
 
-        public DbSet<BlogPost> BlogPosts { get; set; }
+        }
         public DbSet<ContactMessage> ContactMessages { get; set; }
+        public DbSet<BlogArea> BlogAreas { get; set; }
+        public DbSet<Post> Posts { get; set; }
     }
 }
