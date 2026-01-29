@@ -15,5 +15,10 @@ namespace DevSkill.Blog.Infrastructure.Repositories
         {
 
         }
+
+        public async Task<(IList<Post>, int total, int totalDisplay)> GetPagedPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder)
+        {
+            return await GetDynamicAsync(x => x.Title.Contains(searchText), sortOrder, null, pageIndex, pageSize);
+        }
     }
 }

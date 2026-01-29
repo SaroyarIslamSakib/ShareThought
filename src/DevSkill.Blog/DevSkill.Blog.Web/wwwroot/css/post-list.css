@@ -1,0 +1,42 @@
+﻿.post-item {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.post-thumb {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    background: #f2f2f2;
+}
+
+.post-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.post-meta {
+    font-size: 0.85rem;
+    color: #777;
+}
+
+.post-stats {
+    font-size: 0.8rem;
+    color: #777;
+    margin-top: 6px;
+    display: flex;
+    gap: 16px;
+}
+
+.post-actions {
+    margin-left: auto;
+    cursor: pointer;
+}
+
+#hiddenTable {
+    display: none;
+}

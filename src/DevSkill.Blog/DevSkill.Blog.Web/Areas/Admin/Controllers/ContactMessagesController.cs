@@ -14,7 +14,7 @@ using System.Web;
 
 namespace DevSkill.Blog.Web.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize]
+    [Area("Admin")]
     public class ContactMessagesController : Controller
     {
         private readonly ILogger<ContactMessage> _logger;

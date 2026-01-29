@@ -1,6 +1,8 @@
 ﻿using Cortex.Mediator;
 using DevSkill.Blog.Application.Features.BlogsArea.Queries;
 using DevSkill.Blog.Application.Features.Posts.Commands;
+using DevSkill.Blog.Application.Features.Posts.Queries;
+using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Domain.Utilities;
 using DevSkill.Blog.Infrastructure.Extensions;
@@ -9,7 +11,9 @@ using DevSkill.Blog.Web.Models;
 using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Tasks.Deployment.Bootstrapper;
 using Microsoft.EntityFrameworkCore;
+using System.Web;
 
 namespace DevSkill.Blog.Web.Controllers
 {
@@ -81,6 +85,42 @@ namespace DevSkill.Blog.Web.Controllers
             {
                 url = "/uploads/posts/" + fileName
             });
+        }
+        [HttpPost]
+        public JsonResult GetPostsJsonData([FromBody] PostListModel model)
+        {
+            try
+            {
+                var query = new GetPostsQuery();
+                query.SearchText = model.Search.Value;
+                query.SortOrder = model.FormatSortExpression("Title", "Content", "CreatedAt");
+                query.PageSize = model.PageSize;
+                query.PageIndex = model.PageIndex;
+
+                var (items, total, totalDisplay) = _mediator.SendQueryAsync<GetPostsQuery, (IList<Post>, int total, int totalDisplay)>(query).Result;
+
+
+                var posts = new
+                {
+                    recordsTotal = total,
+                    recordsFiltered = totalDisplay,
+                    data = (from item in items
+                            select new string[]
+                            {
+                        HttpUtility.HtmlEncode(item.Title),
+                        HttpUtility.HtmlEncode(item.Content),
+                        item.CreatedAt.ToString("dd-MM-yyyy HH:mm:ss"),
+                        item.Id.ToString()
+                            }).ToArray()
+                };
+                return Json(posts);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetPostsJsonData");
+                return Json(DataTables.EmptyResult);
+            }
         }
     }
 }
