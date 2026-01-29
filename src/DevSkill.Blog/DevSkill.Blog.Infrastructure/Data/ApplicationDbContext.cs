@@ -36,7 +36,11 @@ namespace DevSkill.Blog.Infrastructure.Data
                    .WithOne()
                    .HasForeignKey<BlogArea>(b => b.UserId)
                    .OnDelete(DeleteBehavior.Cascade);
-            // BlogArea ↔ Posts (One-to-Many)
+
+
+            base.OnModelCreating(builder);
+
+            // BlogArea ↔ Post (One-to-Many)
             builder.Entity<BlogArea>()
                    .HasMany(b => b.Posts)
                    .WithOne(p => p.BlogArea)

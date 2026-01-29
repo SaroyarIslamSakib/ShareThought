@@ -39,6 +39,7 @@ const quill = new Quill('#editor', {
 const floatingPlus = document.getElementById('floatingPlus');
 const floatingToolbar = document.getElementById('floatingToolbar');
 const imageInput = document.getElementById('imageInput');
+const writeForm = document.getElementById('writeForm');
 
 let savedRange = null;
 
@@ -122,7 +123,6 @@ floatingToolbar.addEventListener('click', function (e) {
     updateActiveStates();
 });
 
-
 function updateActiveStates() {
     const formats = quill.getFormat();
 
@@ -149,7 +149,7 @@ document.getElementById('addDivider').addEventListener('click', () => {
 
 
 /*************************************************
- * 7️⃣ IMAGE INSERT (LOCAL PREVIEW)
+ * 7️⃣ IMAGE INSERT (AJAX UPLOAD → URL)
  *************************************************/
 
 document.getElementById('addImage').addEventListener('click', () => {
@@ -160,26 +160,38 @@ imageInput.addEventListener('change', function () {
     const file = this.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
+    const formData = new FormData();
+    formData.append('file', file);
 
-    reader.onload = () => {
-        const range = savedRange || { index: quill.getLength(), length: 0 };
+    const range = savedRange || { index: quill.getLength(), length: 0 };
 
-        quill.insertEmbed(range.index, 'image', reader.result);
-        quill.insertText(range.index + 1, '\n');
-        quill.setSelection(range.index + 2, 0);
-    };
+    fetch('/Post/UploadImage', {
+        method: 'POST',
+        body: formData
+    })
+        .then(res => {
+            if (!res.ok) throw new Error('Upload failed');
+            return res.json();
+        })
+        .then(data => {
+            quill.insertEmbed(range.index, 'image', data.url);
+            quill.insertText(range.index + 1, '\n');
+            quill.setSelection(range.index + 2, 0);
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Image upload failed');
+        });
 
-    reader.readAsDataURL(file);
     this.value = '';
 });
 
 
 /*************************************************
- * 8️⃣ FORM SUBMIT
+ * 8️⃣ FORM SUBMIT → SAVE HTML
  *************************************************/
 
-document.querySelector('.write-form').addEventListener('submit', () => {
+writeForm.addEventListener('submit', () => {
     document.getElementById('content').value = quill.root.innerHTML;
 });
 
@@ -196,15 +208,20 @@ function hideToolbar() {
 function hidePlus() {
     floatingPlus.style.display = 'none';
 }
+
+
+/*************************************************
+ * 🔟 HEADER DROPDOWN (CLICK ONLY)
+ *************************************************/
+
 const dropdown = document.querySelector('.header-dropdown');
 const dropdownBtn = dropdown.querySelector('.dropdown-btn');
 
 dropdownBtn.addEventListener('click', function (e) {
-    e.stopPropagation(); // 🔥 outside click conflict avoid
+    e.stopPropagation();
     dropdown.classList.toggle('open');
 });
 
-// Click outside → close
 document.addEventListener('click', function () {
     dropdown.classList.remove('open');
 });

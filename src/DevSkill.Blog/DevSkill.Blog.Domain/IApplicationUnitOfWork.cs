@@ -12,6 +12,7 @@ namespace DevSkill.Blog.Domain
         public IBlogPostRepository BlogPostRepository { get; }
         public IContactMessageRepository ContactMessageRepository { get; }
         public IBlogAreaRepository BlogAreaRepository { get; }
+        public IPostRepository PostRepository { get; }
 
     }
 }

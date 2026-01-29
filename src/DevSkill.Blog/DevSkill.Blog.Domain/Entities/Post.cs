@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace DevSkill.Blog.Domain.Entities
 {
-    public class Post
+    public class Post : IAggregateRoot<Guid>
     {
         public Guid Id { get; set; }
 

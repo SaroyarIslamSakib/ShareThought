@@ -24,6 +24,7 @@ namespace DevSkill.Blog.Infrastructure.Extensions
         {
             service.AddScoped<IBlogAreaRepository, BlogAreaRepository>();
             service.AddScoped<IBlogPostRepository, BlogPostRepository>();
+            service.AddScoped<IPostRepository, PostRepository>();
             service.AddScoped<IContactMessageRepository, ContactMessageRepository>();
             service.AddScoped<IApplicationUnitOfWork,  ApplicationUnitOfWork>();
             service.AddSingleton<IEmailUtility, EmailUtility>();

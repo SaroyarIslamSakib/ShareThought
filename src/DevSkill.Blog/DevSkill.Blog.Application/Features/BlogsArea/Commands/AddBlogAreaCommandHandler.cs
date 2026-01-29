@@ -24,7 +24,6 @@ namespace DevSkill.Blog.Application.Features.BlogsArea.Commands
         {
             var blog = _mapper.Map<BlogArea>(command);
             blog.Id = IdentityGenerator.NewSequentialGuid();
-
             await _unitOfWork.BlogAreaRepository.AddAsync(blog);
             await _unitOfWork.SaveAsync();
             return blog;

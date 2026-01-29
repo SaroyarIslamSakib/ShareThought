@@ -1,6 +1,7 @@
 ﻿using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Domain.Repositories;
 using DevSkill.Blog.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,10 @@ namespace DevSkill.Blog.Infrastructure.Repositories
         }
         public async Task<IList<BlogArea>> GetByUserIdAsync(Guid userId)
         {
-            return await GetAsync(b => b.UserId == userId,null);
+            return await GetAsync(
+                b => b.UserId == userId,
+                q => q.Include(b => b.Posts)
+            );
         }
     }
 }

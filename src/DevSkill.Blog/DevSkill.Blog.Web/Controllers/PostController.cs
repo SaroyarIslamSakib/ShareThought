@@ -1,6 +1,9 @@
 ﻿using Cortex.Mediator;
+using DevSkill.Blog.Application.Features.BlogsArea.Queries;
+using DevSkill.Blog.Application.Features.Posts.Commands;
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Domain.Utilities;
+using DevSkill.Blog.Infrastructure.Extensions;
 using DevSkill.Blog.Infrastructure.Identity;
 using DevSkill.Blog.Web.Models;
 using MapsterMapper;
@@ -34,12 +37,50 @@ namespace DevSkill.Blog.Web.Controllers
         {
             return View();
         }
-        [HttpPost,ValidateAntiForgeryToken]
-        public IActionResult Create(CreatePostViewModel model)
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreatePostViewModel model)
         {
-            
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return Unauthorized();
 
-            return View(model);
+                var command = new AddPostCommand
+                {
+                    Title = model.Title,
+                    Content = model.Content,
+                    UserId = user.Id,
+                    CreatedAt = _serverTime.DateTime,
+                };
+                var id = await _mediator.SendCommandAsync<AddPostCommand, Guid>(command);
+
+
+
+                return View(model);
+            }
+            catch
+            {
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadImage(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest();
+
+            var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+            var path = Path.Combine("wwwroot/uploads/posts", fileName);
+
+            using var stream = new FileStream(path, FileMode.Create);
+            await file.CopyToAsync(stream);
+
+            return Json(new
+            {
+                url = "/uploads/posts/" + fileName
+            });
         }
     }
 }

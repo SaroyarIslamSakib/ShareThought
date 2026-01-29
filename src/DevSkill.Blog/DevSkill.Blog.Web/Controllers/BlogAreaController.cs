@@ -8,12 +8,14 @@ using DevSkill.Blog.Infrastructure.Extensions;
 using DevSkill.Blog.Infrastructure.Identity;
 using DevSkill.Blog.Web.Models;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace DevSkill.Blog.Web.Controllers
 {
+    [Authorize]
     public class BlogAreaController : Controller
     {
         private readonly ILogger<BlogAreaController> _logger;

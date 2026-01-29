@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\Admin\js\" />
+    <Folder Include="wwwroot\uploads\posts\" />
   </ItemGroup>
 
 </Project>
