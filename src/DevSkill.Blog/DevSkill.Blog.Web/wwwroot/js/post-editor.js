@@ -225,3 +225,23 @@ dropdownBtn.addEventListener('click', function (e) {
 document.addEventListener('click', function () {
     dropdown.classList.remove('open');
 });
+/*************************************************
+ * 🔟 Create Post Modal
+ *************************************************/
+const openPublishModalBtn = document.getElementById('openPublishModal');
+const publishModal = new bootstrap.Modal(
+    document.getElementById('publishModal')
+);
+
+const finalPublishBtn = document.getElementById('finalPublishBtn');
+const featureImageInput = document.getElementById('featureImageInput');
+
+openPublishModalBtn.addEventListener('click', () => {
+    publishModal.show();
+});
+
+finalPublishBtn.addEventListener('click', () => {
+
+    // content already set in submit handler
+    writeForm.requestSubmit();
+});

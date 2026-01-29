@@ -8,6 +8,8 @@ namespace DevSkill.Blog.Web.Models
         public string Title { get; set; }
 
         [Required]
-        public string Content { get; set; } 
+        public string Content { get; set; }
+
+        public IFormFile FeatureImage { get; set; }
     }
 }

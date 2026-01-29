@@ -50,12 +50,28 @@ namespace DevSkill.Blog.Web.Controllers
                 if (user == null)
                     return Unauthorized();
 
+                string featureImagePath = null;
+
+                if (model.FeatureImage != null)
+                {
+                    var fileName = Guid.NewGuid() + Path.GetExtension(model.FeatureImage.FileName);
+                    var path = Path.Combine("wwwroot/uploads/features", fileName);
+
+                    using var stream = new FileStream(path, FileMode.Create);
+                    await model.FeatureImage.CopyToAsync(stream);
+
+                    featureImagePath = "/uploads/features/" + fileName;
+                }
+
+
                 var command = new AddPostCommand
                 {
                     Title = model.Title,
                     Content = model.Content,
                     UserId = user.Id,
                     CreatedAt = _serverTime.DateTime,
+                    FeatureImagePath = featureImagePath,
+
                 };
                 var id = await _mediator.SendCommandAsync<AddPostCommand, Guid>(command);
 
@@ -107,6 +123,10 @@ namespace DevSkill.Blog.Web.Controllers
                     data = (from item in items
                             select new string[]
                             {
+                       HttpUtility.HtmlEncode(string.IsNullOrEmpty(item.FeatureImagePath)
+                                             ? "/uploads/features/default_feature_img.png"
+                                                : item.FeatureImagePath
+                                        ),
                         HttpUtility.HtmlEncode(item.Title),
                         HttpUtility.HtmlEncode(item.Content),
                         item.CreatedAt.ToString("dd-MM-yyyy HH:mm:ss"),

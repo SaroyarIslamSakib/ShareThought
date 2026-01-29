@@ -127,6 +127,7 @@
                                                 <table id="posts" class="table table-hover align-middle table-bordered">
                                                     <thead class="table-light text-muted small">
                                                         <tr>
+                                                            <th>Image</th>
                                                             <th>Title</th>
                                                             <th>Content</th>
                                                             <th>CreatedAt</th>
@@ -136,6 +137,7 @@
                                                     <tbody></tbody>
                                                     <tfoot class="table-light small">
                                                         <tr>
+                                                            <th>Image</th>
                                                             <th>Title</th>
                                                             <th>Content</th>
                                                             <th>CreatedAt</th>
@@ -197,7 +199,25 @@
                         return JSON.stringify(d);
                     }
                 },
-            });
+
+                                columnDefs: [{
+            orderable: false,
+            targets: 0,
+            render: function (data, type, row) {
+                if (!data) {
+                    return `<span class="text-muted">No Image</span>`;
+                }
+
+                return `
+                    <img
+                        width="50"
+                        src="${data}"
+                        alt="${row[1]}"
+                        class="img-fluid rounded"
+                    />`;
+            }
+        }]
+                    });
         });
     </script>
 

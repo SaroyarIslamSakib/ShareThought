@@ -32,6 +32,7 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                 Title = command.Title,
                 Content = command.Content,
                 CreatedAt = command.CreatedAt,
+                FeatureImagePath = command.FeatureImagePath,
                 BlogAreaId = blog.Id,
 
             };

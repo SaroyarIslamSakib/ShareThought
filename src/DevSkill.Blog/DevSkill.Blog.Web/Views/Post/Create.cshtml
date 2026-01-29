@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="~/css/post-editor.css" />
 }
 
-
+<partial name="_CreatePostModalPartial" />
 <header class="write-header">
     <div class="write-header-inner">
 
@@ -25,7 +25,7 @@
                 </div>
             </div>
 
-            <button type="submit" form="writeForm" class="header-publish">
+            <button type="button" id="openPublishModal" form="writeForm" class="header-publish">
                 Publish
             </button>
         </div>
@@ -36,7 +36,7 @@
 
 
     <div class="write-page">
-        <form asp-area="" asp-controller="Post" asp-action="Create" asp-antiforgery="true" method="post" class="write-form" id="writeForm">
+        <form asp-area="" asp-controller="Post" asp-action="Create" asp-antiforgery="true" enctype="multipart/form-data" method="post" class="write-form" id="writeForm">
 
             <!-- Title -->
             <textarea name="Title"
