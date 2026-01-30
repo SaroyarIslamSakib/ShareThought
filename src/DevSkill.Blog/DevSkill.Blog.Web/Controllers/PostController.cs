@@ -103,15 +103,20 @@ namespace DevSkill.Blog.Web.Controllers
             });
         }
         [HttpPost]
-        public JsonResult GetPostsJsonData([FromBody] PostListModel model)
+        public async Task<JsonResult> GetPostsJsonData([FromBody] PostListModel model)
         {
             try
             {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return Json(DataTables.EmptyResult);
+
                 var query = new GetPostsQuery();
                 query.SearchText = model.Search.Value;
                 query.SortOrder = model.FormatSortExpression("Title", "Content", "CreatedAt");
                 query.PageSize = model.PageSize;
                 query.PageIndex = model.PageIndex;
+                query.UserId = user.Id;
 
                 var (items, total, totalDisplay) = _mediator.SendQueryAsync<GetPostsQuery, (IList<Post>, int total, int totalDisplay)>(query).Result;
 
@@ -130,6 +135,7 @@ namespace DevSkill.Blog.Web.Controllers
                         HttpUtility.HtmlEncode(item.Title),
                         HttpUtility.HtmlEncode(item.Content),
                         item.CreatedAt.ToString("dd-MM-yyyy HH:mm:ss"),
+                        item.Likes.ToString(),
                         item.Id.ToString()
                             }).ToArray()
                 };

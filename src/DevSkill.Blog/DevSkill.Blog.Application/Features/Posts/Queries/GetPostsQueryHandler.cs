@@ -18,11 +18,19 @@ namespace DevSkill.Blog.Application.Features.Posts.Queries
         }
         public async Task<(IList<Post>, int total, int totalDisplay)> Handle(GetPostsQuery query, CancellationToken cancellationToken)
         {
+            var blog = (await _unitOfWork.BlogAreaRepository
+                .GetByUserIdAsync(query.UserId))
+                .FirstOrDefault();
+
+            if (blog == null)
+                throw new Exception("Blog not found.");
+
             return await _unitOfWork.PostRepository.GetPagedPostsAsync(
                 query.PageIndex,
                 query.PageSize,
                 query.SearchText,
-                query.SortOrder);
+                query.SortOrder,
+                blog.Id);
         }
     }
 }

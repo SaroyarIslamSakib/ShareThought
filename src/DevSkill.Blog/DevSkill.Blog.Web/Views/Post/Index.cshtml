@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
     <link rel="stylesheet" href="~/css/navbar.css" />
     <link rel="stylesheet" href="~/css/blog-sub-nav.css" />
+    <link rel="stylesheet" href="~/css/bloger-post-listview.css" />
+
 }
 
 <main>
@@ -124,26 +126,13 @@
 
                                         <div class="card-body">
                                             <div class="table-responsive">
-                                                <table id="posts" class="table table-hover align-middle table-bordered">
-                                                    <thead class="table-light text-muted small">
+                                                <table id="posts" class="table table-hover">
+                                                    <thead>
                                                         <tr>
-                                                            <th>Image</th>
-                                                            <th>Title</th>
-                                                            <th>Content</th>
-                                                            <th>CreatedAt</th>
-                                                            <th>Action</th>
+                                                            <th>Posts</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody></tbody>
-                                                    <tfoot class="table-light small">
-                                                        <tr>
-                                                            <th>Image</th>
-                                                            <th>Title</th>
-                                                            <th>Content</th>
-                                                            <th>CreatedAt</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </tfoot>
                                                 </table>
                                             </div>
                                         </div>
@@ -183,41 +172,60 @@
                $(function () {
 
             // ================= DataTable =================
-            const messagesTable = $("#posts").DataTable({
-                processing: true,
-                serverSide: true,
-                responsive: true,
-                lengthChange: true,
-                autoWidth: false,
-                ajax: {
-                    url: "/Post/GetPostsJsonData",
-                    type: "POST",
-                    contentType: "application/json",
-                    dataType: "json",
-                    data: function (d) {
-                        d.SearchItem = {};
-                        return JSON.stringify(d);
-                    }
-                },
+        const postsTable = $("#posts").DataTable({
+        processing: true,
+        serverSide: true,
+        paging: true,
+        pagingType: "simple",
+        lengthChange: false,
+        info: false,
+        ordering: false,
 
-                                columnDefs: [{
-            orderable: false,
-            targets: 0,
-            render: function (data, type, row) {
-                if (!data) {
-                    return `<span class="text-muted">No Image</span>`;
+        searching: true,
+            ajax: {
+                url: "/Post/GetPostsJsonData",
+                type: "POST",
+                contentType: "application/json",
+                data: d => JSON.stringify(d)
+            },
+            columns: [
+                {
+                    data: null,
+                    orderable: false,
+                    render: function (data, type, row) {
+
+            return `
+        <div class="post-row">
+
+            <img src="${row[0]}" alt="${row[1]}" />
+
+            <div class="flex-grow-1">
+                <h6>${row[1]}</h6>
+
+                <div class="post-meta">
+                    Published ${row[3]}
+                </div>
+
+                <div class="post-stats">
+                    <span>❤️ ${row[4]}</span>
+                </div>
+            </div>
+
+            <div class="post-actions dropdown">
+                <button data-bs-toggle="dropdown">
+                    <i class="fa fa-ellipsis"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="/Post/Edit/${row[5]}">Edit</a></li>
+                    <li><a class="dropdown-item text-danger" href="/Post/Delete/${row[5]}">Delete</a></li>
+                </ul>
+            </div>
+
+        </div>`;
+        }
                 }
-
-                return `
-                    <img
-                        width="50"
-                        src="${data}"
-                        alt="${row[1]}"
-                        class="img-fluid rounded"
-                    />`;
-            }
-        }]
-                    });
+            ]
+        });
         });
     </script>
 

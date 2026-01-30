@@ -18,5 +18,6 @@ namespace DevSkill.Blog.Domain.Entities
         public string Content { get; set; } = null!;
         public DateTime CreatedAt { get; set; } 
         public string? FeatureImagePath { get; set; }
+        public int Likes { get; set; }
     }
 }
