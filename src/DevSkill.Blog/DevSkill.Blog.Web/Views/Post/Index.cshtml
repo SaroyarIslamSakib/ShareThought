@@ -18,6 +18,10 @@
         <div class="layout-container">
             <!-- Menu -->
             <partial name="_BlogAreaSideMenuPartial" />
+            <partial name="_ResponsePartial" />
+            <partial name="_DeleteModalPartial" />
+
+
             <!-- / Menu -->
 
             <div class="layout-page">
@@ -217,7 +221,12 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><a class="dropdown-item" href="/Post/Edit/${row[5]}">Edit</a></li>
-                    <li><a class="dropdown-item text-danger" href="/Post/Delete/${row[5]}">Delete</a></li>
+                    <li>
+                    <button class="dropdown-item text-danger btn-delete-post"
+                            data-id="${row[5]}">
+                            Delete
+                    </button>
+                </li>
                 </ul>
             </div>
 
@@ -226,6 +235,44 @@
                 }
             ]
         });
+        });
+    </script>
+    <script>
+        let deletePostId = null;
+        const deleteModal = new bootstrap.Modal(
+            document.getElementById('deletePostModal')
+        );
+
+        // open modal
+            $(document).on('click', '.btn-delete-post', function () {
+            $('#deletePostIdInput').val($(this).data('id'));
+            deleteModal.show();
+        });
+
+        // confirm delete
+        $('#confirmDeletePostBtn').on('click', function () {
+
+            if (!deletePostId) return;
+
+            $.ajax({
+                url: '/Post/Delete',
+                type: 'POST',
+                data: {
+                    id: deletePostId,
+                    __RequestVerificationToken:
+                        $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function () {
+                    deleteModal.hide();
+                    deletePostId = null;
+
+                    // reload DataTable
+                    $('#posts').DataTable().ajax.reload(null, false);
+                },
+                error: function () {
+                    alert('Delete failed');
+                }
+            });
         });
     </script>
 

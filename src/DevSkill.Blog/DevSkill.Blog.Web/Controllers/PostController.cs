@@ -187,5 +187,28 @@ namespace DevSkill.Blog.Web.Controllers
                 return Json(DataTables.EmptyResult);
             }
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            await _mediator.SendCommandAsync<DeletePostCommand, Guid>(
+                new DeletePostCommand
+                {
+                    PostId = id,
+                    UserId = user.Id
+                });
+            TempData.Put("ResponseMessage", new ResponseModel
+            {
+                Message = "Post Deleted Successfully",
+                Response = ResponseTypes.success
+            });
+            return RedirectToAction("Index");
+        }
+
     }
 }
