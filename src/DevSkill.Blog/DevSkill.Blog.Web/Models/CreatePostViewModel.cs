@@ -12,6 +12,6 @@ namespace DevSkill.Blog.Web.Models
         public string Content { get; set; }
 
         public IFormFile FeatureImage { get; set; }
-        public string ExistingFeatureImagePath { get; set; }
+        public string ExistingFeatureImagePath { get; set; } = null;
     }
 }

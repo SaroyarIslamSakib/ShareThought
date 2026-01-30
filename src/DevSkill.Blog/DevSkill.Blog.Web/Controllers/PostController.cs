@@ -64,7 +64,7 @@ namespace DevSkill.Blog.Web.Controllers
                 }
 
 
-                if (model.Id == null)
+                if (model.Id == Guid.Empty)
                 {
                     // CREATE
                     await _mediator.SendCommandAsync<AddPostCommand, Guid>(new AddPostCommand
