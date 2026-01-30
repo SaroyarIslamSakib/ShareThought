@@ -9,6 +9,15 @@
             </div>
 
             <div class="modal-body">
+                @if (!string.IsNullOrEmpty(Model.ExistingFeatureImagePath))
+                {
+                    <div class="mb-3 text-center">
+                        <p class="mb-1 text-muted small">Current Feature Image</p>
+                        <img src="@Model.ExistingFeatureImagePath"
+                             class="img-fluid rounded"
+                             style="max-height: 180px;" />
+                    </div>
+                }
                 <label asp-for="FeatureImage" class="form-label">Feature Image</label>
                 <input type="file"
                        asp-for="FeatureImage"

@@ -50,7 +50,7 @@ namespace DevSkill.Blog.Web.Controllers
                 if (user == null)
                     return Unauthorized();
 
-                string featureImagePath = null;
+                string featureImagePath = model.ExistingFeatureImagePath;
 
                 if (model.FeatureImage != null)
                 {
@@ -64,25 +64,64 @@ namespace DevSkill.Blog.Web.Controllers
                 }
 
 
-                var command = new AddPostCommand
+                if (model.Id == null)
                 {
-                    Title = model.Title,
-                    Content = model.Content,
-                    UserId = user.Id,
-                    CreatedAt = _serverTime.DateTime,
-                    FeatureImagePath = featureImagePath,
+                    // CREATE
+                    await _mediator.SendCommandAsync<AddPostCommand, Guid>(new AddPostCommand
+                    {
+                        Title = model.Title,
+                        Content = model.Content,
+                        FeatureImagePath = featureImagePath,
+                        UserId = user.Id,
+                        CreatedAt = _serverTime.DateTime
+                    });
+                }
+                else
+                {
+                    // UPDATE
+                    await _mediator.SendCommandAsync<UpdatePostCommand, Post>(new UpdatePostCommand
+                    {
+                        PostId = model.Id,
+                        Title = model.Title,
+                        Content = model.Content,
+                        FeatureImagePath = featureImagePath,
+                        UserId = user.Id
+                    });
+                }
 
-                };
-                var id = await _mediator.SendCommandAsync<AddPostCommand, Guid>(command);
-
-
-
-                return View(model);
+                return RedirectToAction("Index");
             }
             catch
             {
                 return View(model);
             }
+        }
+
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            var query = new GetPostByIdQuery
+            {
+                PostId = id,
+                UserId = user.Id
+            };
+
+            var post = await _mediator.SendQueryAsync<GetPostByIdQuery, Post>(query);
+            if (post == null)
+                return NotFound();
+
+            var model = new CreatePostViewModel
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Content = post.Content,
+                ExistingFeatureImagePath = post.FeatureImagePath
+            };
+
+            return View("Create", model);
         }
 
         [HttpPost]

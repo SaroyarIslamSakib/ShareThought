@@ -30,7 +30,9 @@ const quill = new Quill('#editor', {
         toolbar: false
     }
 });
-
+if (document.getElementById('content').value) {
+    quill.root.innerHTML = document.getElementById('content').value;
+}
 
 /*************************************************
  * 3️⃣ ELEMENT REFERENCES
