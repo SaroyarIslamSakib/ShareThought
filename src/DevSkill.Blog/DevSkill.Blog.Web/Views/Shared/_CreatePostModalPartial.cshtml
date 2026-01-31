@@ -9,6 +9,19 @@
             </div>
 
             <div class="modal-body">
+                <div class="mb-3">
+                    <label asp-for="CategoryNames" class="form-label">
+                        Categories
+                    </label>
+                    <input type="text"
+                           asp-for="CategoryNames"
+                           class="form-control"
+                           placeholder="e.g. Tech, Programming, .NET"
+                           form="writeForm" />
+                    <small class="text-muted">
+                        Separate multiple categories with comma
+                    </small>
+                </div>
                 @if (Model != null && !string.IsNullOrEmpty(Model.ExistingFeatureImagePath))
                 {
                     <div class="mb-3 text-center">

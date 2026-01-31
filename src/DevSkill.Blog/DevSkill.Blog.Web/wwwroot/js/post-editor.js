@@ -227,7 +227,7 @@ dropdownBtn.addEventListener('click', function (e) {
 document.addEventListener('click', function () {
     dropdown.classList.remove('open');
 });
-/*************************************************
+/*************************************************+
  * 🔟 Create Post Modal
  *************************************************/
 const openPublishModalBtn = document.getElementById('openPublishModal');

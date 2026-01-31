@@ -19,5 +19,6 @@ namespace DevSkill.Blog.Domain.Entities
         public DateTime CreatedAt { get; set; } 
         public string? FeatureImagePath { get; set; }
         public int Likes { get; set; }
+        public ICollection<Category> PostCategories { get; set; } = new List<Category>();
     }
 }

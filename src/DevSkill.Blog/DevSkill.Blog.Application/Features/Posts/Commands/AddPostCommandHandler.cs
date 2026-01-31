@@ -26,6 +26,31 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
             if (blog == null)
                 throw new Exception("Blog not found.");
 
+            var categoryNames = command.CategoryNames?
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(x => x.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList() ?? new List<string>();
+
+            var categories = new List<Category>();
+
+            foreach (var name in categoryNames)
+            {
+                var category = await _unitOfWork.CategoryRepository.GetByNameAsync(name);
+
+                if (category == null)
+                {
+                    category = new Category
+                    {
+                        Id = IdentityGenerator.NewSequentialGuid(),
+                        Name = name
+                    };
+
+                    await _unitOfWork.CategoryRepository.AddAsync(category);
+                }
+
+                categories.Add(category);
+            }
             var post = new Post
             {
                 Id = IdentityGenerator.NewSequentialGuid(),
@@ -36,6 +61,11 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                 BlogAreaId = blog.Id,
 
             };
+            // MANY TO MANY LINK
+            foreach (var category in categories)
+            {
+                post.PostCategories.Add(category);
+            }
 
             await _unitOfWork.PostRepository.AddAsync(post);
             await _unitOfWork.SaveAsync();

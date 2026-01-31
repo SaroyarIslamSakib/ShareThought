@@ -15,5 +15,7 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
         public string Content { get; set; }
         public string FeatureImagePath { get; set; }
         public Guid UserId { get; set; }
+        public string CategoryNames { get; set; }
+
     }
 }

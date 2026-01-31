@@ -1,6 +1,7 @@
 ﻿using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Domain.Repositories;
 using DevSkill.Blog.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,16 @@ namespace DevSkill.Blog.Infrastructure.Repositories
         {
             return await GetDynamicAsync(x => x.BlogAreaId==BlogId && x.Title.Contains(searchText), sortOrder, null, pageIndex, pageSize);
 
+        }
+
+        public async Task<Post?> GetPostWithCategoriesAsync(Guid postId)
+        {
+            var posts = await GetAsync(
+                p => p.Id == postId,
+                q => q.Include(p => p.PostCategories)
+            );
+
+            return posts.FirstOrDefault();
         }
     }
 }

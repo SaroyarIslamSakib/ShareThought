@@ -17,5 +17,7 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
         public string Content { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
         public string? FeatureImagePath { get; set; }
+        public string CategoryNames { get; set; }
+
     }
 }
