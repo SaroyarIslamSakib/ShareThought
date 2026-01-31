@@ -23,11 +23,13 @@ namespace DevSkill.Blog.Infrastructure.Repositories
 
         }
 
-        public async Task<Post?> GetPostWithCategoriesAsync(Guid postId)
+        public async Task<Post?> GetPostWithCategoriesTagsAsync(Guid postId)
         {
             var posts = await GetAsync(
                 p => p.Id == postId,
-                q => q.Include(p => p.PostCategories)
+                q => q
+                    .Include(p => p.PostCategories)
+                    .Include(p => p.Tags)
             );
 
             return posts.FirstOrDefault();

@@ -75,6 +75,7 @@ namespace DevSkill.Blog.Web.Controllers
                         UserId = user.Id,
                         CreatedAt = _serverTime.DateTime,
                         CategoryNames = model.CategoryNames,
+                        TagNames = model.TagNames,
                     });
                 }
                 else
@@ -88,6 +89,7 @@ namespace DevSkill.Blog.Web.Controllers
                         FeatureImagePath = featureImagePath,
                         UserId = user.Id,
                         CategoryNames = model.CategoryNames,
+                        TagNames = model.TagNames,
 
                     });
                 }
@@ -122,7 +124,8 @@ namespace DevSkill.Blog.Web.Controllers
                 Title = post.Title,
                 Content = post.Content,
                 ExistingFeatureImagePath = post.FeatureImagePath,
-                CategoryNames = string.Join(", ", post.PostCategories.Select(c => c.Name))
+                CategoryNames = string.Join(", ", post.PostCategories.Select(c => c.Name)),
+                TagNames = string.Join(", ", post.Tags.Select(t => t.Name))
             };
 
             return View("Create", model);

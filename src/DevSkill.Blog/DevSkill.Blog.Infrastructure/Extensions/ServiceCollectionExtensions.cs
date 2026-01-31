@@ -27,6 +27,7 @@ namespace DevSkill.Blog.Infrastructure.Extensions
             service.AddScoped<IPostRepository, PostRepository>();
             service.AddScoped<IContactMessageRepository, ContactMessageRepository>();
             service.AddScoped<ICategoryRepository, CategoryRepository>();
+            service.AddScoped<ITagRepository, TagRepository>();
             service.AddScoped<IApplicationUnitOfWork,  ApplicationUnitOfWork>();
             service.AddSingleton<IEmailUtility, EmailUtility>();
             service.AddSingleton<IServerTime, ServerTime>();

@@ -32,7 +32,14 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList() ?? new List<string>();
 
+            var tagNames = command.TagNames?
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(x => x.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList() ?? new List<string>();
+
             var categories = new List<Category>();
+            var tags = new List<Tag>();
 
             foreach (var name in categoryNames)
             {
@@ -51,6 +58,25 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
 
                 categories.Add(category);
             }
+            foreach (var name in tagNames)
+            {
+                var tag = await _unitOfWork
+                    .TagRepository
+                    .GetByNameAsync(name);
+
+                if (tag == null)
+                {
+                    tag = new Tag
+                    {
+                        Id = IdentityGenerator.NewSequentialGuid(),
+                        Name = name
+                    };
+
+                    await _unitOfWork.TagRepository.AddAsync(tag);
+                }
+
+                tags.Add(tag);
+            }
             var post = new Post
             {
                 Id = IdentityGenerator.NewSequentialGuid(),
@@ -65,6 +91,10 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
             foreach (var category in categories)
             {
                 post.PostCategories.Add(category);
+            }
+            foreach (var tag in tags)
+            {
+                post.Tags.Add(tag);
             }
 
             await _unitOfWork.PostRepository.AddAsync(post);

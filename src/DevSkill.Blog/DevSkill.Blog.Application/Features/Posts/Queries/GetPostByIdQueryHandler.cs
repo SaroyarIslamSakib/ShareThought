@@ -19,7 +19,7 @@ namespace DevSkill.Blog.Application.Features.Posts.Queries
         public async Task<Post> Handle(GetPostByIdQuery query, CancellationToken cancellationToken)
         {
             //return await _unitOfWork.PostRepository.GetByIdAsync(query.PostId);
-            return await _unitOfWork.PostRepository.GetPostWithCategoriesAsync(query.PostId);
+            return await _unitOfWork.PostRepository.GetPostWithCategoriesTagsAsync(query.PostId);
         }
     }
 }

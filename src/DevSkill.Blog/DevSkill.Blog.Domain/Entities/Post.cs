@@ -20,5 +20,6 @@ namespace DevSkill.Blog.Domain.Entities
         public string? FeatureImagePath { get; set; }
         public int Likes { get; set; }
         public ICollection<Category> PostCategories { get; set; } = new List<Category>();
+        public ICollection<Tag> Tags { get; set; } = new List<Tag>();
     }
 }

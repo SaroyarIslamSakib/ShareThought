@@ -25,9 +25,9 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
             UpdatePostCommand command,
             CancellationToken cancellationToken)
         {
-            // 🔥 MUST eager load categories
+            // 🔥 MUST eager load categories & tags
             var post = await _unitOfWork.PostRepository
-                .GetPostWithCategoriesAsync(command.PostId);
+                .GetPostWithCategoriesTagsAsync(command.PostId);
 
             if (post == null)
                 throw new Exception("Post not found.");
@@ -37,7 +37,9 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
             post.Content = command.Content;
             post.FeatureImagePath = command.FeatureImagePath;
 
-            // 🔹 CATEGORY UPDATE
+            /* =========================
+               CATEGORY UPDATE
+            ==========================*/
             post.PostCategories.Clear();
 
             var categoryNames = command.CategoryNames?
@@ -65,6 +67,38 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                 }
 
                 post.PostCategories.Add(category);
+            }
+
+            /* =========================
+               TAG UPDATE
+            ==========================*/
+            post.Tags.Clear();
+
+            var tagNames = command.TagNames?
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(x => x.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList() ?? new List<string>();
+
+            foreach (var name in tagNames)
+            {
+                var tag = await _unitOfWork
+                    .TagRepository
+                    .GetByNameAsync(name);
+
+                if (tag == null)
+                {
+                    tag = new Tag
+                    {
+                        Id = IdentityGenerator.NewSequentialGuid(),
+                        Name = name
+                    };
+
+                    await _unitOfWork.TagRepository
+                        .AddAsync(tag);
+                }
+
+                post.Tags.Add(tag);
             }
 
             // ❌ DO NOT call EditAsync(post)

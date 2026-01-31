@@ -22,6 +22,20 @@
                         Separate multiple categories with comma
                     </small>
                 </div>
+                <!-- TAG INPUT -->
+                <div class="mb-3">
+                    <label asp-for="TagNames" class="form-label">
+                        Tags
+                    </label>
+                    <input type="text"
+                           asp-for="TagNames"
+                           class="form-control"
+                           placeholder="e.g. asp.net, ef core, ddd"
+                           form="writeForm" />
+                    <small class="text-muted">
+                        Separate tags with comma
+                    </small>
+                </div>
                 @if (Model != null && !string.IsNullOrEmpty(Model.ExistingFeatureImagePath))
                 {
                     <div class="mb-3 text-center">
