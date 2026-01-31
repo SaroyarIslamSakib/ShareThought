@@ -11,12 +11,11 @@ using System.Threading.Tasks;
 namespace DevSkill.Blog.Application.Features.Posts.Commands
 {
     public class UpdatePostCommandHandler
-        : ICommandHandler<UpdatePostCommand, Post>
+    : ICommandHandler<UpdatePostCommand, Post>
     {
         private readonly IApplicationUnitOfWork _unitOfWork;
 
-        public UpdatePostCommandHandler(
-            IApplicationUnitOfWork unitOfWork)
+        public UpdatePostCommandHandler(IApplicationUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -38,7 +37,7 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
             post.FeatureImagePath = command.FeatureImagePath;
 
             /* =========================
-               CATEGORY UPDATE
+               CATEGORY UPDATE (string)
             ==========================*/
             post.PostCategories.Clear();
 
@@ -46,7 +45,8 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                 .Split(',', StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => x.Trim())
                 .Distinct(StringComparer.OrdinalIgnoreCase)
-                .ToList() ?? new List<string>();
+                .ToList()
+                ?? new List<string>();
 
             foreach (var name in categoryNames)
             {
@@ -62,23 +62,23 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                         Name = name
                     };
 
-                    await _unitOfWork.CategoryRepository
-                        .AddAsync(category);
+                    await _unitOfWork.CategoryRepository.AddAsync(category);
                 }
 
                 post.PostCategories.Add(category);
             }
 
             /* =========================
-               TAG UPDATE
+               TAG UPDATE (List<string>)
             ==========================*/
             post.Tags.Clear();
 
             var tagNames = command.TagNames?
-                .Split(',', StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => x.Trim())
+                .Where(x => !string.IsNullOrWhiteSpace(x))
                 .Distinct(StringComparer.OrdinalIgnoreCase)
-                .ToList() ?? new List<string>();
+                .ToList()
+                ?? new List<string>();
 
             foreach (var name in tagNames)
             {
@@ -94,14 +94,13 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                         Name = name
                     };
 
-                    await _unitOfWork.TagRepository
-                        .AddAsync(tag);
+                    await _unitOfWork.TagRepository.AddAsync(tag);
                 }
 
                 post.Tags.Add(tag);
             }
 
-            // ❌ DO NOT call EditAsync(post)
+            // ❌ DO NOT call Update/Edit — tracked entity
             await _unitOfWork.SaveAsync();
 
             return post;

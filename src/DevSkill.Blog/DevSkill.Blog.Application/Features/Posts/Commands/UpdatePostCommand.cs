@@ -16,7 +16,7 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
         public string FeatureImagePath { get; set; }
         public Guid UserId { get; set; }
         public string CategoryNames { get; set; }
-        public string TagNames { get; set; }
+        public List<string> TagNames { get; set; } = new();
 
     }
 }

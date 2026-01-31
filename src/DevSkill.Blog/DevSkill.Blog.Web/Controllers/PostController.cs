@@ -2,6 +2,7 @@
 using DevSkill.Blog.Application.Features.BlogsArea.Queries;
 using DevSkill.Blog.Application.Features.Posts.Commands;
 using DevSkill.Blog.Application.Features.Posts.Queries;
+using DevSkill.Blog.Application.Features.Tags.Queries;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Domain.Utilities;
@@ -39,7 +40,7 @@ namespace DevSkill.Blog.Web.Controllers
         }
         public IActionResult Create()
         {
-            return View();
+            return View(new CreatePostViewModel());
         }
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreatePostViewModel model)
@@ -89,7 +90,7 @@ namespace DevSkill.Blog.Web.Controllers
                         FeatureImagePath = featureImagePath,
                         UserId = user.Id,
                         CategoryNames = model.CategoryNames,
-                        TagNames = model.TagNames,
+                        TagNames = model.TagNames
 
                     });
                 }
@@ -124,8 +125,12 @@ namespace DevSkill.Blog.Web.Controllers
                 Title = post.Title,
                 Content = post.Content,
                 ExistingFeatureImagePath = post.FeatureImagePath,
+
+                // ⚠️ Category এখনো string হলে ঠিক আছে
                 CategoryNames = string.Join(", ", post.PostCategories.Select(c => c.Name)),
-                TagNames = string.Join(", ", post.Tags.Select(t => t.Name))
+
+                // ✅ FIXED: List<string>
+                TagNames = post.Tags.Select(t => t.Name).ToList()
             };
 
             return View("Create", model);
@@ -217,5 +222,21 @@ namespace DevSkill.Blog.Web.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Search(string term)
+        {
+            var query = new GetTagsQuery
+            {
+                SearchTerm = term
+            };
+
+            var tags = await _mediator.SendQueryAsync<GetTagsQuery, IList<Tag>>(query);
+
+            return Json(tags.Select(t => new
+            {
+                id = t.Name,
+                text = t.Name
+            }));
+        }
     }
 }

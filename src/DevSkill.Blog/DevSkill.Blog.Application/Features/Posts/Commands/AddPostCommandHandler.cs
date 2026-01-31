@@ -13,10 +13,12 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
     public class AddPostCommandHandler : ICommandHandler<AddPostCommand, Guid>
     {
         private readonly IApplicationUnitOfWork _unitOfWork;
+
         public AddPostCommandHandler(IApplicationUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
+
         public async Task<Guid> Handle(AddPostCommand command, CancellationToken cancellationToken)
         {
             var blog = (await _unitOfWork.BlogAreaRepository
@@ -26,21 +28,26 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
             if (blog == null)
                 throw new Exception("Blog not found.");
 
+            // CATEGORY (still string)
             var categoryNames = command.CategoryNames?
                 .Split(',', StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => x.Trim())
                 .Distinct(StringComparer.OrdinalIgnoreCase)
-                .ToList() ?? new List<string>();
+                .ToList()
+                ?? new List<string>();
 
+            // ✅ TAGS (List<string> – FIXED)
             var tagNames = command.TagNames?
-                .Split(',', StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => x.Trim())
+                .Where(x => !string.IsNullOrWhiteSpace(x))
                 .Distinct(StringComparer.OrdinalIgnoreCase)
-                .ToList() ?? new List<string>();
+                .ToList()
+                ?? new List<string>();
 
             var categories = new List<Category>();
             var tags = new List<Tag>();
 
+            // CATEGORY CREATE / ATTACH
             foreach (var name in categoryNames)
             {
                 var category = await _unitOfWork.CategoryRepository.GetByNameAsync(name);
@@ -58,11 +65,11 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
 
                 categories.Add(category);
             }
+
+            // TAG CREATE / ATTACH
             foreach (var name in tagNames)
             {
-                var tag = await _unitOfWork
-                    .TagRepository
-                    .GetByNameAsync(name);
+                var tag = await _unitOfWork.TagRepository.GetByNameAsync(name);
 
                 if (tag == null)
                 {
@@ -77,6 +84,7 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
 
                 tags.Add(tag);
             }
+
             var post = new Post
             {
                 Id = IdentityGenerator.NewSequentialGuid(),
@@ -84,24 +92,20 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                 Content = command.Content,
                 CreatedAt = command.CreatedAt,
                 FeatureImagePath = command.FeatureImagePath,
-                BlogAreaId = blog.Id,
-
+                BlogAreaId = blog.Id
             };
-            // MANY TO MANY LINK
+
+            // MANY-TO-MANY LINK
             foreach (var category in categories)
-            {
                 post.PostCategories.Add(category);
-            }
+
             foreach (var tag in tags)
-            {
                 post.Tags.Add(tag);
-            }
 
             await _unitOfWork.PostRepository.AddAsync(post);
             await _unitOfWork.SaveAsync();
 
             return post.Id;
         }
-
     }
 }
