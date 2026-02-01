@@ -45,7 +45,22 @@ const writeForm = document.getElementById('writeForm');
 
 let savedRange = null;
 
+/*************************************************
+ * 🟢 TITLE AUTO HEIGHT (NO SCROLLBAR)
+ *************************************************/
+const titleInput = document.querySelector('.post-title');
 
+if (titleInput) {
+
+    // initial height fix (edit mode)
+    titleInput.style.height = 'auto';
+    titleInput.style.height = titleInput.scrollHeight + 'px';
+
+    titleInput.addEventListener('input', () => {
+        titleInput.style.height = 'auto';
+        titleInput.style.height = titleInput.scrollHeight + 'px';
+    });
+}
 /*************************************************
  * 4️⃣ SELECTION HANDLING (SINGLE SOURCE OF TRUTH)
  *************************************************/

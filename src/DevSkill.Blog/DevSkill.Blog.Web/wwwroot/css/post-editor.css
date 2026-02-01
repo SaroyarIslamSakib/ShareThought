@@ -115,13 +115,20 @@ body {
     font-family: Georgia, serif;
     font-size: 44px;
     font-weight: 700;
+    line-height: 1.2;
+    width: 100%; /* ✅ full width */
+    box-sizing: border-box; /* ✅ padding-safe */
+
     border: none;
     outline: none;
-    resize: none;
+    resize: none; /* ✅ no resize handle */
+    overflow: hidden; /* ✅ no scrollbar */
+
+    background: transparent;
+    padding: 0;
     color: #242424;
-    margin-bottom: 32px;
     margin-top: 0;
-    line-height: 1.2;
+    margin-bottom: 32px;
 }
 
     .post-title::placeholder {
@@ -319,3 +326,76 @@ body {
             background: rgba(255,255,255,.22);
             color: #fff;
         }
+
+
+
+
+/* ===== Publish Modal – Professional UI ===== */
+
+#publishModal .modal-content {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 24px 60px rgba(0,0,0,.18);
+}
+
+#publishModal .modal-header {
+    border-bottom: 1px solid #eee;
+    padding: 20px 24px;
+}
+
+#publishModal .modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #242424;
+}
+
+#publishModal .modal-body {
+    padding: 24px;
+}
+
+#publishModal .form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+#publishModal .form-control {
+    border-radius: 10px;
+    min-height: 44px;
+}
+
+#publishModal .modal-footer {
+    border-top: 1px solid #eee;
+    padding: 16px 24px;
+}
+
+/* Image preview as card */
+#publishModal img {
+    border-radius: 12px;
+    box-shadow: 0 10px 24px rgba(0,0,0,.12);
+}
+
+/* Primary action */
+#finalPublishBtn {
+    background: #1a8917;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+    #finalPublishBtn:hover {
+        background: #157312;
+    }
+
+/* Cancel button soft */
+#publishModal .btn-secondary {
+    background: #f3f3f3;
+    border: none;
+    color: #444;
+}
+
+    #publishModal .btn-secondary:hover {
+        background: #e9e9e9;
+    }
