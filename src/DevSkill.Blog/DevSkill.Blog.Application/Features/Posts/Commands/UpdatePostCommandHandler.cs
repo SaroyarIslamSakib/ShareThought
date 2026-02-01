@@ -21,8 +21,8 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
         }
 
         public async Task<Post> Handle(
-            UpdatePostCommand command,
-            CancellationToken cancellationToken)
+     UpdatePostCommand command,
+     CancellationToken cancellationToken)
         {
             // 🔥 MUST eager load categories & tags
             var post = await _unitOfWork.PostRepository
@@ -31,19 +31,21 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
             if (post == null)
                 throw new Exception("Post not found.");
 
-            // 🔹 Basic fields
+            /* =========================
+               BASIC FIELDS
+            ==========================*/
             post.Title = command.Title;
             post.Content = command.Content;
             post.FeatureImagePath = command.FeatureImagePath;
 
             /* =========================
-               CATEGORY UPDATE (string)
+               CATEGORY UPDATE (List<string>)
             ==========================*/
             post.PostCategories.Clear();
 
             var categoryNames = command.CategoryNames?
-                .Split(',', StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => x.Trim())
+                .Where(x => !string.IsNullOrWhiteSpace(x))
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList()
                 ?? new List<string>();

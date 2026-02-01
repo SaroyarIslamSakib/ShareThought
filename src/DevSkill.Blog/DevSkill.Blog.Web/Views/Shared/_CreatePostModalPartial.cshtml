@@ -13,11 +13,15 @@
 
                 <!-- CATEGORY -->
                 <div class="mb-3">
-                    <label asp-for="CategoryNames" class="form-label"></label>
-                    <input asp-for="CategoryNames"
-                           class="form-control"
-                           placeholder="e.g. Tech, Programming, .NET"
-                           form="writeForm" />
+                    <label class="form-label">Categories</label>
+
+                    <select id="categorySelect"
+                            name="CategoryNames"
+                            class="form-control"
+                            multiple
+                            style="width:100%"
+                            form="writeForm">
+                    </select>
                 </div>
 
                 <!-- TAGS -->

@@ -153,6 +153,50 @@
                 }
             });
 
+
+            $('#categorySelect').select2({
+            placeholder: "Type categories...",
+            multiple: true,
+            width: '100%',
+            dropdownParent: $('#publishModal'),
+            minimumInputLength: 1,
+
+            ajax: {
+                url: '/Post/SearchCategory',
+                dataType: 'json',
+                delay: 300,
+                data: function (params) {
+                    return { term: params.term };
+                },
+                processResults: function (data) {
+                    return { results: data };
+                }
+            },
+
+            tags: true,
+
+            createTag: function (params) {
+                const term = $.trim(params.term);
+                if (term === '') return null;
+
+                return {
+                    id: term,
+                    text: term,
+                    newTag: true
+                };
+            },
+
+            insertTag: function (data, tag) {
+                const exists = data.some(d =>
+                    d.text.toLowerCase() === tag.text.toLowerCase()
+                );
+
+                if (!exists) {
+                    data.push(tag);
+                }
+            }
+        });
+
             /*****************************************
              * EDIT MODE → PRELOAD EXISTING TAGS
              *****************************************/
@@ -174,5 +218,17 @@
                 $('#writeForm').submit();
             });
         });
+
+
+
+                const existingCategories = @Html.Raw(
+                System.Text.Json.JsonSerializer.Serialize(Model.CategoryNames ?? new List<string>())
+        );
+
+    existingCategories.forEach(cat => {
+        const option = new Option(cat, cat, true, true);
+        $('#categorySelect').append(option);
+    });
+    $('#categorySelect').trigger('change');
     </script>
 }

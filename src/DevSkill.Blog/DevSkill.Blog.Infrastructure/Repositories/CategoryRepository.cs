@@ -21,5 +21,18 @@ namespace DevSkill.Blog.Infrastructure.Repositories
         {
             return GetAsync(c => c.Name == name, null).Result.FirstOrDefault();
         }
+
+        public async Task<IList<Category>> SearchByNameAsync(string searchTerm)
+        {
+            var (data, _, _) = await GetAsync(
+                filter: t => t.Name.Contains(searchTerm),
+                orderBy: q => q.OrderBy(t => t.Name),
+                pageIndex: 1,
+                pageSize: 10,
+                isTrackingOff: true
+            );
+
+            return data;
+        }
     }
 }

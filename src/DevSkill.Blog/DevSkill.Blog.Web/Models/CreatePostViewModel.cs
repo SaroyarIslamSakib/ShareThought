@@ -13,7 +13,7 @@ namespace DevSkill.Blog.Web.Models
 
         public IFormFile FeatureImage { get; set; }
         public string ExistingFeatureImagePath { get; set; } = null;
-        public string CategoryNames { get; set; }
+        public List<string> CategoryNames { get; set; } = new();
         public List<string> TagNames { get; set; } = new();
     }
 }

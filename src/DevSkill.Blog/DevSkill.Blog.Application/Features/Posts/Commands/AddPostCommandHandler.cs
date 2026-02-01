@@ -28,15 +28,19 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
             if (blog == null)
                 throw new Exception("Blog not found.");
 
-            // CATEGORY (still string)
+            /* =========================
+               CATEGORY (List<string>)
+            ==========================*/
             var categoryNames = command.CategoryNames?
-                .Split(',', StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => x.Trim())
+                .Where(x => !string.IsNullOrWhiteSpace(x))
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList()
                 ?? new List<string>();
 
-            // ✅ TAGS (List<string> – FIXED)
+            /* =========================
+               TAG (List<string>)
+            ==========================*/
             var tagNames = command.TagNames?
                 .Select(x => x.Trim())
                 .Where(x => !string.IsNullOrWhiteSpace(x))
@@ -47,10 +51,14 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
             var categories = new List<Category>();
             var tags = new List<Tag>();
 
-            // CATEGORY CREATE / ATTACH
+            /* =========================
+               CATEGORY CREATE / ATTACH
+            ==========================*/
             foreach (var name in categoryNames)
             {
-                var category = await _unitOfWork.CategoryRepository.GetByNameAsync(name);
+                var category = await _unitOfWork
+                    .CategoryRepository
+                    .GetByNameAsync(name);
 
                 if (category == null)
                 {
@@ -66,10 +74,14 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                 categories.Add(category);
             }
 
-            // TAG CREATE / ATTACH
+            /* =========================
+               TAG CREATE / ATTACH
+            ==========================*/
             foreach (var name in tagNames)
             {
-                var tag = await _unitOfWork.TagRepository.GetByNameAsync(name);
+                var tag = await _unitOfWork
+                    .TagRepository
+                    .GetByNameAsync(name);
 
                 if (tag == null)
                 {
@@ -95,7 +107,9 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                 BlogAreaId = blog.Id
             };
 
-            // MANY-TO-MANY LINK
+            /* =========================
+               MANY-TO-MANY LINK
+            ==========================*/
             foreach (var category in categories)
                 post.PostCategories.Add(category);
 
@@ -107,5 +121,6 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
 
             return post.Id;
         }
+
     }
 }

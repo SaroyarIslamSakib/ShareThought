@@ -10,5 +10,6 @@ namespace DevSkill.Blog.Domain.Repositories
     public interface ICategoryRepository : IRepository<Category, Guid>
     {
         Task<Category> GetByNameAsync(string name);
+        Task<IList<Category>> SearchByNameAsync(string searchTerm);
     }
 }

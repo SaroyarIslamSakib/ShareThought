@@ -1,5 +1,6 @@
 ﻿using Cortex.Mediator;
 using DevSkill.Blog.Application.Features.BlogsArea.Queries;
+using DevSkill.Blog.Application.Features.Categories.Queries;
 using DevSkill.Blog.Application.Features.Posts.Commands;
 using DevSkill.Blog.Application.Features.Posts.Queries;
 using DevSkill.Blog.Application.Features.Tags.Queries;
@@ -126,11 +127,13 @@ namespace DevSkill.Blog.Web.Controllers
                 Content = post.Content,
                 ExistingFeatureImagePath = post.FeatureImagePath,
 
-                // ⚠️ Category এখনো string হলে ঠিক আছে
-                CategoryNames = string.Join(", ", post.PostCategories.Select(c => c.Name)),
+                CategoryNames = post.PostCategories
+                        .Select(c => c.Name)
+                        .ToList(),
 
-                // ✅ FIXED: List<string>
-                TagNames = post.Tags.Select(t => t.Name).ToList()
+                TagNames = post.Tags
+                   .Select(t => t.Name)
+                   .ToList()
             };
 
             return View("Create", model);
@@ -236,6 +239,24 @@ namespace DevSkill.Blog.Web.Controllers
             {
                 id = t.Name,
                 text = t.Name
+            }));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SearchCategory(string term)
+        {
+            var query = new GetCategoriesQuery
+            {
+                SearchTerm = term
+            };
+
+            var categories = await _mediator
+                .SendQueryAsync<GetCategoriesQuery, IList<Category>>(query);
+
+            return Json(categories.Select(c => new
+            {
+                id = c.Name,
+                text = c.Name
             }));
         }
     }
