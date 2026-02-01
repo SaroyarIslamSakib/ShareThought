@@ -23,7 +23,7 @@
                     Cancel
                 </button>
 
-                <form asp-action="Delete" asp-controller="Post" method="post">
+                <form asp-action="Delete" asp-controller="Post" asp-area="Blogger" method="post">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" id="deletePostIdInput" />
 

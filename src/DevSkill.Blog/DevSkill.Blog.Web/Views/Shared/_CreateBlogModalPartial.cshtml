@@ -1,4 +1,5 @@
-﻿@model CreateBlogAreaModel
+﻿@using DevSkill.Blog.Web.Areas.Blogger.Models
+@model CreateBlogAreaModel
 
 <div class="modal fade" id="createBlogModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
@@ -9,7 +10,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
-            <form asp-action="Create" asp-controller="BlogArea" asp-antiforgery="true" method="post">
+            <form asp-area="Blogger" asp-action="Create" asp-controller="Blog" asp-antiforgery="true" method="post">
                 <div class="modal-body">
 
                     <div class="mb-3">

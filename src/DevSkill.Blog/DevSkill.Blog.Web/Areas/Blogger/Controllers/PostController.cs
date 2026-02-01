@@ -1,5 +1,4 @@
 ﻿using Cortex.Mediator;
-using DevSkill.Blog.Application.Features.BlogsArea.Queries;
 using DevSkill.Blog.Application.Features.Categories.Queries;
 using DevSkill.Blog.Application.Features.Posts.Commands;
 using DevSkill.Blog.Application.Features.Posts.Queries;
@@ -9,16 +8,17 @@ using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Domain.Utilities;
 using DevSkill.Blog.Infrastructure.Extensions;
 using DevSkill.Blog.Infrastructure.Identity;
+using DevSkill.Blog.Web.Areas.Blogger.Models;
 using DevSkill.Blog.Web.Models;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Build.Tasks.Deployment.Bootstrapper;
-using Microsoft.EntityFrameworkCore;
 using System.Web;
 
-namespace DevSkill.Blog.Web.Controllers
+namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
 {
+    [Area("Blogger"), Authorize]
     public class PostController : Controller
     {
         private readonly ILogger<PostController> _logger;

@@ -1,11 +1,11 @@
 ﻿using Cortex.Mediator;
 using DevSkill.Blog.Application.Features.BlogsArea.Commands;
 using DevSkill.Blog.Application.Features.BlogsArea.Queries;
-using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Domain.Utilities;
 using DevSkill.Blog.Infrastructure.Extensions;
 using DevSkill.Blog.Infrastructure.Identity;
+using DevSkill.Blog.Web.Areas.Blogger.Models;
 using DevSkill.Blog.Web.Models;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -13,18 +13,18 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace DevSkill.Blog.Web.Controllers
+namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
 {
-    [Authorize]
-    public class BlogAreaController : Controller
+    [Area("Blogger"),Authorize]
+    public class BlogController : Controller
     {
-        private readonly ILogger<BlogAreaController> _logger;
+        private readonly ILogger<BlogController> _logger;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         private readonly IServerTime _serverTime;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public BlogAreaController(ILogger<BlogAreaController> logger, IMediator mediator, IMapper mapper, IServerTime serverTime, UserManager<ApplicationUser> userManager)
+        public BlogController(ILogger<BlogController> logger, IMediator mediator, IMapper mapper, IServerTime serverTime, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             _mediator = mediator;

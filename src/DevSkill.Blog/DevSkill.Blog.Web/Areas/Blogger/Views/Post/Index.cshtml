@@ -47,7 +47,7 @@
 
                             <!-- Write Button -->
                             <li class="nav-item">
-                                <a asp-area="" asp-controller="Post" asp-action="Create"
+                                <a asp-area="Blogger" asp-controller="Post" asp-action="Create"
                                    class="d-flex align-items-center gap-2 px-3 py-2 write-btn text-decoration-none">
 
                                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -187,7 +187,7 @@
 
         searching: true,
             ajax: {
-                url: "/Post/GetPostsJsonData",
+                url: "/Blogger/Post/GetPostsJsonData",
                 type: "POST",
                 contentType: "application/json",
                 data: d => JSON.stringify(d)
@@ -220,7 +220,7 @@
                     <i class="fa fa-ellipsis"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="/Post/Edit/${row[5]}">Edit</a></li>
+                    <li><a class="dropdown-item" href="/Blogger/Post/Edit/${row[5]}">Edit</a></li>
                     <li>
                     <button class="dropdown-item text-danger btn-delete-post"
                             data-id="${row[5]}">
@@ -255,7 +255,7 @@
             if (!deletePostId) return;
 
             $.ajax({
-                url: '/Post/Delete',
+                url: '/Blogger/Post/Delete',
                 type: 'POST',
                 data: {
                     id: deletePostId,

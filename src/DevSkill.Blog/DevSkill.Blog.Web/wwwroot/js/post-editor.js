@@ -182,7 +182,7 @@ imageInput.addEventListener('change', function () {
 
     const range = savedRange || { index: quill.getLength(), length: 0 };
 
-    fetch('/Post/UploadImage', {
+    fetch('/Blogger/Post/UploadImage', {
         method: 'POST',
         body: formData
     })
