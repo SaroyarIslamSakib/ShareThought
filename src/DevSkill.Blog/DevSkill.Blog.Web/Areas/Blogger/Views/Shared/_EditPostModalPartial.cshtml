@@ -1,4 +1,4 @@
-﻿@model CreatePostViewModel
+﻿@model EditPostViewModel
 
 <div class="modal fade" id="publishModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -6,9 +6,7 @@
 
             <div class="modal-header">
                 <h5 class="modal-title">Publish Post</h5>
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
@@ -16,6 +14,7 @@
                 <!-- CATEGORY -->
                 <div class="mb-3">
                     <label class="form-label">Categories</label>
+
                     <select id="categorySelect"
                             name="CategoryNames"
                             class="form-control"
@@ -28,6 +27,7 @@
                 <!-- TAGS -->
                 <div class="mb-3">
                     <label class="form-label">Tags</label>
+
                     <select id="tagSelect"
                             name="TagNames"
                             class="form-control"
@@ -37,7 +37,16 @@
                     </select>
                 </div>
 
-                <!-- FEATURE IMAGE (PUBLISH TIME ONLY) -->
+                <!-- FEATURE IMAGE (NULL SAFE) -->
+                @if (Model != null && !string.IsNullOrEmpty(Model.ExistingFeatureImagePath))
+                {
+                    <div class="mb-3 text-center">
+                        <img src="@Model.ExistingFeatureImagePath"
+                             class="img-fluid rounded"
+                             style="max-height:180px" />
+                    </div>
+                }
+
                 <div class="mb-3">
                     <label asp-for="FeatureImage" class="form-label"></label>
                     <input asp-for="FeatureImage"
@@ -50,16 +59,10 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     Cancel
                 </button>
-
-                <!-- ✅ REAL PUBLISH -->
-                <button type="submit"
-                        class="btn btn-primary"
-                        form="writeForm">
+                <button type="button" id="finalPublishBtn" class="btn btn-primary">
                     Publish Now
                 </button>
             </div>
