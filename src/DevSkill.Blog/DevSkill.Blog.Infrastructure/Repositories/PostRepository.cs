@@ -17,9 +17,14 @@ namespace DevSkill.Blog.Infrastructure.Repositories
 
         }
 
+        public async Task<(IList<Post>, int total, int totalDisplay)> GetPagedDraftPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder, Guid BlogId)
+        {
+            return await GetDynamicAsync(x => x.BlogAreaId == BlogId && x.Title.Contains(searchText) && x.IsPublished == false, sortOrder, null, pageIndex, pageSize);
+        }
+
         public async Task<(IList<Post>, int total, int totalDisplay)> GetPagedPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder, Guid BlogId)
         {
-            return await GetDynamicAsync(x => x.BlogAreaId==BlogId && x.Title.Contains(searchText), sortOrder, null, pageIndex, pageSize);
+            return await GetDynamicAsync(x => x.BlogAreaId==BlogId && x.Title.Contains(searchText) && x.IsPublished == true, sortOrder, null, pageIndex, pageSize);
 
         }
 

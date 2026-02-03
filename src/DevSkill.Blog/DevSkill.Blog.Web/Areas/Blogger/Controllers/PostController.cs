@@ -36,13 +36,20 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
         }
 
         /* =========================
-           INDEX
+           Published Posts List
         ==========================*/
-        public IActionResult Index()
+        public IActionResult PublishedPostList()
         {
             return View();
         }
 
+        /* =========================
+           Draft Posts List
+        ==========================*/
+        public IActionResult DraftPostList()
+        {
+            return View();
+        }
         /* =========================
            CREATE (OPEN EDITOR)
         ==========================*/
@@ -262,10 +269,10 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
         }
 
         /* =========================
-           DATATABLE
+           Published Post - DATATABLE
         ==========================*/
         [HttpPost]
-        public async Task<JsonResult> GetPostsJsonData([FromBody] PostListModel model)
+        public async Task<JsonResult> GetPublishedPostsJsonData([FromBody] PostListModel model)
         {
             try
             {
@@ -273,7 +280,7 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
                 if (user == null)
                     return Json(DataTables.EmptyResult);
 
-                var query = new GetPostsQuery
+                var query = new GetPublishedPostQuery
                 {
                     SearchText = model.Search.Value,
                     SortOrder = model.FormatSortExpression("Title", "Content", "CreatedAt"),
@@ -284,7 +291,7 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
 
                 var (items, total, totalDisplay) =
                     await _mediator.SendQueryAsync<
-                        GetPostsQuery,
+                        GetPublishedPostQuery,
                         (IList<Post>, int, int)>(query);
 
                 return Json(new
@@ -311,6 +318,61 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
                 return Json(DataTables.EmptyResult);
             }
         }
+
+
+        /* =========================
+           Draft Post - DATATABLE
+        ==========================*/
+        [HttpPost]
+        public async Task<JsonResult> GetDraftPostsJsonData([FromBody] PostListModel model)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return Json(DataTables.EmptyResult);
+
+                var query = new GetDraftPostQuery
+                {
+                    SearchText = model.Search.Value,
+                    SortOrder = model.FormatSortExpression("Title", "Content", "CreatedAt"),
+                    PageSize = model.PageSize,
+                    PageIndex = model.PageIndex,
+                    UserId = user.Id
+                };
+
+                var (items, total, totalDisplay) =
+                    await _mediator.SendQueryAsync<
+                        GetDraftPostQuery,
+                        (IList<Post>, int, int)>(query);
+
+                return Json(new
+                {
+                    recordsTotal = total,
+                    recordsFiltered = totalDisplay,
+                    data = items.Select(p => new[]
+                    {
+                        HttpUtility.HtmlEncode(
+                            string.IsNullOrEmpty(p.FeatureImagePath)
+                                ? "/uploads/features/default_feature_img.png"
+                                : p.FeatureImagePath),
+                        HttpUtility.HtmlEncode(p.Title),
+                        HttpUtility.HtmlEncode(p.Content),
+                        p.CreatedAt.ToString("dd-MM-yyyy HH:mm:ss"),
+                        p.Likes.ToString(),
+                        p.Id.ToString()
+                    }).ToArray()
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetPostsJsonData");
+                return Json(DataTables.EmptyResult);
+            }
+        }
+
+
+
 
         /* =========================
            DELETE

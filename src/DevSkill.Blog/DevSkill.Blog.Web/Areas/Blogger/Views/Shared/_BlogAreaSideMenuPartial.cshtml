@@ -11,13 +11,22 @@
                 <div data-i18n="Analytics">Dashboard</div>
             </a>
         </li>
-        <!-- Posts -->
+        <!-- Published Posts -->
         <li class="menu-item">
-            <a asp-area="Blogger" asp-controller="Post" asp-action="Index" class="menu-link">
+            <a asp-area="Blogger" asp-controller="Post" asp-action="PublishedPostList" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-news"></i>
-                <div data-i18n="Analytics">Posts</div>
+                <div data-i18n="Analytics">Published</div>
             </a>
         </li>
+
+        <!-- Draft Posts -->
+        <li class="menu-item">
+            <a asp-area="Blogger" asp-controller="Post" asp-action="DraftPostList" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-news"></i>
+                <div data-i18n="Analytics">Draft</div>
+            </a>
+        </li>
+
 
     </ul>
 </aside>

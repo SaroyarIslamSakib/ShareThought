@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DevSkill.Blog.Application.Features.Posts.Queries
 {
-    public class GetPostsQuery : IQuery<(IList<Post>, int total, int totalDisplay)>
+    public class GetPublishedPostQuery : IQuery<(IList<Post>, int total, int totalDisplay)>
     {
         public Guid UserId { get; set; }
         public int PageIndex { get; set; }
