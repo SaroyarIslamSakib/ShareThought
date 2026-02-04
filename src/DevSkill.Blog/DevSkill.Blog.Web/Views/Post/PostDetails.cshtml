@@ -2,6 +2,7 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/navbar.css" />
     <link rel="stylesheet" href="~/css/post-details.css" />
+    <link rel="stylesheet" href="~/comment/css/jquery-comments.css">
 }
 
 <partial name="_ResponsePartial" />
@@ -63,6 +64,7 @@
             <!-- Content -->
             <div class="post-content">
                 @Html.Raw(Model.Content)
+            <div id="comments-container"></div>
             </div>
 
         </article>
@@ -73,6 +75,7 @@
 @section Scripts {
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/comment/js/jquery-comments.js"></script>
 
     <script>
         const clapBtn = document.getElementById("clapBtn");
@@ -96,6 +99,31 @@
 
             clapBtn.classList.add("active");
             clapCount.innerText = data.likes;
+        });
+    </script>
+    <script>
+        //==============> Comment <===============
+        $('#comments-container').comments({
+            textareaPlaceholderText: 'Write your response',
+            newestText: 'Latest',
+            oldestText: 'Old',
+            //Refresh comments
+            refresh: function() {
+                $('#comments-container').addClass('rendered');
+            },
+
+
+            getComments: function(success, error) {
+                var commentsArray = [{
+                    id: 1,
+                    created: '2015-10-01',
+                    content: 'Lorem ipsum dolort sit amet',
+                    fullname: 'Simon Powell',
+                    upvote_count: 2,
+                    user_has_upvoted: false
+                }];
+                success(commentsArray);
+            }
         });
     </script>
 }
