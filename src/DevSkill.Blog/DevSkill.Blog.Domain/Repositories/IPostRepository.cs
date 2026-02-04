@@ -12,7 +12,7 @@ namespace DevSkill.Blog.Domain.Repositories
     {
         Task<(IList<Post>, int total, int totalDisplay)> GetPagedDraftPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder, Guid id);
         Task<(IList<Post>, int total, int totalDisplay)> GetPagedPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder, Guid BlogId);
-        Task<(IList<Post>, int total, int totalDisplay)> GetPagedPublicPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder);
+        Task<(IList<Post>, int total, int totalDisplay)> GetPagedPublicPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder,string? categoryName);
         Task<Post> GetPostWithCategoriesTagsAsync(Guid postId);
     }
 }

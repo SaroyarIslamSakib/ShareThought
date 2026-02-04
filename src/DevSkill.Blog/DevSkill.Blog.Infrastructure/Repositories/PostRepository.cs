@@ -28,9 +28,16 @@ namespace DevSkill.Blog.Infrastructure.Repositories
 
         }
 
-        public async Task<(IList<Post>, int total, int totalDisplay)> GetPagedPublicPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder)
+        public async Task<(IList<Post>, int total, int totalDisplay)> GetPagedPublicPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder, string? categoryName)
         {
-            return await GetDynamicAsync(x => x.Title.Contains(searchText) && x.IsPublished == true, sortOrder, null, pageIndex, pageSize);
+           if(categoryName == string.Empty)
+            {
+                return await GetDynamicAsync(x => x.Title.Contains(searchText) && x.IsPublished == true, sortOrder, null, pageIndex, pageSize);
+            }
+           else
+            {
+                return await GetDynamicAsync(x => x.Title.Contains(searchText) && x.IsPublished == true && x.PostCategories.Any(c => c.Name == categoryName), sortOrder, null, pageIndex, pageSize);
+            }
         }
 
         public async Task<Post?> GetPostWithCategoriesTagsAsync(Guid postId)

@@ -23,7 +23,8 @@ namespace DevSkill.Blog.Application.Features.Posts.Queries
                 query.PageIndex,
                 query.PageSize,
                 query.SearchText,
-                query.SortOrder);
+                query.SortOrder,
+                query.CategoryName);
         }
     }
 }

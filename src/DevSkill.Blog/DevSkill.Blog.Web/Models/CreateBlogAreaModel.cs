@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DevSkill.Blog.Web.Areas.Blogger.Models
+namespace DevSkill.Blog.Web.Models
 {
     public class CreateBlogAreaModel
     {

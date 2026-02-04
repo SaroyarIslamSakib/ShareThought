@@ -14,5 +14,6 @@ namespace DevSkill.Blog.Application.Features.Posts.Queries
         public int PageSize { get; set; }
         public string? SearchText { get; set; }
         public string? SortOrder { get; set; }
+        public string? CategoryName { get; set; }
     }
 }

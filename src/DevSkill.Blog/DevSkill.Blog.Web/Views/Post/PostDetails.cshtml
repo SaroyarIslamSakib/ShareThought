@@ -1,0 +1,40 @@
+﻿@model PublicPostViewModel
+@section Styles {
+    <link rel="stylesheet" href="~/css/navbar.css" />
+    <link rel="stylesheet" href="~/css/post-details.css" />
+}
+
+<partial name="_ResponsePartial" />
+
+<main class="bg-white py-5">
+
+        <!-- Post Card -->
+        <article class="bg-white rounded-4 shadow-sm px-4 px-md-5 py-5 mx-auto post-article">
+
+            <!-- Title -->
+            <h1 class="fw-bold mb-3 text-dark">
+                @Model.Title
+            </h1>
+
+            <!-- Meta -->
+            <div class="text-muted small mb-4 d-flex flex-wrap gap-2">
+                <span>@string.Join(", ", Model.CategoryNames)</span>
+                <span>•</span>
+                <span>@string.Join(", ", Model.TagNames)</span>
+            </div>
+
+            <!-- Content -->
+            <div class="post-content">
+                @Html.Raw(Model.Content)
+            </div>
+
+        </article>
+
+</main>
+<script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
+
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+}
+

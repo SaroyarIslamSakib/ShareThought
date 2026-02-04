@@ -1,9 +1,10 @@
 ﻿using Cortex.Mediator;
 using DevSkill.Blog.Application.Features.Posts.Queries;
 using DevSkill.Blog.Domain;
+using DevSkill.Blog.Web.Models;
+
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Infrastructure.Identity;
-using DevSkill.Blog.Web.Areas.Blogger.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
@@ -30,12 +31,37 @@ namespace DevSkill.Blog.Web.Controllers
             return View();
         }
 
+        public async Task<IActionResult> PostDetails(Guid id)
+        {
+            try
+            {
+                var query = new GetPostByIdQuery()
+                {
+                    PostId = id
+                };
+                var post = await _mediator.SendQueryAsync<GetPostByIdQuery, Post>(query);
+                PublicPostViewModel model = new PublicPostViewModel()
+                {
+                    Title = post.Title,
+                    Content = post.Content,
+                    CategoryNames = post.PostCategories.Select(pc => pc.Name).ToList(),
+                    TagNames = post.Tags.Select(t => t.Name).ToList()
+                };
+                return View(model); 
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return RedirectToAction("Index", "Post");
+            }
+        }
+
 
         /* =========================
           Public Post - DATATABLE
        ==========================*/
         [HttpPost]
-        public async Task<JsonResult> GetPublicPostsJsonData([FromBody] PostListModel model)
+        public async Task<JsonResult> GetPublicPostsJsonData([FromBody] PublicPostListModel model)
         {
             try
             {
@@ -44,7 +70,8 @@ namespace DevSkill.Blog.Web.Controllers
                     SearchText = model.Search.Value,
                     SortOrder = model.FormatSortExpression("Title", "Content", "CreatedAt"),
                     PageSize = model.PageSize,
-                    PageIndex = model.PageIndex
+                    PageIndex = model.PageIndex,
+                    CategoryName = model.CategoryName
                 };
 
                 var (items, total, totalDisplay) =
@@ -64,7 +91,7 @@ namespace DevSkill.Blog.Web.Controllers
                                 : p.FeatureImagePath),
                         HttpUtility.HtmlEncode(p.Title),
                         HttpUtility.HtmlEncode(p.Content),
-                        p.CreatedAt.ToString("dd-MM-yyyy HH:mm:ss"),
+                        p.CreatedAt.ToString("dd-MM-yyyy"),
                         p.Likes.ToString(),
                         p.Id.ToString()
                     }).ToArray()
