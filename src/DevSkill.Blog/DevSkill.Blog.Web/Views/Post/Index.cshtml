@@ -1,0 +1,312 @@
+﻿@using DevSkill.Blog.Web.Areas.Blogger.Models
+@model RegisterModel
+@{
+    ViewData["Title"] = "Posts";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/public-post-list.css" />
+    <link rel="stylesheet" href="~/css/navbar.css" />
+    <link rel="stylesheet" href="~/css/choice-section.css" />
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
+    <link rel="stylesheet" href="~/css/public-post-list-item.css" />
+}
+<partial name="_LoginModalPartial" />
+<partial name="_RegisterModalPartial" model="Model" />
+<partial name="_ResponsePartial" />
+<partial name="_CreateBlogModalPartial" model="new CreateBlogAreaModel()" />
+
+<main>
+    <div class="landing-body">
+        <section class="hero">
+
+            <!-- MAIN CONTENT -->
+            <div class="container text-center">
+                <h6>Blogs</h6>
+                <h3 class="choice-title mb-4">What do you want to read?</h3>
+                <div class="search-center">
+                    <div class="search-box search-wrapper mb-4">
+                        <input type="text" class="search-input" id="searchInput" placeholder="">
+                    </div>
+                </div>
+            </div>
+            <!-- Dark section -->
+            <section class="category-section">
+                <div class="container">
+                    <div class="category-list">
+                        <button class="category-item active">All</button>
+                        <button class="category-item">AI Publishing</button>
+                        <button class="category-item">Copyrights</button>
+                        <button class="category-item">Design</button>
+                        <button class="category-item">Distributing</button>
+                        <button class="category-item">Marketing</button>
+                        <button class="category-item">Self-Publishing</button>
+                        <button class="category-item">Spines</button>
+                        <button class="category-item">Writing</button>
+                    </div>
+                </div>
+            </section>
+
+        </section>
+        <!-- ================= DataTable Section ================= -->
+        <div class="container">
+
+            <table id="posts">
+                <thead>
+                    <tr>
+                        <th>Posts</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+
+
+
+        <!--begin: Choice section-->
+        <section class="choice-section py-5">
+            <div class="container text-center">
+                <h3 class="choice-title mb-5">How can we help you?</h3>
+
+                <div class="row g-4">
+                    <!-- Card 1 -->
+                    <div class="col-md-4">
+                        <div class="choice-card">
+                            <div class="icon-circle">
+                                <i class="bi bi-person"></i>
+                            </div>
+                            <h5>Join our team</h5>
+                            <p>
+                                Explore opportunities to join us and boost your career
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="col-md-4">
+                        <div class="choice-card">
+                            <div class="icon-circle">
+                                <i class="bi bi-box-seam"></i>
+                            </div>
+                            <h5>Join as a supplier</h5>
+                            <p>
+                                Enquire about working with us as a supplier and discover our range of services
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="col-md-4">
+                        <div class="choice-card">
+                            <div class="icon-circle">
+                                <i class="bi bi-cart"></i>
+                            </div>
+                            <h5>Join as a customer</h5>
+                            <p>
+                                Enquire about becoming a customer to access market-leading support
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--end: Choice section-->
+
+        <div class="add-section">
+        </div>
+    </div>
+</main>
+<script>
+    const text = "Learn HTML, CSS, Javascript, C#, Aspnet, Clean Architechture";
+    const input = document.getElementById("searchInput");
+
+    let index = 0;
+
+    function typeText() {
+        if (index <= text.length) {
+            input.setAttribute("placeholder", text.substring(0, index));
+            index++;
+        } else {
+            index = 0;
+        }
+    }
+    setInterval(typeText, 150);
+</script>
+<script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
+
+<script>
+    const isUserLoggedIn = @(User.Identity.IsAuthenticated.ToString().ToLower());
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const loginModalEl = document.getElementById("loginModal");
+        const registerModalEl = document.getElementById("registerModal");
+        const createBlogModalEl = document.getElementById("createBlogModal");
+
+        const loginModal = new bootstrap.Modal(loginModalEl);
+        const registerModal = new bootstrap.Modal(registerModalEl);
+        const createBlogModal = new bootstrap.Modal(createBlogModalEl);
+
+        // Login → Register
+        document.getElementById("openRegisterFromLogin")
+            .addEventListener("click", function () {
+                loginModal.hide();
+                setTimeout(() => {
+                    registerModal.show();
+                    $.validator.unobtrusive.parse($(this).find('form'));
+                }, 300);
+            });
+
+        // Register → Login
+        document.getElementById("openLoginFromRegister")
+            .addEventListener("click", function () {
+                registerModal.hide();
+                setTimeout(() => {
+                    loginModal.show();
+                    $.validator.unobtrusive.parse($(this).find('form'));
+                }, 300);
+            });
+
+        // Create Blog Button Logic
+        document.getElementById("openCreateBlog")
+            .addEventListener("click", function () {
+
+                if (!isUserLoggedIn) {
+                    // User NOT logged in → open login modal
+                    loginModal.show();
+                } else {
+                    // User logged in → open create blog modal
+                    createBlogModal.show();
+                }
+            });
+    });
+</script>
+
+
+<!--begin: When Unauthorize then automatic open modal-->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const loginModalElement = document.getElementById("loginModal");
+
+        if (!loginModalElement) return;
+
+        const loginModal = new bootstrap.Modal(loginModalElement);
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if (urlParams.get("loginRequired") === "true") {
+            loginModal.show();
+        }
+    });
+</script>
+
+<script>
+    document.querySelectorAll(".category-item").forEach(item => {
+        item.addEventListener("click", () => {
+            document.querySelectorAll(".category-item")
+                .forEach(i => i.classList.remove("active"));
+            item.classList.add("active");
+        });
+    });
+</script>
+@section Scripts {
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
+
+    <!-- Client Side Validation -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(function () {
+
+            // ================= DataTable =================
+            const postsTable = $("#posts").DataTable({
+                processing: true,
+                serverSide: true,
+                paging: true,
+                pagingType: "simple",
+                lengthChange: false,
+                info: false,
+                ordering: false,
+                searching: false, // default search off
+
+                ajax: {
+                    url: "/Post/GetPublicPostsJsonData",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: function (d) {
+
+                        // 🔑 IMPORTANT: full search object set
+                        d.search = {
+                            value: $("#searchInput").val(),
+                            regex: false
+                        };
+
+                        return JSON.stringify(d);
+                    }
+                },
+
+                columns: [
+                    {
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            return `
+                            <div class="post-card">
+
+                                <div class="post-thumb">
+                                    <img src="${row[0]}" alt="${row[1]}" />
+                                </div>
+
+                                <div class="post-content">
+                                    <h5 class="post-title">${row[1]}</h5>
+
+                                    <div class="post-meta">
+                                        <span><i class="fa-solid fa-calendar-days"></i> ${row[3]}</span>
+                                        <span><i class="fa-solid fa-heart"></i> ${row[4]}</span>
+                                    </div>
+                                </div>
+
+                                <div class="post-actions dropdown">
+                                    <button data-bs-toggle="dropdown">
+                                        <i class="fa fa-ellipsis"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item" href="/Blogger/Post/Edit/${row[5]}">Edit</a>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item text-danger btn-delete-post"
+                                                    data-id="${row[5]}">
+                                                Delete
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>`;
+                        }
+                    }
+                ]
+            });
+
+            // ================= Custom Search =================
+            let searchTimer;
+
+            $("#searchInput").on("keyup", function () {
+                clearTimeout(searchTimer);
+
+                searchTimer = setTimeout(function () {
+                    postsTable.ajax.reload();
+                }, 400); // debounce
+            });
+
+            // when input cleared (× button)
+            $("#searchInput").on("search", function () {
+                postsTable.ajax.reload();
+            });
+
+        });
+    </script>
+}

@@ -162,7 +162,7 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
                     });
                 }
 
-                return RedirectToAction("Index");
+                return RedirectToAction("PublishedPostList");
             }
             catch
             {
@@ -244,7 +244,7 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
                 Response = ResponseTypes.success
             });
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(PublishedPostList));
         }
 
         /* =========================
@@ -398,7 +398,7 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
                 Response = ResponseTypes.success
             });
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(PublishedPostList));
         }
 
         /* =========================
