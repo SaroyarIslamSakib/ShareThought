@@ -56,3 +56,102 @@
 .post-article {
     max-width: 900px; /* 🔥 key change */
 }
+
+/* Meta wrapper */
+.post-meta {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* Label text */
+.meta-label {
+    font-weight: 600;
+    color: #495057;
+    margin-right: 0.25rem;
+}
+
+/* Category badge */
+.badge-category {
+    background-color: #f1f3f5;
+    color: #212529;
+    border-radius: 999px;
+    padding: 0.45rem 0.75rem;
+    font-weight: 500;
+}
+
+/* Tag badge */
+.badge-tag {
+    background-color: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    padding: 0.4rem 0.7rem;
+    font-weight: 500;
+}
+
+    /* Hover effect (subtle premium feel) */
+    .badge-category:hover,
+    .badge-tag:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transition: all 0.2s ease;
+    }
+
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.9rem 0;
+    border-top: 1px solid #e9ecef;
+    border-bottom: 1px solid #e9ecef;
+    margin: 3rem 0;
+}
+
+/* Left side */
+.actions-left {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+}
+
+/* Action button */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    color: #6c757d;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+    /* Icon size consistency */
+    .action-btn i,
+    .actions-right i {
+        font-size: 1.05rem;
+        line-height: 1;
+    }
+
+        /* Hover */
+        .action-btn:hover,
+        .actions-right i:hover {
+            color: #212529;
+        }
+
+/* Clap active */
+.clap-btn.active {
+    color: #212529;
+}
+
+    .clap-btn.active i {
+        font-weight: 900;
+    }
+
+/* Right icons */
+.actions-right {
+    display: flex;
+    align-items: center;
+    gap: 1.3rem;
+    color: #6c757d;
+}

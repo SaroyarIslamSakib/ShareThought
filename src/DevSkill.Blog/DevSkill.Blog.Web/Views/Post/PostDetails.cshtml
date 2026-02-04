@@ -17,11 +17,48 @@
             </h1>
 
             <!-- Meta -->
-            <div class="text-muted small mb-4 d-flex flex-wrap gap-2">
-                <span>@string.Join(", ", Model.CategoryNames)</span>
-                <span>•</span>
-                <span>@string.Join(", ", Model.TagNames)</span>
+            <div class="post-meta mb-4">
+                <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+                    @foreach (var category in Model.CategoryNames)
+                    {
+                        <span class="badge badge-category">
+                            @category
+                        </span>
+                    }
+                    @foreach (var tag in Model.TagNames)
+                    {
+                        <span class="badge badge-tag">
+                            #@tag
+                        </span>
+                    }
+                </div>
             </div>
+        <div class="post-actions">
+
+            <!-- Left -->
+            <div class="actions-left">
+                <button class="action-btn clap-btn"
+                        id="clapBtn"
+                        data-post-id="@Model.Id">
+                    <i class="fa-regular fa-heart"></i>
+                    <span id="clapCount">@Model.Likes</span>
+                </button>
+
+                <div class="action-btn">
+                    <i class="fa-regular fa-comment"></i>
+                    <span>6</span>
+                </div>
+            </div>
+
+            <!-- Right -->
+            <div class="actions-right">
+                <i class="fa-regular fa-bookmark"></i>
+                <i class="fa-regular fa-circle-play"></i>
+                <i class="fa-regular fa-share-from-square"></i>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+
+        </div>
 
             <!-- Content -->
             <div class="post-content">
@@ -36,5 +73,30 @@
 @section Scripts {
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        const clapBtn = document.getElementById("clapBtn");
+        const clapCount = document.getElementById("clapCount");
+
+            clapBtn.addEventListener("click", async () => {
+
+            const postId = clapBtn.dataset.postId;
+
+            const response = await fetch('/Post/LikePost', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ postId })
+            });
+
+            if (!response.ok) return;
+
+            const data = await response.json();
+
+            clapBtn.classList.add("active");
+            clapCount.innerText = data.likes;
+        });
+    </script>
 }
 

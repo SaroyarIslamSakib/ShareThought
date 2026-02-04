@@ -1,10 +1,10 @@
 ﻿using Cortex.Mediator;
+using DevSkill.Blog.Application.Features.Posts.Commands;
 using DevSkill.Blog.Application.Features.Posts.Queries;
 using DevSkill.Blog.Domain;
-using DevSkill.Blog.Web.Models;
-
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Infrastructure.Identity;
+using DevSkill.Blog.Web.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
@@ -45,7 +45,10 @@ namespace DevSkill.Blog.Web.Controllers
                     Title = post.Title,
                     Content = post.Content,
                     CategoryNames = post.PostCategories.Select(pc => pc.Name).ToList(),
-                    TagNames = post.Tags.Select(t => t.Name).ToList()
+                    TagNames = post.Tags.Select(t => t.Name).ToList(),
+                    Likes = post.Likes,
+                    Id = post.Id
+                    
                 };
                 return View(model); 
             }
@@ -101,6 +104,22 @@ namespace DevSkill.Blog.Web.Controllers
             {
                 _logger.LogError(ex, "Error in GetPostsJsonData");
                 return Json(DataTables.EmptyResult);
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> LikePost([FromBody] LikePostCommand command)
+        {
+            try
+            {
+                var updatedLikes =
+                    await _mediator.SendCommandAsync<LikePostCommand, int>(command);
+
+                return Json(new { likes = updatedLikes });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Like post failed");
+                return BadRequest();
             }
         }
     }
