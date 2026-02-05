@@ -1,4 +1,5 @@
 ﻿using Cortex.Mediator;
+using DevSkill.Blog.Application.Features.Comments.Queries;
 using DevSkill.Blog.Application.Features.Posts.Commands;
 using DevSkill.Blog.Application.Features.Posts.Queries;
 using DevSkill.Blog.Domain;
@@ -40,6 +41,7 @@ namespace DevSkill.Blog.Web.Controllers
                     PostId = id
                 };
                 var post = await _mediator.SendQueryAsync<GetPostByIdQuery, Post>(query);
+                var commentsCount = await _mediator.SendQueryAsync<GetCommentCountByPostIdQuery, int>(new GetCommentCountByPostIdQuery { PostId = id });
                 PublicPostViewModel model = new PublicPostViewModel()
                 {
                     Title = post.Title,
@@ -47,8 +49,9 @@ namespace DevSkill.Blog.Web.Controllers
                     CategoryNames = post.PostCategories.Select(pc => pc.Name).ToList(),
                     TagNames = post.Tags.Select(t => t.Name).ToList(),
                     Likes = post.Likes,
-                    Id = post.Id
-                    
+                    Id = post.Id,
+                    Comments = commentsCount
+
                 };
                 return View(model); 
             }

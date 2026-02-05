@@ -78,5 +78,52 @@ namespace DevSkill.Blog.Web.Controllers
 
             return Json(comments);
         }
+        [HttpPut]
+        public async Task<IActionResult> EditComments(Guid id,[FromForm] EditCommentModel model)
+        {
+            if (!User.Identity!.IsAuthenticated)
+                return Unauthorized();
+
+            if (string.IsNullOrWhiteSpace(model.Content))
+                return BadRequest("Comment content is required");
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            var command = new EditCommentCommand
+            {
+                CommentId = id,
+                Content = model.Content,
+                UserId = user.Id
+            };
+
+            var updatedComment = await _mediator
+                .SendCommandAsync<EditCommentCommand, CommentDto>(command);
+
+            return Json(updatedComment);
+        }
+
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteComments(Guid id)
+        {
+            if (!User.Identity!.IsAuthenticated)
+                return Unauthorized();
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            var command = new DeleteCommentCommand
+            {
+                CommentId = id,
+                UserId = user.Id
+            };
+
+            await _mediator.SendCommandAsync<DeleteCommentCommand, Guid>(command);
+
+            return Ok();
+        }
     }
 }

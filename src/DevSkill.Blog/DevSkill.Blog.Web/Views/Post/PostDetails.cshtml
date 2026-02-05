@@ -47,7 +47,7 @@
 
                 <div class="action-btn">
                     <i class="fa-regular fa-comment"></i>
-                    <span>6</span>
+                    <span>@Model.Comments</span>
                 </div>
             </div>
 
@@ -104,9 +104,12 @@
     <script>
         //==============> Comment <===============
         $('#comments-container').comments({
+            currentUserId: '@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)',
             textareaPlaceholderText: 'Write your response',
             newestText: 'Latest',
             oldestText: 'Old',
+            enableEditing: true,
+            enableDeleting: true,
             postCommentOnEnter: true,
             //Refresh comments
             refresh: function() {
@@ -140,6 +143,25 @@
                     },
                     error: error
                 });
+            },
+            putComment: function(commentJSON, success, error) {
+              $.ajax({
+                type: 'put',
+                url: '/Comment/EditComments/' + commentJSON.id,
+                data: commentJSON,
+                success: function(comment) {
+                  success(comment)
+                },
+                error: error
+              });
+            },
+            deleteComment: function(commentJSON, success, error) {
+              $.ajax({
+                type: 'delete',
+                url: '/Comment/DeleteComments/' + commentJSON.id,
+                success: success,
+                error: error
+              });
             }
         });
     </script>

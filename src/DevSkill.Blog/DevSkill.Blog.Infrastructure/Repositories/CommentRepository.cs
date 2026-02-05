@@ -22,6 +22,11 @@ namespace DevSkill.Blog.Infrastructure.Repositories
         {
             return GetAsync(c => c.PostId == postId, null);
         }
+
+        public async Task<int> GetCommentCountByPostIdAsync(Guid postId)
+        {
+            return GetCount(c => c.PostId == postId && !c.IsDeleted);
+        }
     }
     
 }

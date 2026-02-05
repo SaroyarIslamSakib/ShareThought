@@ -11,5 +11,6 @@ namespace DevSkill.Blog.Domain.Repositories
     public interface ICommentRepository : IRepository<Comment, Guid>
     {
         Task<IList<Comment>> GetByPostIdAsync(Guid postId);
+        Task<int> GetCommentCountByPostIdAsync(Guid postId);
     }
 }

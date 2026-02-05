@@ -26,6 +26,8 @@ namespace DevSkill.Blog.Application.Features.Comments.Queries
         {
             var comments = await _unitOfWork.CommentRepository.GetByPostIdAsync(query.PostId);
 
+            comments = comments.Where(c => !c.IsDeleted).ToList();
+
             var userIds = comments.Select(c => c.UserId).Distinct();
 
             var users = new List<UserListDto>();
@@ -50,7 +52,10 @@ namespace DevSkill.Blog.Application.Features.Comments.Queries
                     created = c.CreatedAt,
                     fullname = user.FullName,
                     upvote_count = c.UpvoteCount,
-                    user_has_upvoted = false
+                    user_has_upvoted = false,
+                    user_id = c.UserId.ToString(),
+                    created_by_current_user = query.CurrentUserId.HasValue && c.UserId == query.CurrentUserId.Value,
+                    modified = c.UpdatedAt
                 };
             }).ToList();
         }

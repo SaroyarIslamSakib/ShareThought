@@ -8,5 +8,6 @@
         public List<string> CategoryNames { get; set; } = new();
         public List<string> TagNames { get; set; } = new();
         public int Likes { get; set; }
+        public int Comments { get; set; }
     }
 }
