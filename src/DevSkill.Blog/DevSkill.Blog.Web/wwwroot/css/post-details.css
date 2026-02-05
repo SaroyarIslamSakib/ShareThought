@@ -155,3 +155,18 @@
     gap: 1.3rem;
     color: #6c757d;
 }
+
+.action-btn {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.comment-offcanvas {
+    width: 380px; /* Medium feel */
+}
+
+.offcanvas-backdrop {
+    background-color: rgba(0, 0, 0, 0.35);
+}

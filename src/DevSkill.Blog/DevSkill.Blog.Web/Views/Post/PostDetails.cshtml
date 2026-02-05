@@ -45,9 +45,31 @@
                     <span id="clapCount">@Model.Likes</span>
                 </button>
 
-                <div class="action-btn">
+                <div class="action-btn"
+                     role="button"
+                     data-bs-toggle="offcanvas"
+                     data-bs-target="#commentPanel"
+                     aria-controls="commentPanel">
+
                     <i class="fa-regular fa-comment"></i>
                     <span>@Model.Comments</span>
+                </div>
+            </div>
+            <!-- Comment panel -->
+            <div class="offcanvas offcanvas-end comment-offcanvas"
+                 tabindex="-1"
+                 id="commentPanel">
+
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title">Responses</h5>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="offcanvas"></button>
+                </div>
+
+                <div class="offcanvas-body">
+                    <!-- AJAX / Partial view -->
+                    <div id="comments-offcanvas"></div>
                 </div>
             </div>
 
@@ -64,7 +86,7 @@
             <!-- Content -->
             <div class="post-content">
                 @Html.Raw(Model.Content)
-            <div id="comments-container"></div>
+            <div id="comments-inline"></div>
             </div>
 
         </article>
@@ -103,67 +125,85 @@
     </script>
     <script>
         //==============> Comment <===============
-        $('#comments-container').comments({
-            currentUserId: '@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)',
-            textareaPlaceholderText: 'Write your response',
-            newestText: 'Latest',
-            oldestText: 'Old',
-            enableEditing: true,
-            enableDeleting: true,
-            postCommentOnEnter: true,
-            //Refresh comments
-            refresh: function() {
-                $('#comments-container').addClass('rendered');
-            },
 
+        function initComments(selector) {
+            $(selector).comments({
+                currentUserId: '@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)',
+                textareaPlaceholderText: 'Write your response',
+                newestText: 'Latest',
+                oldestText: 'Old',
+                enableEditing: true,
+                enableDeleting: true,
+                postCommentOnEnter: true,
 
-            getComments: function (success, error) {
-                $.ajax({
-                    type: 'get',
-                    url: '/Comment/GetComments',
-                    data: {
-                        postId: $('#postId').val()
-                    },
-                    success: function (comments) {
-                        success(comments);
-                    },
-                    error: error
-                });
-            },
-            postComment: function(commentJSON, success, error) {
-                commentJSON.postId = $('#postId').val();
-                commentJSON.parentId = commentJSON.parent;
-
-                $.ajax({
-                    type: 'post',
-                    url: '/Comment/AddComment/',
-                    data: commentJSON,
-                    success: function(comment) {
-                        success(comment);
-                    },
-                    error: error
-                });
-            },
-            putComment: function(commentJSON, success, error) {
-              $.ajax({
-                type: 'put',
-                url: '/Comment/EditComments/' + commentJSON.id,
-                data: commentJSON,
-                success: function(comment) {
-                  success(comment)
+                refresh: function () {
+                    $(selector).addClass('rendered');
                 },
-                error: error
-              });
-            },
-            deleteComment: function(commentJSON, success, error) {
-              $.ajax({
-                type: 'delete',
-                url: '/Comment/DeleteComments/' + commentJSON.id,
-                success: success,
-                error: error
-              });
+
+                getComments: function (success, error) {
+                    $.ajax({
+                        type: 'get',
+                        url: '/Comment/GetComments',
+                        data: {
+                            postId: $('#postId').val()
+                        },
+                        success: success,
+                        error: error
+                    });
+                },
+
+                postComment: function (commentJSON, success, error) {
+                    commentJSON.postId = $('#postId').val();
+                    commentJSON.parentId = commentJSON.parent;
+
+                    $.ajax({
+                        type: 'post',
+                        url: '/Comment/AddComment/',
+                        data: commentJSON,
+                        success: function (comment) {
+                            success(comment);
+                        },
+                        error: error
+                    });
+                },
+
+                putComment: function (commentJSON, success, error) {
+                    $.ajax({
+                        type: 'put',
+                        url: '/Comment/EditComments/' + commentJSON.id,
+                        data: commentJSON,
+                        success: function (comment) {
+                            success(comment);
+                        },
+                        error: error
+                    });
+                },
+
+                deleteComment: function (commentJSON, success, error) {
+                    $.ajax({
+                        type: 'delete',
+                        url: '/Comment/DeleteComments/' + commentJSON.id,
+                        success: function () {
+                            success();
+                        },
+                        error: error
+                    });
+                }
+            });
+        }
+
+        // 1️⃣ Inline comments – page load এই
+        initComments('#comments-inline');
+
+        // 2️⃣ Offcanvas comments – lazy load
+        let offcanvasLoaded = false;
+        $('#commentPanel').on('shown.bs.offcanvas', function () {
+            if (!offcanvasLoaded) {
+                initComments('#comments-offcanvas');
+                offcanvasLoaded = true;
             }
         });
+
     </script>
 }
 
