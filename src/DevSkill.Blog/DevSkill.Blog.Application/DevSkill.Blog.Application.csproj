@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Users\Commands\**" />
+    <EmbeddedResource Remove="Features\Users\Commands\**" />
+    <None Remove="Features\Users\Commands\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DevSkill.Blog.Domain\DevSkill.Blog.Domain.csproj" />
   </ItemGroup>
 
@@ -18,7 +24,6 @@
   <ItemGroup>
     <Folder Include="Features\Categories\Commands\" />
     <Folder Include="Features\Tags\Commands\" />
-    <Folder Include="Features\Users\Commands\" />
   </ItemGroup>
 
 </Project>

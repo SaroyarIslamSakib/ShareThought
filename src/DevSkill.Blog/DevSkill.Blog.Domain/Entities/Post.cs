@@ -27,5 +27,6 @@ namespace DevSkill.Blog.Domain.Entities
 
         public ICollection<Category> PostCategories { get; set; } = new List<Category>();
         public ICollection<Tag> Tags { get; set; } = new List<Tag>();
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

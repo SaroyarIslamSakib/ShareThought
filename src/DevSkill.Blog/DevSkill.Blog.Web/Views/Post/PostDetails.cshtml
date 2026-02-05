@@ -11,7 +11,7 @@
 
         <!-- Post Card -->
         <article class="bg-white rounded-4 shadow-sm px-4 px-md-5 py-5 mx-auto post-article">
-
+            <input type="hidden" id="postId" value="@Model.Id" />
             <!-- Title -->
             <h1 class="fw-bold mb-3 text-dark">
                 @Model.Title
@@ -107,22 +107,39 @@
             textareaPlaceholderText: 'Write your response',
             newestText: 'Latest',
             oldestText: 'Old',
+            postCommentOnEnter: true,
             //Refresh comments
             refresh: function() {
                 $('#comments-container').addClass('rendered');
             },
 
 
-            getComments: function(success, error) {
-                var commentsArray = [{
-                    id: 1,
-                    created: '2015-10-01',
-                    content: 'Lorem ipsum dolort sit amet',
-                    fullname: 'Simon Powell',
-                    upvote_count: 2,
-                    user_has_upvoted: false
-                }];
-                success(commentsArray);
+            getComments: function (success, error) {
+                $.ajax({
+                    type: 'get',
+                    url: '/Comment/GetComments',
+                    data: {
+                        postId: $('#postId').val()
+                    },
+                    success: function (comments) {
+                        success(comments);
+                    },
+                    error: error
+                });
+            },
+            postComment: function(commentJSON, success, error) {
+                commentJSON.postId = $('#postId').val();
+                commentJSON.parentId = commentJSON.parent;
+
+                $.ajax({
+                    type: 'post',
+                    url: '/Comment/AddComment/',
+                    data: commentJSON,
+                    success: function(comment) {
+                        success(comment);
+                    },
+                    error: error
+                });
             }
         });
     </script>
