@@ -14,5 +14,6 @@ namespace DevSkill.Blog.Application.Features.BlogsArea.Commands
         public string? Description { get; set; }
         public Guid UserId { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string? UserName { get; set; }
     }
 }

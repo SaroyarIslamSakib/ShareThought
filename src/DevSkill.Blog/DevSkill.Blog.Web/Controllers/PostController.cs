@@ -84,6 +84,7 @@ namespace DevSkill.Blog.Web.Controllers
                     await _mediator.SendQueryAsync<
                         GetPublicPostQuery,
                         (IList<Post>, int, int)>(query);
+                
 
                 return Json(new
                 {
@@ -99,7 +100,9 @@ namespace DevSkill.Blog.Web.Controllers
                         HttpUtility.HtmlEncode(p.Content),
                         p.CreatedAt.ToString("dd-MM-yyyy"),
                         p.Likes.ToString(),
-                        p.Id.ToString()
+                        p.Id.ToString(),
+                        p.Comments.Count().ToString(),
+                        p.BlogArea.UserName.ToString()
                     }).ToArray()
                 });
             }

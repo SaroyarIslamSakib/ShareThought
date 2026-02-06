@@ -12,6 +12,7 @@ namespace DevSkill.Blog.Domain.Entities
         public string Name { get; set; } = null!;
         public string? Description { get; set; }
         public Guid UserId { get; set; }
+        public string? UserName { get; set; } 
         public DateTime CreatedAt { get; set; }
         public bool IsSuspended { get; set; }
 

@@ -17,26 +17,48 @@ namespace DevSkill.Blog.Infrastructure.Repositories
 
         }
 
-        public async Task<(IList<Post>, int total, int totalDisplay)> GetPagedDraftPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder, Guid BlogId)
+        public async Task<(IList<Post>, int total, int totalDisplay)> GetPagedDraftPostsAsync
+            (int pageIndex, int pageSize, string? searchText, string? sortOrder, Guid BlogId)
         {
-            return await GetDynamicAsync(x => x.BlogAreaId == BlogId && x.Title.Contains(searchText) && x.IsPublished == false, sortOrder, null, pageIndex, pageSize);
+            return await GetDynamicAsync(x => x.BlogAreaId == BlogId 
+                && x.Title.Contains(searchText) 
+                && x.IsPublished == false,
+                sortOrder, 
+                null, 
+                pageIndex, 
+                pageSize);
         }
 
-        public async Task<(IList<Post>, int total, int totalDisplay)> GetPagedPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder, Guid BlogId)
+        public async Task<(IList<Post>, int total, int totalDisplay)> GetPagedPostsAsync
+            (int pageIndex, int pageSize, string? searchText, string? sortOrder, Guid BlogId)
         {
-            return await GetDynamicAsync(x => x.BlogAreaId==BlogId && x.Title.Contains(searchText) && x.IsPublished == true, sortOrder, null, pageIndex, pageSize);
+            return await GetDynamicAsync(x => x.BlogAreaId==BlogId && x.Title.Contains(searchText) 
+                && x.IsPublished == true, sortOrder, null, 
+                pageIndex, 
+                pageSize);
 
         }
 
-        public async Task<(IList<Post>, int total, int totalDisplay)> GetPagedPublicPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder, string? categoryName)
+        public async Task<(IList<Post>, int total, int totalDisplay)> GetPagedPublicPostsAsync
+            (int pageIndex, int pageSize, string? searchText, string? sortOrder, string? categoryName)
         {
            if(categoryName == string.Empty)
             {
-                return await GetDynamicAsync(x => x.Title.Contains(searchText) && x.IsPublished == true, sortOrder, null, pageIndex, pageSize);
+                return await GetDynamicAsync(x => x.Title.Contains(searchText) 
+                    && x.IsPublished == true, sortOrder,
+                    q=>q.Include(x => x.Comments.Where(m => m.IsDeleted ==false)).Include(x => x.BlogArea), 
+                    pageIndex, 
+                    pageSize);
             }
            else
             {
-                return await GetDynamicAsync(x => x.Title.Contains(searchText) && x.IsPublished == true && x.PostCategories.Any(c => c.Name == categoryName), sortOrder, null, pageIndex, pageSize);
+                return await GetDynamicAsync(x => x.Title.Contains(searchText) 
+                && x.IsPublished == true 
+                && x.PostCategories.Any(c => c.Name == categoryName), 
+                sortOrder, 
+                q => q.Include(x => x.Comments.Where(m => m.IsDeleted == false)), 
+                pageIndex, 
+                pageSize);
             }
         }
 

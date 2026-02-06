@@ -70,7 +70,8 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
                     Name = model.Name,
                     Description = model.Description,
                     CreatedAt = _serverTime.DateTime,
-                    UserId = user.Id
+                    UserId = user.Id,
+                    UserName = user.FirstName + " " + user.LastName
                 };
 
                 await _mediator
