@@ -60,58 +60,6 @@
             </table>
         </div>
 
-
-
-
-        <!--begin: Choice section-->
-        <section class="choice-section py-5">
-            <div class="container text-center">
-                <h3 class="choice-title mb-5">How can we help you?</h3>
-
-                <div class="row g-4">
-                    <!-- Card 1 -->
-                    <div class="col-md-4">
-                        <div class="choice-card">
-                            <div class="icon-circle">
-                                <i class="bi bi-person"></i>
-                            </div>
-                            <h5>Join our team</h5>
-                            <p>
-                                Explore opportunities to join us and boost your career
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Card 2 -->
-                    <div class="col-md-4">
-                        <div class="choice-card">
-                            <div class="icon-circle">
-                                <i class="bi bi-box-seam"></i>
-                            </div>
-                            <h5>Join as a supplier</h5>
-                            <p>
-                                Enquire about working with us as a supplier and discover our range of services
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Card 3 -->
-                    <div class="col-md-4">
-                        <div class="choice-card">
-                            <div class="icon-circle">
-                                <i class="bi bi-cart"></i>
-                            </div>
-                            <h5>Join as a customer</h5>
-                            <p>
-                                Enquire about becoming a customer to access market-leading support
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!--end: Choice section-->
-
         <div class="add-section">
         </div>
     </div>
@@ -263,7 +211,11 @@
 
                                         <div class="post-content">
                                             <h5 class="post-title">${row[1]}</h5>
-                                            <p> Writter : ${row[7]}</p>
+                                                <p class="post-author premium">
+                                                    <i class="fa-solid fa-user-pen"></i>
+                                                    ${row[7]}
+                                                </p>
+
                                             <div class="post-meta">
                                                 <span><i class="fa-solid fa-calendar-days"></i> ${row[3]}</span>
                                                 <span><i class="fa-solid fa-heart"></i> ${row[4]}</span>
@@ -280,13 +232,7 @@
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li>
-                                            <a class="dropdown-item" href="/Blogger/Post/Edit/${row[5]}">Edit</a>
-                                        </li>
-                                        <li>
-                                            <button class="dropdown-item text-danger btn-delete-post"
-                                                    data-id="${row[5]}">
-                                                Delete
-                                            </button>
+                                            <a class="dropdown-item" href="/Blogger/Post/Edit/${row[5]}">Report</a>
                                         </li>
                                     </ul>
                                 </div>

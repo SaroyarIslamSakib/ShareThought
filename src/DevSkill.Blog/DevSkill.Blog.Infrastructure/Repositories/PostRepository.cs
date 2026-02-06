@@ -44,19 +44,22 @@ namespace DevSkill.Blog.Infrastructure.Repositories
         {
            if(categoryName == string.Empty)
             {
-                return await GetDynamicAsync(x => x.Title.Contains(searchText) 
-                    && x.IsPublished == true, sortOrder,
+                return await GetDynamicAsync(x => (x.Title.Contains(searchText)
+                    || x.Tags.Any(t => t.Name.Contains(searchText)))
+                    && x.IsPublished == true, 
+                    sortOrder,
                     q=>q.Include(x => x.Comments.Where(m => m.IsDeleted ==false)).Include(x => x.BlogArea), 
                     pageIndex, 
                     pageSize);
             }
            else
             {
-                return await GetDynamicAsync(x => x.Title.Contains(searchText) 
+                return await GetDynamicAsync(x => (x.Title.Contains(searchText)
+                || x.Tags.Any(t => t.Name.Contains(searchText)))
                 && x.IsPublished == true 
                 && x.PostCategories.Any(c => c.Name == categoryName), 
-                sortOrder, 
-                q => q.Include(x => x.Comments.Where(m => m.IsDeleted == false)), 
+                sortOrder,
+                q => q.Include(x => x.Comments.Where(m => m.IsDeleted == false)).Include(x => x.BlogArea),
                 pageIndex, 
                 pageSize);
             }
