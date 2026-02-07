@@ -19,12 +19,13 @@ namespace DevSkill.Blog.Infrastructure
         public ICategoryRepository CategoryRepository { get; private set; }
         public ITagRepository TagRepository { get; private set; }
         public ICommentRepository CommentRepository { get; private set; }
+        public IReportRepository ReportRepository { get; private set; }
 
 
         public ApplicationUnitOfWork(ApplicationDbContext context, IBlogPostRepository blogPostRepository,
             IContactMessageRepository contactMessageRepository, IBlogAreaRepository blogAreaRepository,
             IPostRepository postRepository, ICategoryRepository categoryRepository, ITagRepository tagRepository,
-            ICommentRepository commentRepository)
+            ICommentRepository commentRepository, IReportRepository reportRepository)
             : base(context)
         {
             BlogPostRepository = blogPostRepository;
@@ -34,6 +35,7 @@ namespace DevSkill.Blog.Infrastructure
             CategoryRepository = categoryRepository;
             TagRepository = tagRepository;
             CommentRepository = commentRepository;
+            ReportRepository = reportRepository;
         }
     }
 

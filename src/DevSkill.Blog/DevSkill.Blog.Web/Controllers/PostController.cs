@@ -42,15 +42,18 @@ namespace DevSkill.Blog.Web.Controllers
                 };
                 var post = await _mediator.SendQueryAsync<GetPostByIdQuery, Post>(query);
                 var commentsCount = await _mediator.SendQueryAsync<GetCommentCountByPostIdQuery, int>(new GetCommentCountByPostIdQuery { PostId = id });
-                PublicPostViewModel model = new PublicPostViewModel()
+                IndexViewModel model = new IndexViewModel()
                 {
-                    Title = post.Title,
-                    Content = post.Content,
-                    CategoryNames = post.PostCategories.Select(pc => pc.Name).ToList(),
-                    TagNames = post.Tags.Select(t => t.Name).ToList(),
-                    Likes = post.Likes,
-                    Id = post.Id,
-                    Comments = commentsCount
+                    PublicPostModel = new PublicPostViewModel()
+                    {
+                        Title = post.Title,
+                        Content = post.Content,
+                        CategoryNames = post.PostCategories.Select(pc => pc.Name).ToList(),
+                        TagNames = post.Tags.Select(t => t.Name).ToList(),
+                        Likes = post.Likes,
+                        Id = post.Id,
+                        Comments = commentsCount
+                    }
 
                 };
                 return View(model); 

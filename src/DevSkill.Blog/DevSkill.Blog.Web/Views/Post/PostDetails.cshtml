@@ -1,4 +1,4 @@
-﻿@model PublicPostViewModel
+﻿@model IndexViewModel
 @section Styles {
     <link rel="stylesheet" href="~/css/navbar.css" />
     <link rel="stylesheet" href="~/css/post-details.css" />
@@ -6,27 +6,28 @@
 }
 
 <partial name="_ResponsePartial" />
+<partial name="_ReportModalPartial" />
 
 <main class="bg-white py-5">
 
         <!-- Post Card -->
         <article class="bg-white rounded-4 shadow-sm px-4 px-md-5 py-5 mx-auto post-article">
-            <input type="hidden" id="postId" value="@Model.Id" />
+            <input type="hidden" id="postId" value="@Model.PublicPostModel.Id" />
             <!-- Title -->
             <h1 class="fw-bold mb-3 text-dark">
-                @Model.Title
+            @Model.PublicPostModel.Title
             </h1>
 
             <!-- Meta -->
             <div class="post-meta mb-4">
                 <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
-                    @foreach (var category in Model.CategoryNames)
+                    @foreach (var category in Model.PublicPostModel.CategoryNames)
                     {
                         <span class="badge badge-category">
                             @category
                         </span>
                     }
-                    @foreach (var tag in Model.TagNames)
+                    @foreach (var tag in Model.PublicPostModel.TagNames)
                     {
                         <span class="badge badge-tag">
                             #@tag
@@ -40,9 +41,9 @@
             <div class="actions-left">
                 <button class="action-btn clap-btn"
                         id="clapBtn"
-                        data-post-id="@Model.Id">
+                        data-post-id="@Model.PublicPostModel.Id">
                     <i class="fa-regular fa-heart"></i>
-                    <span id="clapCount">@Model.Likes</span>
+                    <span id="clapCount">@Model.PublicPostModel.Likes</span>
                 </button>
 
                 <div class="action-btn"
@@ -52,7 +53,7 @@
                      aria-controls="commentPanel">
 
                     <i class="fa-regular fa-comment"></i>
-                    <span>@Model.Comments</span>
+                    <span>@Model.PublicPostModel.Comments</span>
                 </div>
             </div>
             <!-- Comment panel -->
@@ -78,14 +79,33 @@
                 <i class="fa-regular fa-bookmark"></i>
                 <i class="fa-regular fa-circle-play"></i>
                 <i class="fa-regular fa-share-from-square"></i>
-                <i class="fa-solid fa-ellipsis"></i>
+                <div class="dropdown">
+                    <button class="btn p-0 border-0 bg-transparent shadow-none"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        <i class="fa-solid fa-ellipsis fs-5 text-muted"></i>
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item"
+                               href="#"
+                               data-bs-toggle="modal"
+                               data-bs-target="#reportModal"
+                               data-postid="@Model.PublicPostModel.Id">
+                                <i class="fa-solid fa-flag me-2 text-danger"></i>Report
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
         </div>
 
             <!-- Content -->
             <div class="post-content">
-                @Html.Raw(Model.Content)
+                @Html.Raw(Model.PublicPostModel.Content)
             <div id="comments-inline"></div>
             </div>
 
@@ -204,6 +224,22 @@
             }
         });
 
+    </script>
+    <script>
+            //Send PostId to Report Modal
+            document.addEventListener('DOMContentLoaded', function () {
+
+            var reportModal = document.getElementById('reportModal');
+
+            reportModal.addEventListener('show.bs.modal', function (event) {
+
+                var button = event.relatedTarget;
+                var postId = button.getAttribute('data-postid');
+
+                document.getElementById('reportPostId').value = postId;
+            });
+
+        });
     </script>
 }
 

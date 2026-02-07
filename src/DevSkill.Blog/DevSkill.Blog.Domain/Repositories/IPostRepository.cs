@@ -11,7 +11,7 @@ namespace DevSkill.Blog.Domain.Repositories
     public interface IPostRepository : IRepository<Post, Guid>
     {
         Task<(IList<Post>, int total, int totalDisplay)> GetPagedDraftPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder, Guid id);
-        Task<(IList<Post>, int total, int totalDisplay)> GetPagedPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder, Guid BlogId);
+        Task<(IList<Post>, int total, int totalDisplay)> GetPublishedPagedPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder, Guid BlogId);
         Task<(IList<Post>, int total, int totalDisplay)> GetPagedPublicPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder,string? categoryName);
         Task<Post> GetPostWithCategoriesTagsAsync(Guid postId);
     }

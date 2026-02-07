@@ -30,6 +30,9 @@ namespace DevSkill.Blog.Infrastructure.Data
             builder.Entity<ContactMessage>()
                    .Property(x => x.Topic)
                    .HasConversion<string>();
+            builder.Entity<Report>()
+                   .Property(r => r.Reason)
+                   .HasConversion<string>();
             //Configure BlogArea
             builder.Entity<ApplicationUser>()
                    .HasOne(u => u.BlogArea)

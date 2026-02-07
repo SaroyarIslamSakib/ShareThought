@@ -306,9 +306,10 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
                                 : p.FeatureImagePath),
                         HttpUtility.HtmlEncode(p.Title),
                         HttpUtility.HtmlEncode(p.Content),
-                        p.CreatedAt.ToString("dd-MM-yyyy HH:mm:ss"),
+                        p.CreatedAt.ToString("dd-MM-yyyy"),
                         p.Likes.ToString(),
-                        p.Id.ToString()
+                        p.Id.ToString(),
+                        p.Comments.Count().ToString()
                     }).ToArray()
                 });
             }

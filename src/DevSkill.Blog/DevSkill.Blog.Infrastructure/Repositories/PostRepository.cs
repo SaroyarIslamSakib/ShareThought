@@ -29,11 +29,12 @@ namespace DevSkill.Blog.Infrastructure.Repositories
                 pageSize);
         }
 
-        public async Task<(IList<Post>, int total, int totalDisplay)> GetPagedPostsAsync
+        public async Task<(IList<Post>, int total, int totalDisplay)> GetPublishedPagedPostsAsync
             (int pageIndex, int pageSize, string? searchText, string? sortOrder, Guid BlogId)
         {
             return await GetDynamicAsync(x => x.BlogAreaId==BlogId && x.Title.Contains(searchText) 
-                && x.IsPublished == true, sortOrder, null, 
+                && x.IsPublished == true, sortOrder,
+                q => q.Include(x => x.Comments.Where(m => m.IsDeleted == false)),
                 pageIndex, 
                 pageSize);
 

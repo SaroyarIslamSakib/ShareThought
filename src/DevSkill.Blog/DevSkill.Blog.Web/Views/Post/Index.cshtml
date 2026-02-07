@@ -1,4 +1,4 @@
-﻿@model RegisterModel
+﻿@model IndexViewModel
 @{
     ViewData["Title"] = "Posts";
 }
@@ -11,9 +11,10 @@
     <link rel="stylesheet" href="~/css/public-post-list-item.css" />
 }
 <partial name="_LoginModalPartial" />
-<partial name="_RegisterModalPartial" model="Model" />
+<partial name="_RegisterModalPartial" model="new RegisterModel()" />
 <partial name="_ResponsePartial" />
 <partial name="_CreateBlogModalPartial" model="new CreateBlogAreaModel()" />
+<partial name="_ReportModalPartial" />
 
 <main>
     <div class="landing-body">
@@ -231,9 +232,15 @@
                                         <i class="fa fa-ellipsis"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
-                                        <li>
-                                            <a class="dropdown-item" href="/Blogger/Post/Edit/${row[5]}">Report</a>
-                                        </li>
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                       href="#"
+                                                       data-bs-toggle="modal"
+                                                       data-bs-target="#reportModal"
+                                                       data-postid="${row[5]}">
+                                                        <i class="fa-solid fa-flag me-2 text-danger"></i>Report
+                                                    </a>
+                                                </li>
                                     </ul>
                                 </div>
                                     </div>`;
@@ -264,6 +271,22 @@
                 selectedCategory = $(this).data("category") || "";
 
                 postsTable.ajax.reload();
+            });
+
+        });
+    </script>
+    <script>
+            //Send PostId to Report Modal
+            document.addEventListener('DOMContentLoaded', function () {
+
+            var reportModal = document.getElementById('reportModal');
+
+            reportModal.addEventListener('show.bs.modal', function (event) {
+
+                var button = event.relatedTarget;
+                var postId = button.getAttribute('data-postid');
+
+                document.getElementById('reportPostId').value = postId;
             });
 
         });

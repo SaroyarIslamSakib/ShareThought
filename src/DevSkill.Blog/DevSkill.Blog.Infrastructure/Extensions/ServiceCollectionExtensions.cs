@@ -35,6 +35,7 @@ namespace DevSkill.Blog.Infrastructure.Extensions
             service.AddSingleton<IServerTime, ServerTime>();
             service.AddScoped<IUserService, UserService>();
             service.AddScoped<ICommentRepository, CommentRepository>();
+            service.AddScoped<IReportRepository, ReportRepository>();
         }
         //DbContext Configuration
         public static void AddDbContext(this IServiceCollection service,

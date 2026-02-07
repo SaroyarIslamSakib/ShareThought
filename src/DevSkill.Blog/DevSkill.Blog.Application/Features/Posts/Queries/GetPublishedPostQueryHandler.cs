@@ -25,7 +25,7 @@ namespace DevSkill.Blog.Application.Features.Posts.Queries
             if (blog == null)
                 throw new Exception("Blog not found.");
 
-            return await _unitOfWork.PostRepository.GetPagedPostsAsync(
+            return await _unitOfWork.PostRepository.GetPublishedPagedPostsAsync(
                 query.PageIndex,
                 query.PageSize,
                 query.SearchText,
