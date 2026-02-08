@@ -1,7 +1,8 @@
-﻿@model BlogPostListModel
+﻿
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Blogs";
 }
+
 @Html.AntiForgeryToken()
 @section Styles
 {
@@ -16,105 +17,49 @@
         <div class="row mb-3">
             <div id="responseContainer" class="col-lg-4 col-md-6">
                 <partial name="_ResponsePartial" />
-                
             </div>
-            <div class="col-lg-4 col-md-6">
-                <partial name="_BlogViewModalPartial" />
-                <partial name="_BlogEditModalPartial" />
-                <partial name="_BlogDeleteModalPartial" />
-            </div>
+            <partial name="_ChangeStatusModalPartial" />
         </div>
-
-        <!-- Title & Breadcrumb -->
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb breadcrumb-style1">
-                <li class="breadcrumb-item">
-                    <a href="javascript:void(0);">Home</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="javascript:void(0);">Blogs</a>
-                </li>
-                <li class="breadcrumb-item active">All Blogs</li>
-            </ol>
-        </nav>
     </div>
 </div>
 
 <!-- ================= App Content ================= -->
-<div class="app-content">
+  <div class="app-content">
     <div class="container-fluid">
-
-        <!-- ================= Search Section ================= -->
-        <div class="card shadow-sm mb-4 border-0">
-            <div class="card-header bg-light">
-                <h5 class="card-title mb-0">
-                    <i class="fa fa-search mr-1"></i> Search
-                </h5>
-            </div>
-
-            <div class="card-body">
-                <div class="row g-3">
-
-                    <div class="col-lg-4 col-md-6">
-                        <label class="form-label">Title</label>
-                        <input asp-for="SearchItem.Title" type="text" class="form-control" />
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <label class="form-label">Publish From</label>
-                        <input asp-for="SearchItem.PublishFrom" class="form-control" type="date" />
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <label class="form-label">Publish To</label>
-                        <input asp-for="SearchItem.PublishTo" class="form-control" type="date" />
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="card-footer bg-white text-end">
-                <button id="searchButton" type="submit" class="btn btn-primary px-4">
-                    <i class="fa fa-search me-1"></i> Search
-                </button>
-            </div>
-        </div>
-
         <!-- ================= DataTable Section ================= -->
         <div class="card card-primary card-outline shadow-sm">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">Products</h5>
-                <a asp-area="Admin" asp-controller="Blog" asp-action="Create" class="btn btn-primary btn-sm">
-                    <i class="fa fa-plus me-1"></i> Create
-                </a>
-            </div>
-
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table id="blogs" class="table table-bordered table-hover align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Title</th>
-                                <th>Body</th>
-                                <th>Publish Date</th>
-                                <th>Action</th>
+            
+            <div class="mx-3">
 
 
-
-
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                        <tfoot class="table-light">
-                            <tr>
-                                <th>Title</th>
-                                <th>Body</th>
-                                <th>Publish Date</th>
-                                <th>Action</th>
-
-                            </tr>
-                        </tfoot>
-                    </table>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="blogs" class="table table-hover align-middle table-bordered">
+                            <thead class="table-light text-muted small">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Owner</th>
+                                    <th>Mail</th>
+                                    <th>Total Post</th>
+                                    <th>Created Date</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot class="table-light small">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Owner</th>
+                                    <th>Mail</th>
+                                    <th>Total Post</th>
+                                    <th>Created Date</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -127,118 +72,125 @@
     <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
     <script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
 
-
     <script>
         $(function () {
 
+            let selectedBlogId = 0;
+            let shouldSuspend = false;
+
             // ================= DataTable =================
-            const blogTable = $("#blogs").DataTable({
+            const blogsTable = $("#blogs").DataTable({
                 processing: true,
                 serverSide: true,
                 responsive: true,
                 lengthChange: true,
                 autoWidth: false,
-                searching: false,
                 ajax: {
-                    url: "/Admin/Blog/GetBlogPostJsonData",
+                    url: "/Admin/Blog/GetBlogsJsonData",
                     type: "POST",
                     contentType: "application/json",
                     dataType: "json",
                     data: function (d) {
-                        d.SearchItem = {
-                            Title: $("#SearchItem_Title").val(),
-                            PublishFrom: $("#SearchItem_PublishFrom").val() || null,
-                            PublishTo: $("#SearchItem_PublishTo").val() || null
-                        };
                         return JSON.stringify(d);
                     }
                 },
-                columnDefs: [{
-                    orderable: false,
-                    targets: 3,
-                    render: function (data) {
-                        return `
-                        <div class="btn-group">
-                            <button class="btn btn-outline-secondary show-blog-modal" data-id="${data}">
-                                <i class="fa fa-eye"></i>
-                            </button>
-                            <button class="btn btn-outline-secondary edit-blog-modal" data-id="${data}">
-                                <i class="fa fa-pencil"></i>
-                            </button>
-                            <button class="btn btn-outline-danger delete-blog-modal" data-id="${data}">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </div>`;
+                columnDefs: [
+                    {
+                        orderable: false,
+                        targets: 5,
+                        render: function (data) {
+                            if (data == "True" || data == "true") {
+                                return '<span class="badge bg-warning text-dark">Banned</span>';
+                            }
+                            else {
+                                return '<span class="badge bg-success">Active</span>';
+                            }
+                        }
+                    },
+                    {
+                        orderable: false,
+                        targets: 6,
+                        render: function (data, type, row) {
+
+                            const isSuspended = row[5];
+
+                            return `
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-secondary show-message-modal"
+                                        data-id="${data}" title="View">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary edit-message-modal"
+                                        data-id="${data}" title="Edit">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary toggle-status-modal"
+                                        data-id="${data}"
+                                        data-status="${isSuspended}"
+                                        title="Toggle Status">
+                                    <i class="fa-solid fa-ban"></i>
+                                </button>
+                            </div>`;
+                        }
                     }
-                }]
+                ]
             });
 
-            $("#searchButton").click(function () {
-                blogTable.ajax.reload(null, false);
+
+            // ================= Open Modal =================
+            $(document).on("click", ".toggle-status-modal", function () {
+
+                selectedBlogId = $(this).data("id");
+                const status = $(this).data("status");
+
+                if (status === "True" || status === "true") {
+                    // Already Suspended → Unblock
+                    shouldSuspend = false;
+                    $("#toggleMessage").text("Are you sure you want to unblock this Blog?");
+                    $("#confirmToggleBtn")
+                        .removeClass("btn-danger")
+                        .addClass("btn-success")
+                        .text("Yes, Unblock");
+                }
+                else {
+                    // Active → Block
+                    shouldSuspend = true;
+                    $("#toggleMessage").text("Are you sure you want to block this Blog?");
+                    $("#confirmToggleBtn")
+                        .removeClass("btn-success")
+                        .addClass("btn-danger")
+                        .text("Yes, Block");
+                }
+
+                $("#toggleStatusModal").modal("show");
             });
 
-            // ================= View Blog =================
-            $("#blogs").on("click", ".show-blog-modal", function () {
-                $.post("/Admin/Blog/GetBlogById", { id: $(this).data("id") }, function (res) {
-                    $("#blogTitle").text(res.title);
-                    $("#blogBody").html(res.body);
-                    $("#blogCreatedAt").text(res.createdAt);
-                    new bootstrap.Modal("#blogViewModal").show();
-                });
-            });
 
-            // ================= Edit Blog =================
-            $("#blogs").on("click", ".edit-blog-modal", function () {
-                $.get("/Admin/Blog/Edit", { id: $(this).data("id") }, function (res) {
-                    $("#editBlogId").val(res.id);
-                    $("#editBlogTitle").val(res.title);
-                    $("#editBlogBody").val(res.body);
-                    new bootstrap.Modal("#editBlogModal").show();
-                });
-            });
+            // ================= Confirm Action =================
+            $("#confirmToggleBtn").click(function () {
 
-            $("#updateBlogBtn").click(function () {
                 $.ajax({
-                    url: "/Admin/Blog/Edit",
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify({
-                        id: $("#editBlogId").val(),
-                        title: $("#editBlogTitle").val(),
-                        body: $("#editBlogBody").val()
-                    }),
-                    success: function () {
-                        bootstrap.Modal.getInstance("#editBlogModal").hide();
-                        $("#responseContainer").load("/Admin/Blog/ResponsePartial");
-                        blogTable.ajax.reload(null, false);
-                    }
-                });
-            });
-
-            // ================= Delete Blog =================
-            $("#blogs").on("click", ".delete-blog-modal", function () {
-                $("#deleteBlogId").val($(this).data("id"));
-                new bootstrap.Modal("#deleteBlogModal").show();
-            });
-
-            $("#confirmDeleteBlogBtn").click(function () {
-                $.ajax({
-                    url: "/Admin/Blog/Delete",
+                    url: "/Admin/Blog/ToggleSuspend",
                     type: "POST",
                     data: {
-                        id: $("#deleteBlogId").val(),
-                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                        id: selectedBlogId,
+                        suspend: shouldSuspend
                     },
                     success: function () {
-                        bootstrap.Modal.getInstance("#deleteBlogModal").hide();
-                        $("#responseContainer").load("/Admin/Blog/ResponsePartial");
-                        blogTable.ajax.reload(null, false);
+
+                        $("#toggleStatusModal").modal("hide");
+
+                        blogsTable.ajax.reload(null, false);
+
+                        toastr.success("Blog status updated successfully.");
+                    },
+                    error: function () {
+                        toastr.error("Something went wrong.");
                     }
                 });
+
             });
 
         });
     </script>
-
 }
-

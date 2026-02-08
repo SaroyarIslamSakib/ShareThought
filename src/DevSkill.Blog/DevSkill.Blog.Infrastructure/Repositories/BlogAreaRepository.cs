@@ -23,5 +23,11 @@ namespace DevSkill.Blog.Infrastructure.Repositories
                 q => q.Include(b => b.Posts)
             );
         }
+
+        public async Task<(IList<BlogArea>, int total, int totalDisplay)> GetPagedBlogsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder)
+        {
+            return await GetDynamicAsync(x => x.Name.Contains(searchText)
+                                              , sortOrder, null, pageIndex, pageSize);
+        }
     }
 }

@@ -17,12 +17,12 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
     [Area("Admin")]
     public class UserManagementController : Controller
     {
-        private readonly ILogger<BlogController> _logger;
+        private readonly ILogger<UserManagementController> _logger;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationRoleManager _roleManager;
-        public UserManagementController(ILogger<BlogController> logger, IMediator mediator, IMapper mapper, UserManager<ApplicationUser> userManager, ApplicationRoleManager roleManager)
+        public UserManagementController(ILogger<UserManagementController> logger, IMediator mediator, IMapper mapper, UserManager<ApplicationUser> userManager, ApplicationRoleManager roleManager)
         {
             _logger = logger;
             _mediator = mediator;
