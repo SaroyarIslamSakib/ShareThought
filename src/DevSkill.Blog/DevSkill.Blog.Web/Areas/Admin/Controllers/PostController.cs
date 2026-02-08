@@ -1,12 +1,88 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Cortex.Mediator;
+using DevSkill.Blog.Application.Features.BlogsArea.Commands;
+using DevSkill.Blog.Application.Features.Posts.Commands;
+using DevSkill.Blog.Application.Features.Posts.Queries;
+using DevSkill.Blog.Domain;
+using DevSkill.Blog.Domain.Entities;
+using DevSkill.Blog.Web.Areas.Blogger.Models;
+using MapsterMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System.Web;
 
 namespace DevSkill.Blog.Web.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class PostController : Controller
     {
+        private readonly ILogger<PostController> _logger;
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
+        public PostController(ILogger<PostController> logger, IMediator mediator, IMapper mapper)
+        {
+            _logger = logger;
+            _mediator = mediator;
+            _mapper = mapper;
+        }
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetPostsJsonData([FromBody] PostListModel model)
+        {
+            try
+            {
+                var query = new GetPublicPostQuery
+                {
+                    SearchText = model.Search.Value,
+                    SortOrder = model.FormatSortExpression("Title", "Content", "CreatedAt"),
+                    PageSize = model.PageSize,
+                    PageIndex = model.PageIndex
+                };
+
+                var (items, total, totalDisplay) =
+                    await _mediator.SendQueryAsync<
+                        GetPublicPostQuery,
+                        (IList<Post>, int, int)>(query);
+
+                return Json(new
+                {
+                    recordsTotal = total,
+                    recordsFiltered = totalDisplay,
+                    data = items.Select(p => new[]
+                    {
+                        HttpUtility.HtmlEncode(
+                            string.IsNullOrEmpty(p.FeatureImagePath)
+                                ? "/uploads/features/default_feature_img.png"
+                                : p.FeatureImagePath),
+                        HttpUtility.HtmlEncode(p.Title),
+                        HttpUtility.HtmlEncode(p.Content),
+                        p.CreatedAt.ToString("dd-MM-yyyy"),
+                        p.Likes.ToString(),
+                        p.Id.ToString(),
+                        p.Comments.Count().ToString(),
+                        HttpUtility.HtmlEncode(p.BlogArea.Name),
+                        p.IsSuspended.ToString(),
+                        p.Reports.Count().ToString()
+                    }).ToArray()
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetPostsJsonData");
+                return Json(DataTables.EmptyResult);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ToggleSuspend(Guid id, bool suspend)
+        {
+            await _mediator.SendCommandAsync<TogglePostSuspendCommand, Guid>
+                (new TogglePostSuspendCommand { Id = id, IsSuspended = suspend });
+
+            return Ok();
         }
     }
 }

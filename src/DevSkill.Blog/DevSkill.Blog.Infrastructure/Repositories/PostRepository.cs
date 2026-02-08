@@ -43,24 +43,26 @@ namespace DevSkill.Blog.Infrastructure.Repositories
         public async Task<(IList<Post>, int total, int totalDisplay)> GetPagedPublicPostsAsync
             (int pageIndex, int pageSize, string? searchText, string? sortOrder, string? categoryName)
         {
-           if(categoryName == string.Empty)
+           if(categoryName == string.Empty || categoryName == null)
             {
                 return await GetDynamicAsync(x => (x.Title.Contains(searchText)
-                    || x.Tags.Any(t => t.Name.Contains(searchText)))
+                    || x.Tags.Any(t => t.Name.Contains(searchText)
+                    || x.BlogArea.Name.Contains(searchText)))
                     && x.IsPublished == true, 
                     sortOrder,
-                    q=>q.Include(x => x.Comments.Where(m => m.IsDeleted ==false)).Include(x => x.BlogArea), 
+                    q=>q.Include(x => x.Comments.Where(m => m.IsDeleted ==false)).Include(x => x.BlogArea).Include(y => y.Reports), 
                     pageIndex, 
                     pageSize);
             }
            else
             {
                 return await GetDynamicAsync(x => (x.Title.Contains(searchText)
-                || x.Tags.Any(t => t.Name.Contains(searchText)))
+                || x.Tags.Any(t => t.Name.Contains(searchText)
+                || x.BlogArea.Name.Contains(searchText)))
                 && x.IsPublished == true 
                 && x.PostCategories.Any(c => c.Name == categoryName), 
                 sortOrder,
-                q => q.Include(x => x.Comments.Where(m => m.IsDeleted == false)).Include(x => x.BlogArea),
+                q => q.Include(x => x.Comments.Where(m => m.IsDeleted == false)).Include(x => x.BlogArea).Include(y => y.Reports),
                 pageIndex, 
                 pageSize);
             }

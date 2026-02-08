@@ -21,6 +21,7 @@ namespace DevSkill.Blog.Domain.Entities
         public DateTime? PublishedAt { get; set; }
 
         public bool IsPublished { get; set; }
+        public bool IsSuspended { get; set; }
 
         public string? FeatureImagePath { get; set; }
         public int Likes { get; set; }

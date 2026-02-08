@@ -1,0 +1,225 @@
+﻿
+@{
+    ViewData["Title"] = "Posts";
+}
+
+@Html.AntiForgeryToken()
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
+    <link rel="stylesheet" href="~/css/admin-post-listview.css" />
+}
+
+<!-- ================= App Content Header ================= -->
+<div class="app-content-header">
+    <div class="container-fluid">
+
+        <!-- Alert / Response -->
+        <div class="row mb-3">
+            <div id="responseContainer" class="col-lg-4 col-md-6">
+                <partial name="_ResponsePartial" />
+            </div>
+            <partial name="_ChangeStatusModalPartial" />
+        </div>
+    </div>
+</div>
+
+<!-- ================= App Content ================= -->
+<div class="app-content">
+    <div class="container-fluid">
+        <!-- ================= DataTable Section ================= -->
+        <div class="card card-primary card-outline shadow-sm">
+
+            <div class="mx-3">
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="posts" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Posts</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--end::App Content-->
+@section Scripts
+{
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
+    <script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
+
+    <script>
+        let postsTable;
+        let selectedPostId = 0;
+        let shouldSuspend = false;
+
+        $(function () {
+
+            // ================= DataTable =================
+            postsTable = $("#posts").DataTable({
+                processing: true,
+                serverSide: true,
+                paging: true,
+                pagingType: "full_numbers",
+                lengthChange: true,
+                info: true,
+                ordering: false,
+                searching: true,
+                ajax: {
+                    url: "/Admin/Post/GetPostsJsonData",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: d => JSON.stringify(d)
+                },
+                columns: [
+                    {
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+
+                                    const isSuspended = row[8] === "True" || row[8] === "true";
+                                    const actionText = isSuspended ? "Unban" : "Ban";
+                                    const actionIcon = isSuspended ? "fa-unlock" : "fa-ban";
+                                    const actionClass = isSuspended ? "text-success" : "text-danger";
+
+                                    const statusBadge = isSuspended
+                                        ? `<span class="badge bg-warning text-dark ms-3">
+                                                <i class="fa-solid fa-ban me-1"></i> Banned
+                                           </span>`
+                                        : `<span class="badge bg-success ms-3">
+                                                <i class="fa-solid fa-check me-1"></i> Active
+                                           </span>`;
+
+                            return `
+                            <div class="post-row">
+
+                                <img src="${row[0]}" alt="${row[1]}" />
+
+                                <div class="flex-grow-1">
+                                    <h6>${row[1]}</h6>
+
+                                    <div class="post-meta">
+                                        Blog : ${row[7]}
+                                    </div>
+
+                                    <div class="post-stats">
+                                        <span>
+                                            <i class="fa-regular fa-calendar me-1"></i>
+                                            ${row[3]}
+                                        </span>
+
+                                        <span class="ms-3">
+                                            <i class="fa-solid fa-heart"></i> ${row[4]}
+                                        </span>
+
+                                        <span class="ms-3">
+                                            <i class="fa-solid fa-comment"></i> ${row[6]}
+                                        </span>
+                                        <span class="ms-3">
+                                            <i class="fa-solid fa-flag"></i> ${row[9]}
+                                        </span>
+                                        ${statusBadge}
+                                    </div>
+                                </div>
+
+                                <div class="post-actions dropdown">
+                                    <button data-bs-toggle="dropdown">
+                                        <i class="fa fa-ellipsis"></i>
+                                    </button>
+
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item"
+                                               href="/Blogger/Post/Edit/${row[5]}">
+                                               Edit
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                                <button class="dropdown-item toggle-post-status ${actionClass}"
+                                                    data-id="${row[5]}"
+                                                    data-status="${row[8]}">
+                                                    <i class="fa-solid ${actionIcon} me-2"></i>
+                                                    ${actionText}
+                                                </button>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>`;
+                        }
+                    }
+                ]
+            });
+
+
+            // ================= Open Modal =================
+            $(document).on("click", ".toggle-post-status", function () {
+
+                selectedPostId = $(this).data("id");
+                const status = $(this).data("status");
+
+                if (status === "True" || status === "true") {
+
+                    // Already Suspended → Unblock
+                    shouldSuspend = false;
+
+                    $("#toggleMessage").text("Are you sure you want to unblock this Post?");
+
+                    $("#confirmToggleBtn")
+                        .removeClass("btn-danger")
+                        .addClass("btn-success")
+                        .text("Yes, Unblock");
+
+                } else {
+
+                    // Active → Ban
+                    shouldSuspend = true;
+
+                    $("#toggleMessage").text("Are you sure you want to ban this Post?");
+
+                    $("#confirmToggleBtn")
+                        .removeClass("btn-success")
+                        .addClass("btn-danger")
+                        .text("Yes, Ban");
+                }
+
+                $("#toggleStatusModal").modal("show");
+            });
+
+
+            // ================= Confirm Action =================
+            $("#confirmToggleBtn").on("click", function () {
+
+                $.ajax({
+                    url: "/Admin/Post/ToggleSuspend",
+                    type: "POST",
+                    data: {
+                        id: selectedPostId,
+                        suspend: shouldSuspend
+                    },
+                    success: function () {
+
+                        $("#toggleStatusModal").modal("hide");
+
+                        postsTable.ajax.reload(null, false);
+
+                        toastr.success("Post status updated successfully.");
+                    },
+                    error: function () {
+                        toastr.error("Something went wrong.");
+                    }
+                });
+
+            });
+
+        });
+    </script>
+}
