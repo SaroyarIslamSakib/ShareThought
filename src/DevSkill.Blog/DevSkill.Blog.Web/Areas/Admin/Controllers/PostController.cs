@@ -1,10 +1,12 @@
 ﻿using Cortex.Mediator;
 using DevSkill.Blog.Application.Features.BlogsArea.Commands;
+using DevSkill.Blog.Application.Features.Comments.Queries;
 using DevSkill.Blog.Application.Features.Posts.Commands;
 using DevSkill.Blog.Application.Features.Posts.Queries;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Web.Areas.Blogger.Models;
+using DevSkill.Blog.Web.Models;
 using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -83,6 +85,41 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
                 (new TogglePostSuspendCommand { Id = id, IsSuspended = suspend });
 
             return Ok();
+        }
+
+        public async Task<IActionResult> PostReview(Guid id)
+        {
+            try
+            {
+                var query = new GetPostByIdQuery()
+                {
+                    PostId = id
+                };
+                var post = await _mediator.SendQueryAsync<GetPostByIdQuery, Post>(query);
+                var commentsCount = await _mediator.SendQueryAsync<GetCommentCountByPostIdQuery, int>(new GetCommentCountByPostIdQuery { PostId = id });
+                IndexViewModel model = new IndexViewModel()
+                {
+                    PublicPostModel = new PublicPostViewModel()
+                    {
+                        Title = post.Title,
+                        Content = post.Content,
+                        CategoryNames = post.PostCategories.Select(pc => pc.Name).ToList(),
+                        TagNames = post.Tags.Select(t => t.Name).ToList(),
+                        Likes = post.Likes,
+                        Id = post.Id,
+                        Comments = commentsCount,
+                        Reports = post.Reports,
+                        IsSuspended=post.IsSuspended
+                    }
+
+                };
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return RedirectToAction("Index", "Post");
+            }
         }
     }
 }

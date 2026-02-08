@@ -75,6 +75,7 @@ namespace DevSkill.Blog.Infrastructure.Repositories
                 q => q
                     .Include(p => p.PostCategories)
                     .Include(p => p.Tags)
+                    .Include(p => p.Reports)
             );
 
             return posts.FirstOrDefault();
