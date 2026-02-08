@@ -4,12 +4,9 @@ using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Domain.Enums;
 using DevSkill.Blog.Domain.Utilities;
 using DevSkill.Blog.Infrastructure.Extensions;
-using DevSkill.Blog.Infrastructure.Identity;
 using DevSkill.Blog.Web.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace DevSkill.Blog.Web.Controllers
 {
