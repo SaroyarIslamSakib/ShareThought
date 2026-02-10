@@ -79,6 +79,12 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
             catch(Exception ex)
             {
                 _logger.LogError("Failed to change settings");
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to change settings",
+                    Response = ResponseTypes.danger
+
+                });
                 return RedirectToAction("Index");
             }
             

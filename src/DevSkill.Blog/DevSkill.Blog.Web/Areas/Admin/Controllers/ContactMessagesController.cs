@@ -129,9 +129,20 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
                 return StatusCode(500);
             }
         }
-        [HttpPost,ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> MessageReply(ContactMessageViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Invalid reply data",
+                    Response = ResponseTypes.danger
+                });
+
+                return RedirectToAction(nameof(Index));
+            }
+
             try
             {
                 var email = new FormalEmailText(
@@ -139,24 +150,43 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
                     model.ReplySubject,
                     model.ReplyText
                 );
+
                 await _emailUtility.SendEmailAsync(
                     model.Name,
                     model.Email,
                     email.Subject,
                     email.Body
                 );
-                var command = new MarkContactMessageAsRepliedCommand()
+
+                var command = new MarkContactMessageAsRepliedCommand
                 {
                     Id = model.Id
                 };
-                await _mediator.SendCommandAsync<MarkContactMessageAsRepliedCommand, Guid>(command);
-                return RedirectToAction("Index");
+
+                await _mediator
+                    .SendCommandAsync<MarkContactMessageAsRepliedCommand, Guid>(command);
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Send message successfully",
+                    Response = ResponseTypes.success
+                });
+
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to send reply email");
-                return RedirectToAction("Index");
+                _logger.LogError(ex,
+                    "Failed to send reply email. MessageId: {MessageId}",
+                    model?.Id);
 
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to send message",
+                    Response = ResponseTypes.danger
+                });
+
+                return RedirectToAction(nameof(Index));
             }
         }
 

@@ -5,6 +5,7 @@ using DevSkill.Blog.Application.Features.Posts.Commands;
 using DevSkill.Blog.Application.Features.Posts.Queries;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Entities;
+using DevSkill.Blog.Infrastructure.Extensions;
 using DevSkill.Blog.Web.Areas.Blogger.Models;
 using DevSkill.Blog.Web.Models;
 using MapsterMapper;
@@ -81,10 +82,25 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> ToggleSuspend(Guid id, bool suspend)
         {
-            await _mediator.SendCommandAsync<TogglePostSuspendCommand, Guid>
-                (new TogglePostSuspendCommand { Id = id, IsSuspended = suspend });
+            try
+            {
+                await _mediator.SendCommandAsync<TogglePostSuspendCommand, Guid>
+                        (new TogglePostSuspendCommand { Id = id, IsSuspended = suspend });
 
-            return Ok();
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Error while toggling suspend for Post Id: {PostId}", id);
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to update suspend status",
+                    Response = ResponseTypes.danger
+                });
+
+                return StatusCode(500, new { success = false });
+            }
         }
 
         public async Task<IActionResult> PostReview(Guid id)

@@ -6,8 +6,10 @@ using DevSkill.Blog.Application.Features.Posts.Queries;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Dtos;
 using DevSkill.Blog.Domain.Entities;
+using DevSkill.Blog.Infrastructure.Extensions;
 using DevSkill.Blog.Web.Areas.Admin.Models;
 using DevSkill.Blog.Web.Areas.Blogger.Models;
+using DevSkill.Blog.Web.Models;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
@@ -126,10 +128,26 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> ToggleSuspend(Guid id, bool suspend)
         {
-            await _mediator.SendCommandAsync<ToggleBlogSuspendCommand, Guid>
-                (new ToggleBlogSuspendCommand { Id = id, IsSuspended = suspend });
+            try
+            {
+                await _mediator.SendCommandAsync<ToggleBlogSuspendCommand, Guid>
+                    (new ToggleBlogSuspendCommand { Id = id, IsSuspended = suspend });
 
-            return Ok();
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Error while toggling suspend for Blog Id: {BlogId}", id);
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to update suspend status",
+                    Response = ResponseTypes.danger
+                });
+
+                return StatusCode(500, new { success = false });
+            }
+
         }
     }
 }

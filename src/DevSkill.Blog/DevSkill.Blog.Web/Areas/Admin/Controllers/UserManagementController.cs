@@ -74,6 +74,11 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to get user list data");
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to load user data",
+                    Response = ResponseTypes.danger
+                });
                 return Json(DataTables.EmptyResult);
             }
         }
@@ -81,13 +86,29 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
         public async Task<IActionResult> AssignRoleModal(Guid userId)
         {
             if (userId == Guid.Empty)
+            {
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Invalid user id",
+                    Response = ResponseTypes.danger
+                });
+
                 return BadRequest();
+            }
 
             try
             {
                 var user = await _userManager.FindByIdAsync(userId.ToString());
                 if (user == null)
-                    return NotFound();
+                {
+                    TempData.Put("ResponseMessage", new ResponseModel
+                    {
+                        Message = "User not found",
+                        Response = ResponseTypes.danger
+                    });
+
+                    return RedirectToAction("Index");
+                }
 
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var roles = _roleManager.Roles.ToList();
@@ -109,6 +130,13 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Failed to load assign role modal. UserId: {userId}");
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to load role data",
+                    Response = ResponseTypes.danger
+                });
+
                 return StatusCode(500);
             }
         }
@@ -120,7 +148,14 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
         public async Task<IActionResult> AssignRoles(AssignRoleViewModel model)
         {
             if (!ModelState.IsValid)
+            {
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Invalid request data",
+                    Response = ResponseTypes.danger
+                });
                 return RedirectToAction(nameof(Index));
+            }
 
             try
             {
@@ -203,7 +238,15 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
         public async Task<IActionResult> Delete(string userId)
         {
             if (string.IsNullOrEmpty(userId))
+            {
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Invalid user id",
+                    Response = ResponseTypes.danger
+                });
+
                 return BadRequest();
+            }
 
             try
             {
