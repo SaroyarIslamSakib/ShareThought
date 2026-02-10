@@ -1,0 +1,138 @@
+﻿@model ContactMessageViewModel
+@{
+    ViewData["Title"] = "Reply Message";
+}
+<!-- ================= App Content Header ================= -->
+<div class="app-content-header">
+    <div class="container-fluid">
+
+        <!-- Alert / Response -->
+        <div class="row mb-3">
+            <div id="responseContainer" class="col-lg-4 col-md-6">
+                <partial name="_ResponsePartial" />
+            </div>
+        </div>
+
+        <!-- Title & Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb breadcrumb-style1">
+                <li class="breadcrumb-item">
+                    <a href="javascript:void(0);">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="javascript:void(0);">Users</a>
+                </li>
+                <li class="breadcrumb-item active">All Users</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- ================= App Content ================= -->
+<div class="app-content">
+    <div class="container-fluid">
+
+        <div class="card shadow-sm border-0">
+
+            <!-- ================= Contact Message Section ================= -->
+            <div class="card-body border-bottom bg-light-subtle">
+
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h5 class="fw-semibold mb-1">@Model.Name</h5>
+                        <div class="text-muted small">
+                            <i class="bi bi-envelope me-1"></i> @Model.Email
+                        </div>
+                    </div>
+
+                    <div class="text-end">
+                        <span class="badge bg-label-primary me-1">
+                            @Model.Topic
+                        </span>
+                        <div class="text-muted small mt-1">
+                            @Model.CreatedAt.ToString("dd MMM yyyy, hh:mm tt")
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-3 rounded bg-white border">
+                    <div class="text-muted small mb-2 fw-semibold">
+                        Original Message
+                    </div>
+                    <div style="white-space: pre-line;">
+                        @Model.Message
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- ================= Reply Form Section ================= -->
+            <div class="card-body">
+
+                <h6 class="fw-semibold mb-3">
+                    <i class="bi bi-reply-fill text-success me-2"></i>
+                    Reply via Email
+                </h6>
+
+                <form asp-area="Admin"
+                      asp-controller="ContactMessages"
+                      asp-action="MessageReply"
+                      asp-antiforgery="true"
+                      method="post">
+
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="Email" />
+                    <input type="hidden" asp-for="Name" />
+                    <input type="hidden" asp-for="IsRead" />
+                    <input type="hidden" asp-for="Status" />
+                    <input type="hidden" asp-for="Message" />
+
+                    <!-- Subject -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Subject</label>
+                        <input type="text"
+                               asp-for="ReplySubject"
+                               class="form-control"
+                               placeholder="Enter email subject..."
+                               required />
+                    </div>
+
+                    <!-- Reply Body -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Reply Message</label>
+                        <textarea asp-for="ReplyText"
+                                  class="form-control"
+                                  rows="7"
+                                  placeholder="Write your professional email response..."
+                                  required></textarea>
+                        <span asp-validation-for="ReplyText" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+
+                        <a asp-action="Index"
+                           asp-controller="ContactMessages"
+                           asp-area="Admin"
+                           class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i> Back
+                        </a>
+
+                        <button type="submit" class="btn btn-success px-4">
+                            <i class="bi bi-send me-1"></i> Send Email Reply
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!--end::App Content-->
+

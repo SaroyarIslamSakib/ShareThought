@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 
 namespace DevSkill.Blog.Application.Features.Contacts.Commands
 {
-    public class MarkContactMessageAsReadCommandHandler : ICommandHandler<MarkContactMessageAsReadCommand, Guid>
+    public class MarkContactMessageAsRepliedCommandHandler : ICommandHandler<MarkContactMessageAsRepliedCommand, Guid>
     {
         private readonly IApplicationUnitOfWork _applicationUnitOfWork;
-        public MarkContactMessageAsReadCommandHandler(IApplicationUnitOfWork applicationUnitOfWork)
+        public MarkContactMessageAsRepliedCommandHandler(IApplicationUnitOfWork applicationUnitOfWork)
         {
             _applicationUnitOfWork = applicationUnitOfWork;
         }
-        public async Task<Guid> Handle(MarkContactMessageAsReadCommand command, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(MarkContactMessageAsRepliedCommand command, CancellationToken cancellationToken)
         {
             var message = await _applicationUnitOfWork.ContactMessageRepository.GetByIdAsync(command.Id);
-            if (!message.IsRead is true)
+            if (message.Status != MessageStatus.Replied)
             {
-                message.IsRead = true;
+                message.Status = MessageStatus.Replied;
             }
             await _applicationUnitOfWork.ContactMessageRepository.EditAsync(message);
             await _applicationUnitOfWork.SaveAsync();

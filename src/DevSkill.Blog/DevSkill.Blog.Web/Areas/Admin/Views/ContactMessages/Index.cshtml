@@ -63,6 +63,7 @@
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Topic</th>
+                                    <th>Visibility</th>
                                     <th>Status</th>
                                     <th>Recieved Date</th>
                                     <th>Action</th>
@@ -74,6 +75,7 @@
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Topic</th>
+                                    <th>Visibility</th>
                                     <th>Status</th>
                                     <th>Recieved Date</th>
                                     <th>Action</th>
@@ -133,16 +135,34 @@
                 },
                 {
                     orderable: false,
-                    targets: 5,
+                        targets : 4,
+                        render:function(data, type, row)
+                        {
+                            if(data == "Replied" || data == "replied")
+                            {
+                                 return '<span class="badge bg-success">Replied</span>';
+                            }
+                            else
+                            {
+                                return '<span class="badge bg-warning text-dark">Pending</span>';
+                            }
+
+                        }
+                },
+                {
+                    orderable: false,
+                    targets: 6,
                     render: function (data) {
                         return `
                         <div class="btn-group btn-group-sm">
                             <button class="btn btn-outline-secondary show-message-modal" data-id="${data}" title="View">
                                 <i class="fa fa-eye"></i>
                             </button>
-                            <button class="btn btn-outline-secondary edit-message-modal" data-id="${data}" title="Edit">
-                                <i class="fa fa-pencil"></i>
-                            </button>
+                            <a href="/Admin/ContactMessages/MessageReply/${data}"
+                               class="btn btn-outline-secondary"
+                               title="Reply">
+                                <i class="fa-solid fa-reply"></i>
+                            </a>
                             <button class="btn btn-outline-secondary delete-message-modal" data-id="${data}" title="Delete">
                                 <i class="fa fa-trash"></i>
                             </button>
