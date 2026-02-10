@@ -116,10 +116,11 @@
 
                             return `
                             <div class="btn-group btn-group-sm">
-                                <button class="btn btn-outline-secondary show-message-modal"
-                                        data-id="${data}" title="View">
-                                    <i class="fa fa-eye"></i>
-                                </button>
+                                    <a href="/Admin/Blog/Posts/${data}"
+                                       class="btn btn-outline-secondary"
+                                       title="View">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
                                 <button class="btn btn-outline-secondary edit-message-modal"
                                         data-id="${data}" title="Edit">
                                     <i class="fa fa-pencil"></i>

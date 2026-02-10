@@ -2,10 +2,12 @@
 using DevSkill.Blog.Application.Features.BlogsArea.Commands;
 using DevSkill.Blog.Application.Features.BlogsArea.Queries;
 using DevSkill.Blog.Application.Features.Contacts.Queries;
+using DevSkill.Blog.Application.Features.Posts.Queries;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Dtos;
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Web.Areas.Admin.Models;
+using DevSkill.Blog.Web.Areas.Blogger.Models;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
@@ -28,8 +30,11 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
         {
             return View();
         }
-
-
+        public IActionResult Posts(Guid id)
+        {
+            ViewBag.BlogId = id;
+            return View();
+        }
         [HttpPost]
         public JsonResult GetBlogsJsonData([FromBody] BlogListModel model)
         {
@@ -66,6 +71,54 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while fetching contact messages.");
+                return Json(DataTables.EmptyResult);
+            }
+        }
+        [HttpPost]
+        public async Task<JsonResult> GetPostsByBlogIdJsonData([FromBody] PostListModel model)
+        {
+            try
+            {
+                var query = new GetPostsByBlogIdQuery
+                {
+                    SearchText = model.Search.Value,
+                    SortOrder = model.FormatSortExpression("Title", "Content", "CreatedAt"),
+                    PageSize = model.PageSize,
+                    PageIndex = model.PageIndex,
+                    BlogId = model.BlogId
+
+                };
+
+                var (items, total, totalDisplay) =
+                    await _mediator.SendQueryAsync<
+                        GetPostsByBlogIdQuery,
+                        (IList<Post>, int, int)>(query);
+
+                return Json(new
+                {
+                    recordsTotal = total,
+                    recordsFiltered = totalDisplay,
+                    data = items.Select(p => new[]
+                    {
+                        HttpUtility.HtmlEncode(
+                            string.IsNullOrEmpty(p.FeatureImagePath)
+                                ? "/uploads/features/default_feature_img.png"
+                                : p.FeatureImagePath),
+                        HttpUtility.HtmlEncode(p.Title),
+                        HttpUtility.HtmlEncode(p.Content),
+                        p.CreatedAt.ToString("dd-MM-yyyy"),
+                        p.Likes.ToString(),
+                        p.Id.ToString(),
+                        p.Comments.Count().ToString(),
+                        HttpUtility.HtmlEncode(p.BlogArea.Name),
+                        p.IsSuspended.ToString(),
+                        p.Reports.Count().ToString()
+                    }).ToArray()
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetPostsJsonData");
                 return Json(DataTables.EmptyResult);
             }
         }

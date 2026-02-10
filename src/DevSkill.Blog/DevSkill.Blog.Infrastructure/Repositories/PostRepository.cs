@@ -34,7 +34,8 @@ namespace DevSkill.Blog.Infrastructure.Repositories
         {
             return await GetDynamicAsync(x => x.BlogAreaId==BlogId && x.Title.Contains(searchText) 
                 && x.IsPublished == true, sortOrder,
-                q => q.Include(x => x.Comments.Where(m => m.IsDeleted == false)),
+                q => q.Include(x => x.Comments.Where(m => m.IsDeleted == false))
+                      .Include(x => x.BlogArea),
                 pageIndex, 
                 pageSize);
 

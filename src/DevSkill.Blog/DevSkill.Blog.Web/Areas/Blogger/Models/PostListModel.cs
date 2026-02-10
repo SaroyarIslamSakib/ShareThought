@@ -4,5 +4,6 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Models
 {
     public class PostListModel : DataTables
     {
+        public Guid BlogId { get; set; }
     }
 }
