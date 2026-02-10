@@ -1,0 +1,105 @@
+﻿@model DashboardItemModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+@section Styles
+{
+    <link rel="stylesheet" href="~/Admin/css/admin-dashboard.css"/>
+}
+
+<!-- ================= App Content Header ================= -->
+<div class="app-content-header">
+    <div class="container-fluid">
+
+        <!-- Alert / Response -->
+        <div class="row mb-3">
+
+        </div>
+    </div>
+</div>
+
+<!-- ================= App Content ================= -->
+<div class="app-content">
+    <div class="container-fluid">
+        <!-- ================= DataTable Section ================= -->
+
+            <div class="mx-3">
+
+                <div class="row g-4">
+                    <!-- Total Post -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="dashboard-card views">
+                            <div class="card-content">
+                                <div class="icon">
+                                <i class="fa-solid fa-file-lines"></i>
+                                </div>
+                                <div class="details">
+                                    <h6>Total Post</h6>
+                                    <h3>@Model.TotalPost</h3>
+                                    <span class="trend up">
+                                        Public & Draft posts
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Blogs -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="dashboard-card today">
+                            <div class="card-content">
+                                <div class="icon">
+                                    <i class="fa-solid fa-blog"></i>
+                                </div>
+                                <div class="details">
+                                    <h6>Total Blog</h6>
+                                    <h3>@Model.TotalBlog</h3>
+                                        <span class="trend up">
+                                            All valid blogs
+                                        </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Users -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="dashboard-card users">
+                            <div class="card-content">
+                                <div class="icon">
+                                    <i class="fa-solid fa-user-group"></i>
+                                </div>
+                                <div class="details">
+                                    <h6>Total User</h6>
+                                    <h3>@Model.TotalUser </h3>
+                                        <span class="trend up">
+                                            All varified users
+                                        </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Message -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="dashboard-card bounce">
+                            <div class="card-content">
+                                <div class="icon">
+                                <i class="fa-solid fa-envelope"></i>
+                                </div>
+                                <div class="details">
+                                    <h6>Messages</h6>
+                                    <h3>@Model.TotalMessage</h3>
+                                    <span class="trend up">
+                                        Updated recently
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+    </div>
+</div>
+<!--end::App Content-->

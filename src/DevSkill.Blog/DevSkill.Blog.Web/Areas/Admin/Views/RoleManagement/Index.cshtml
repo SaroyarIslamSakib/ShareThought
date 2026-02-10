@@ -6,10 +6,8 @@
 {
     <link rel="stylesheet" href="~/Admin/css/role-card.css" />
 }
-
     <div class="app-content-header">
         <div class="container-fluid">
-
             <!-- Alert / Response -->
             <div class="row mb-3">
                 <div id="responseContainer" class="col-lg-4 col-md-6">
@@ -177,7 +175,7 @@
 
             $(".role-description").each(function () {
 
-                const maxLength = 90; // চাইলে কম-বেশি করো
+                const maxLength = 90;
                 const fullText = $(this).data("full");
 
                 if (fullText.length > maxLength) {

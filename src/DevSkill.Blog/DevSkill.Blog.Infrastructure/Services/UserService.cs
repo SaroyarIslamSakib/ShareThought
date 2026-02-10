@@ -53,5 +53,9 @@ namespace DevSkill.Blog.Infrastructure.Services
 
             return user;
         }
+        public async Task<int> GetTotalUserCountAsync()
+        {
+            return await _context.Users.CountAsync();
+        }
     }
 }

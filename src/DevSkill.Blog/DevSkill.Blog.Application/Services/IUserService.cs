@@ -11,5 +11,6 @@ namespace DevSkill.Blog.Application.Services
     {
         Task<IList<UserListDto>> GetAllUsersAsync();
         Task<UserListDto?> GetUserByIdAsync(Guid userId);
+        Task<int> GetTotalUserCountAsync();
     }
 }
