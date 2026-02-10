@@ -18,6 +18,18 @@
             </div>
             <partial name="_ChangeStatusModalPartial" />
         </div>
+        <!-- Title & Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb breadcrumb-style1 mb-2">
+                <li class="breadcrumb-item">
+                    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a asp-area="Admin" asp-controller="Post" asp-action="Index">Posts</a>
+                </li>
+                <li class="breadcrumb-item active">Review Post</li>
+            </ol>
+        </nav>
     </div>
 </div>
 

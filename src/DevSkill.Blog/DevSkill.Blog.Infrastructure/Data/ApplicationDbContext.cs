@@ -54,5 +54,7 @@ namespace DevSkill.Blog.Infrastructure.Data
         public DbSet<ContactMessage> ContactMessages { get; set; }
         public DbSet<BlogArea> BlogAreas { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<Settings> Settings { get; set; }
+
     }
 }

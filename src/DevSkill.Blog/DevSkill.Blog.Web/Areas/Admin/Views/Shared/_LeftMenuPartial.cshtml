@@ -58,7 +58,7 @@
         <li class="menu-item">
             <a asp-area="Admin" asp-controller="Post" asp-action="Index" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-detail"></i>
-                <div>Post</div>
+                <div>Post Management</div>
             </a>
         </li>
 
@@ -87,4 +87,15 @@
         </li>
 
     </ul>
+    <!-- Bottom Settings -->
+    <div class="menu-bottom">
+        <a asp-area="Admin"
+           asp-controller="Settings"
+           asp-action="Index"
+           class="menu-link premium-settings">
+
+            <i class="menu-icon tf-icons bx bx-cog"></i>
+            <span>System Settings</span>
+        </a>
+    </div>
 </aside>

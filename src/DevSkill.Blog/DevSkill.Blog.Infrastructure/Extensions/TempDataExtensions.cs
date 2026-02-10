@@ -25,7 +25,19 @@ namespace DevSkill.Blog.Infrastructure.Extensions
         public static T Peek<T>(this ITempDataDictionary tempData, string key) where T : class
         {
             object o = tempData.Peek(key);
-            return o == null ? null : JsonSerializer.Deserialize<T>((string)o);
+
+            if (o == null)
+                return null;
+
+            try
+            {
+                return JsonSerializer.Deserialize<T>((string)o);
+            }
+            catch
+            {
+                tempData.Remove(key);
+                return null;
+            }
         }
     }
 }

@@ -17,6 +17,7 @@ namespace DevSkill.Blog.Domain
         public ITagRepository TagRepository { get; }
         public ICommentRepository CommentRepository { get; }
         public IReportRepository ReportRepository { get; }
+        public ISettingsRepository SettingsRepository { get; }
 
     }
 }

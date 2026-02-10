@@ -36,6 +36,7 @@ namespace DevSkill.Blog.Infrastructure.Extensions
             service.AddScoped<IUserService, UserService>();
             service.AddScoped<ICommentRepository, CommentRepository>();
             service.AddScoped<IReportRepository, ReportRepository>();
+            service.AddScoped<ISettingsRepository, SettingsRepository>();
         }
         //DbContext Configuration
         public static void AddDbContext(this IServiceCollection service,

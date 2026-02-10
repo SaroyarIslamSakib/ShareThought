@@ -32,3 +32,46 @@
 
 
 
+/* Sidebar Layout */
+.layout-menu {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Main menu grow */
+.menu-inner {
+    flex-grow: 1;
+}
+
+/* Premium Bottom Area */
+.menu-bottom {
+    padding: 18px 16px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    background: linear-gradient(to top, rgba(0,0,0,0.03), transparent);
+}
+
+/* Premium Link Style */
+.premium-settings {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-weight: 500;
+    color: #4b5563;
+    transition: all 0.3s ease;
+}
+
+    /* Hover Effect */
+    .premium-settings:hover {
+        background: rgba(99,102,241,0.08);
+        color: #4f46e5;
+        transform: translateY(-2px);
+    }
+
+        /* Icon animation */
+        .premium-settings:hover i {
+            transform: rotate(45deg);
+            transition: 0.4s ease;
+        }
