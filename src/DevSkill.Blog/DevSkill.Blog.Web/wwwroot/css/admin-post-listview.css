@@ -1,4 +1,7 @@
-﻿/* kill table feeling */
+﻿/* ============================= */
+/* Remove Table Feeling */
+/* ============================= */
+
 #posts {
     border-collapse: separate;
     border-spacing: 0 18px;
@@ -15,6 +18,32 @@
         border: none !important;
         padding: 0 !important;
     }
+
+
+    /* ============================= */
+    /* 2 Column Layout */
+    /* ============================= */
+
+    #posts tbody {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+    }
+
+        #posts tbody tr {
+            width: calc(50% - 12px); /* 2 column */
+            display: block;
+        }
+
+        #posts tbody td {
+            display: block;
+        }
+
+
+/* ============================= */
+/* Post Card Design */
+/* ============================= */
+
 .post-row {
     display: flex;
     align-items: flex-start;
@@ -24,21 +53,36 @@
     border-radius: 16px;
     border: 1px solid #eef0f2;
     transition: all .25s ease;
+    height: 100%;
+    margin-top:16px;
 }
 
     .post-row:hover {
         border-color: #dfe3e8;
         background: #fcfcfd;
+        transform: translateY(-3px);
     }
+
+
+    /* ============================= */
+    /* Image */
+    /* ============================= */
+
     .post-row img {
         width: 96px;
         height: 96px;
-        object-fit: contain; /* ❗ no crop */
+        object-fit: contain; /* no crop */
         background: #f6f7f9;
         border-radius: 12px;
         padding: 8px;
         flex-shrink: 0;
     }
+
+
+    /* ============================= */
+    /* Title */
+    /* ============================= */
+
     .post-row h6 {
         font-size: 1.05rem;
         font-weight: 600;
@@ -47,11 +91,21 @@
         color: #1f2937;
     }
 
+
+/* ============================= */
+/* Meta Info */
+/* ============================= */
+
 .post-meta {
     font-size: .85rem;
     color: #6b7280;
     margin-bottom: 6px;
 }
+
+
+/* ============================= */
+/* Stats */
+/* ============================= */
 
 .post-stats {
     font-size: .85rem;
@@ -59,6 +113,12 @@
     display: flex;
     gap: 16px;
 }
+
+
+/* ============================= */
+/* Action Button */
+/* ============================= */
+
 .post-actions button {
     border: none;
     background: transparent;
@@ -68,3 +128,14 @@
     .post-actions button:hover {
         color: #111827;
     }
+
+
+/* ============================= */
+/* Responsive */
+/* ============================= */
+
+@media (max-width: 768px) {
+    #posts tbody tr {
+        width: 100%;
+    }
+}

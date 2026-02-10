@@ -6,9 +6,8 @@
 {
     <link rel="stylesheet" href="~/Admin/css/role-card.css" />
 }
-<div>
 
-    <div class="app-content-header mb-2">
+    <div class="app-content-header">
         <div class="container-fluid">
 
             <!-- Alert / Response -->
@@ -43,78 +42,83 @@
     </div>
 
 
-    <div class="app-content mt-2">
+    <!-- ================= App Content ================= -->
+    <div class="app-content">
         <div class="container-fluid">
-            <div class="container bg-white">
-                <div class="row">
-                    <div class="mt-4 mb-4">
-                        <div class="col-12 text-end">
-                            <button type="button"
-                                    class="btn btn-primary"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#addRoleModal">
-                                Add Role
-                            </button>
-                        </div>
-                    </div>
-                    @foreach (var role in Model.Roles)
-                    {
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card role-card mb-3 position-relative border-0 shadow-sm">
+            <!-- ================= DataTable Section ================= -->
+            <div class="card card-primary card-outline shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-semibold">
+                        <i class="fa fa-users me-1 text-primary"></i> Roles
+                    </h5>
 
-                                <!-- 3 Dot Dropdown -->
-                                <div class="dropdown position-absolute top-0 end-0 m-2">
-                                    <button class="btn btn-sm btn-light"
-                                            type="button"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false">
-                                        <i class="fa fa-ellipsis-v"></i>
-                                    </button>
+                    <button type="button"
+                            class="btn btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addRoleModal">
+                        Add Role
+                    </button>
+                </div>
+                <div class="mx-3">
 
-                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                                        <li>
-                                            <a class="dropdown-item edit-role-btn"
-                                               data-id="@role.Id"
-                                               href="javascript:void(0)">
-                                                <i class="fa fa-pencil me-2 text-primary"></i> Edit
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item text-danger delete-role-btn"
-                                               data-id="@role.Id"
-                                               href="javascript:void(0)">
-                                                <i class="fa fa-trash me-2"></i> Delete
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
+                    <div class="row">
+                        @foreach (var role in Model.Roles)
+                        {
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card role-card mb-3 position-relative border-0 shadow-sm">
 
-                                <!-- Card Body -->
-                                <div class="card-body text-center pt-4 pb-4">
-                                    <h5 class="card-title mb-2">@role.Name</h5>
-                                    <p class="card-text text-muted small">
-                                        @role.Description
-                                    </p>
+                                    <!-- 3 Dot Dropdown -->
+                                    <div class="dropdown position-absolute top-0 end-0 m-2">
+                                        <button class="btn btn-sm btn-light"
+                                                type="button"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                            <i class="fa fa-ellipsis-v"></i>
+                                        </button>
 
-                                    <a href="javascript:void(0)"
-                                       class="btn btn-outline-primary btn-sm mt-2"
-                                       onclick="openRoleUsers('@role.Id')">
-                                        See Details
-                                    </a>
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                            <li>
+                                                <a class="dropdown-item edit-role-btn"
+                                                   data-id="@role.Id"
+                                                   href="javascript:void(0)">
+                                                    <i class="fa fa-pencil me-2 text-primary"></i> Edit
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item text-danger delete-role-btn"
+                                                   data-id="@role.Id"
+                                                   href="javascript:void(0)">
+                                                    <i class="fa fa-trash me-2"></i> Delete
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Card Body -->
+                                    <div class="card-body text-center pt-4 pb-4">
+                                        <h5 class="card-title mb-2">@role.Name</h5>
+                                        <p class="card-text role-description"
+                                           data-full="@role.Description">
+                                            @role.Description
+                                        </p>
+                                        <a href="javascript:void(0)"
+                                           class="btn btn-outline-primary btn-sm mt-2"
+                                           onclick="openRoleUsers('@role.Id')">
+                                            See Details
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    }
+                        }
 
+
+                    </div>
                     
                 </div>
             </div>
-            
+
         </div>
-
     </div>
-
-</div>
 @section Scripts {
     <script>
                 $(document).on("click", ".edit-role-btn", function () {
@@ -167,6 +171,49 @@
                 });
         }
 
+    </script>
+    <script>
+        $(document).ready(function () {
+
+            $(".role-description").each(function () {
+
+                const maxLength = 90; // চাইলে কম-বেশি করো
+                const fullText = $(this).data("full");
+
+                if (fullText.length > maxLength) {
+
+                    const visibleText = fullText.substring(0, maxLength);
+
+                    $(this).html(
+                        visibleText +
+                        '... <span class="see-more-link" style="color:#4e73df; cursor:pointer;">See more</span>'
+                    );
+
+                    $(this).on("click", ".see-more-link", function () {
+
+                        const parent = $(this).closest(".role-description");
+
+                        parent.html(
+                            fullText +
+                            ' <span class="see-less-link" style="color:#4e73df; cursor:pointer;">See less</span>'
+                        );
+                    });
+
+                    $(this).on("click", ".see-less-link", function () {
+
+                        const parent = $(this).closest(".role-description");
+
+                        parent.html(
+                            visibleText +
+                            '... <span class="see-more-link" style="color:#4e73df; cursor:pointer;">See more</span>'
+                        );
+                    });
+
+                }
+
+            });
+
+        });
     </script>
 
 }
