@@ -309,7 +309,8 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
                         p.CreatedAt.ToString("dd-MM-yyyy"),
                         p.Likes.ToString(),
                         p.Id.ToString(),
-                        p.Comments.Count().ToString()
+                        p.Comments.Count().ToString(),
+                        p.IsSuspended.ToString(),
                     }).ToArray()
                 });
             }
