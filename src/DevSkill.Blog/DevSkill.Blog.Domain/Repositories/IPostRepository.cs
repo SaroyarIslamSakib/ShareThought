@@ -14,5 +14,7 @@ namespace DevSkill.Blog.Domain.Repositories
         Task<(IList<Post>, int total, int totalDisplay)> GetPublishedPagedPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder, Guid BlogId);
         Task<(IList<Post>, int total, int totalDisplay)> GetPagedPublicPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder,string? categoryName);
         Task<Post> GetPostWithCategoriesTagsAsync(Guid postId);
+        Task<int> TotalLikeCountInBlogAsync(Guid blogId);
+        Task<int> TotalCommentCountInBlogAsync(Guid blogId);
     }
 }

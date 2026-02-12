@@ -23,9 +23,6 @@ namespace DevSkill.Blog.Application.Features.Comments.Commands
             if (comment == null)
                 throw new Exception("Comment not found");
 
-            if (comment.UserId != command.UserId)
-                throw new UnauthorizedAccessException();
-
             comment.IsDeleted = true;
             comment.DeletedAt = DateTime.UtcNow;
 

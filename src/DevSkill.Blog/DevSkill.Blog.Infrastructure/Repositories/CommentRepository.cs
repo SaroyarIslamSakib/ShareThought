@@ -20,12 +20,21 @@ namespace DevSkill.Blog.Infrastructure.Repositories
 
         public Task<IList<Comment>> GetByPostIdAsync(Guid postId)
         {
-            return GetAsync(c => c.PostId == postId, null);
+            return GetAsync(c => c.PostId == postId && c.IsApproved, null);
         }
 
         public async Task<int> GetCommentCountByPostIdAsync(Guid postId)
         {
-            return GetCount(c => c.PostId == postId && !c.IsDeleted);
+            return GetCount(c => c.PostId == postId && !c.IsDeleted && c.IsApproved);
+        }
+
+        public async Task<(IList<Comment>, int total, int totalDisplay)> GetPagedBlogCommentsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder, Guid id)
+        {
+            return await GetDynamicAsync(x => x.Post.BlogAreaId == id && !x.IsDeleted && !x.IsApproved && (x.Content.Contains(searchText) || x.Post.Title.Contains(searchText)),
+                sortOrder,
+                q => q.Include(x => x.Post),
+                pageIndex,
+                pageSize);
         }
     }
     

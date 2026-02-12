@@ -22,6 +22,7 @@ namespace DevSkill.Blog.Domain.Entities
         public DateTime? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
+        public bool IsApproved { get; set; }
 
     }
 }

@@ -106,7 +106,7 @@ namespace DevSkill.Blog.Web.Controllers
 
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteComments(Guid id)
+        public async Task<IActionResult> RemoveComment(Guid id)
         {
             if (!User.Identity!.IsAuthenticated)
                 return Unauthorized();
@@ -117,8 +117,7 @@ namespace DevSkill.Blog.Web.Controllers
 
             var command = new DeleteCommentCommand
             {
-                CommentId = id,
-                UserId = user.Id
+                CommentId = id
             };
 
             await _mediator.SendCommandAsync<DeleteCommentCommand, Guid>(command);

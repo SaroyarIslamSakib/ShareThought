@@ -104,7 +104,7 @@ namespace DevSkill.Blog.Web.Controllers
                         p.CreatedAt.ToString("dd-MM-yyyy"),
                         p.Likes.ToString(),
                         p.Id.ToString(),
-                        p.Comments.Count().ToString(),
+                        p.Comments.Where(x => x.IsApproved && !x.IsDeleted).Count().ToString(),
                         p.BlogArea.UserName.ToString()
                     }).ToArray()
                 });

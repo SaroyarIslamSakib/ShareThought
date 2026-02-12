@@ -12,5 +12,6 @@ namespace DevSkill.Blog.Domain.Repositories
     {
         Task<IList<Comment>> GetByPostIdAsync(Guid postId);
         Task<int> GetCommentCountByPostIdAsync(Guid postId);
+        Task<(IList<Comment>, int total, int totalDisplay)> GetPagedBlogCommentsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder, Guid id);
     }
 }

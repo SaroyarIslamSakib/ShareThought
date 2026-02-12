@@ -30,79 +30,61 @@
                 <partial name="_BlogAreaNavbarPartial" />
                 <!-- / Navbar -->
 
-                <div class="content-wrapper">
-                    <!-- Content -->
-                    <div class="container mt-3">
 
-                        <div class="app-content-header">
-                            <div class="container-fluid">
-
-                                <!-- Alert / Response -->
-                                <div class="row mb-3">
-                                    <div id="responseContainer" class="col-lg-4 col-md-6">
-                                        <partial name="_ResponsePartial" />
-                                    </div>
-
-                                    <div id="messageViewModalContainer"></div>
-                                </div>
-
-                                <!-- Title & Breadcrumb -->
-                                <nav aria-label="breadcrumb">
-                                    <ol class="breadcrumb breadcrumb-style1">
-                                        <li class="breadcrumb-item">
-                                            <a href="javascript:void(0);">Home</a>
-                                        </li>
-                                        <li class="breadcrumb-item">
-                                            <a href="javascript:void(0);">Users</a>
-                                        </li>
-                                        <li class="breadcrumb-item active">All Users</li>
-                                    </ol>
-                                </nav>
-                            </div>
-                        </div>
-
-                        <!-- ================= App Content ================= -->
-                        <div class="app-content">
-                            <div class="container-fluid">
-                                <!-- ================= DataTable Section ================= -->
-                                <div class="card card-primary card-outline shadow-sm">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <h5 class="mb-0 fw-semibold">
-                                            <i class="fa fa-users me-1 text-primary"></i> Draft Posts
-                                        </h5>
-
-                                        <button type="button"
-                                                class="btn btn-danger btn-sm delete-all-msg-modal">
-                                            <i class="fa fa-trash"></i> Delete all
-                                        </button>
-                                    </div>
-                                    <div class="mx-3">
-
-
-                                        <div class="card-body">
-                                            <div class="table-responsive">
-                                                <table id="posts" class="table table-hover">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Posts</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody></tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                        <!--end::App Content-->
+                <!-- ================= App Content Header ================= -->
+                <div class="app-content-header mt-3 mb-2">
+                    <div class="container-fluid">
+                        <!-- Title & Breadcrumb -->
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb breadcrumb-style1 mb-2">
+                                <li class="breadcrumb-item">
+                                    <a asp-area="Blogger" asp-controller="Blog" asp-action="Index">Blog</a>
+                                </li>
+                                <li class="breadcrumb-item active">Draft Post</li>
+                            </ol>
+                        </nav>
                     </div>
-
-                    <!-- / Content -->
-                    <div class="content-backdrop fade"></div>
                 </div>
-                <!-- Content wrapper -->
+
+
+
+                <!-- ================= App Content ================= -->
+                <div class="app-content">
+                    <div class="container-fluid">
+
+                        <!-- ================= DataTable Section ================= -->
+                        <div class="card card-primary card-outline shadow-sm">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0 fw-semibold">
+                                    <i class="fa fa-users me-1 text-primary"></i> Draft Posts
+                                </h5>
+
+                                <button type="button"
+                                        class="btn btn-danger btn-sm delete-all-msg-modal">
+                                    <i class="fa fa-trash"></i> Delete all
+                                </button>
+                            </div>
+                            <div class="mx-3">
+
+
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table id="posts" class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Posts</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!--end::App Content-->
             </div>
             <!-- / Layout page -->
         </div>
@@ -131,9 +113,9 @@
         processing: true,
         serverSide: true,
         paging: true,
-        pagingType: "simple",
-        lengthChange: false,
-        info: false,
+        pagingType: "full_numbers",
+        lengthChange: true,
+        info: true,
         ordering: false,
 
         searching: true,

@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace DevSkill.Blog.Application.Features.Comments.Commands
 {
-    public class DeleteCommentCommand : ICommand<Guid>
+    public class MarkCommentAsApprovedCommand : ICommand<Guid>
     {
-        public Guid CommentId { get; set; }
+        public Guid Id { get; set; }
     }
 }

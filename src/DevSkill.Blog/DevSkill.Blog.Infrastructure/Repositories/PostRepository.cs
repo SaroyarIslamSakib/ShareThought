@@ -50,6 +50,7 @@ namespace DevSkill.Blog.Infrastructure.Repositories
                     || x.Tags.Any(t => t.Name.Contains(searchText)
                     || x.BlogArea.Name.Contains(searchText)))
                     && x.IsPublished == true, 
+
                     sortOrder,
                     q=>q.Include(x => x.Comments.Where(m => m.IsDeleted ==false)).Include(x => x.BlogArea).Include(y => y.Reports), 
                     pageIndex, 
@@ -80,6 +81,28 @@ namespace DevSkill.Blog.Infrastructure.Repositories
             );
 
             return posts.FirstOrDefault();
+        }
+
+        public async Task<int> TotalLikeCountInBlogAsync(Guid blogId)
+        {
+            var posts = await GetAsync(x => x.BlogAreaId == blogId, null);
+            int LikeCount = 0;
+            foreach(var post in posts)
+            {
+                LikeCount = LikeCount + post.Likes;
+            }
+            return LikeCount;
+        }
+
+        public async Task<int> TotalCommentCountInBlogAsync(Guid blogId)
+        {
+            var posts = await GetAsync(x => x.BlogAreaId==blogId, q => q.Include( m => m.Comments));
+            int CommentCount = 0;
+            foreach (var post in posts)
+            {
+                CommentCount = CommentCount + post.Comments.Count();
+            }
+            return CommentCount;
         }
     }
 }

@@ -1,10 +1,13 @@
 ﻿using Cortex.Mediator;
 using DevSkill.Blog.Application.Features.BlogsArea.Commands;
 using DevSkill.Blog.Application.Features.BlogsArea.Queries;
+using DevSkill.Blog.Application.Features.Dashboards.Queries;
+using DevSkill.Blog.Domain.Dtos;
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Domain.Utilities;
 using DevSkill.Blog.Infrastructure.Extensions;
 using DevSkill.Blog.Infrastructure.Identity;
+using DevSkill.Blog.Web.Areas.Admin.Models;
 using DevSkill.Blog.Web.Areas.Blogger.Models;
 using DevSkill.Blog.Web.Models;
 using MapsterMapper;
@@ -32,9 +35,48 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
             _serverTime = serverTime;
             _userManager = userManager;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return Unauthorized();
+
+                var query = new GetBlogAreaByUserIdQuery
+                {
+                    UserId = user.Id
+                };
+
+                var blog = await _mediator
+                    .SendQueryAsync<GetBlogAreaByUserIdQuery, BlogArea>(query);
+
+                var item = await _mediator
+                    .SendQueryAsync<GetBloggerDashboardItemQuery, BloggerDashboardDto>
+                        (new GetBloggerDashboardItemQuery() { BlogId = blog.Id });
+
+                var model = new BloggerDashboardItemModel()
+                {
+                    TotalPublishedPost = item.TotalPublishedPost,
+                    TotalComment = item.TotalComment,
+                    TotalDraftPost = item.TotalDraftPost,
+                    TotalLike = item.TotalLike,
+                };
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while loading dashboard data.");
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to load dashboard data",
+                    Response = ResponseTypes.danger
+                });
+
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -119,6 +161,7 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+
 
     }
 }
