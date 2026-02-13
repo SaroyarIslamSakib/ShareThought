@@ -1,4 +1,5 @@
 ﻿using Cortex.Mediator;
+using DevSkill.Blog.Application.Features.BlogsArea.Queries;
 using DevSkill.Blog.Application.Features.Comments.Commands;
 using DevSkill.Blog.Application.Features.Comments.Queries;
 using DevSkill.Blog.Application.Features.Posts.Queries;
@@ -33,8 +34,16 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
             _serverTime = serverTime;
             _userManager = userManager;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var user = await _userManager.GetUserAsync(User);
+            var query = new GetBlogAreaByUserIdQuery
+            {
+                UserId = user.Id
+            };
+            var blog = await _mediator
+                    .SendQueryAsync<GetBlogAreaByUserIdQuery, BlogArea>(query);
+            ViewBag.BlogName = blog.Name;
             return View();
         }
 

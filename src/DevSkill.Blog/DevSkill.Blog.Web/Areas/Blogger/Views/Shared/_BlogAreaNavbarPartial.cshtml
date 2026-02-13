@@ -10,8 +10,28 @@
         <!-- Brand / Title -->
         <div class="navbar-nav align-items-center">
             <a href="#" class="d-flex align-items-center text-decoration-none gap-2">
-                <i class="fa-solid fa-pen-nib fs-4 text-primary"></i>
-                <h4 class="mb-0 fw-bold text-dark lh-1">Blog</h4>
+                <div class="write-area">
+                    <div class="text-wrapper">
+                        <h4 class="mb-0 fw-bold text-dark lh-1 blog-name">
+                            @ViewBag.BlogName
+                        </h4>
+                    </div>
+
+                    <svg class="pencil" viewBox="0 0 8 24" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="bodyGrad" x1="0" x2="0" y1="0" y2="1">
+                                <stop offset="0%" stop-color="#6EA8FE" />
+                                <stop offset="100%" stop-color="#0D6EFD" />
+                            </linearGradient>
+                        </defs>
+
+                        <rect x="2.5" y="0" width="3" height="2.5" rx="0.7" fill="#B6D4FE" />
+                        <rect x="2.5" y="2.5" width="3" height="1.5" fill="#DEE2E6" />
+                        <rect x="2.5" y="4" width="3" height="8" rx="0.8" fill="url(#bodyGrad)" />
+                        <polygon points="2.5,12 5.5,12 4,16" fill="#CED4DA" />
+                        <polygon points="3,16 5,16 4,19" fill="#0B5ED7" />
+                    </svg>
+                </div>
             </a>
         </div>
 

@@ -1,39 +1,57 @@
-﻿<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-   
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
 
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1 mt-3">
+
         <!-- Dashboard -->
-        <li class="menu-item">
+        @{
+            var isDashboard = currentController == "Blog" && currentAction == "Index";
+        }
+        <li class="menu-item @(isDashboard ? "active" : "")">
             <a asp-area="Blogger" asp-controller="Blog" asp-action="Index" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                <div data-i18n="Analytics">Dashboard</div>
+                <i class="menu-icon bx @(isDashboard ? "bxs-home" : "bx-home")"></i>
+                <div>Dashboard</div>
             </a>
         </li>
-        <!-- Published Posts -->
-        <li class="menu-item">
+
+        <!-- Published -->
+        @{
+            var isPublished = currentController == "Post" && currentAction == "PublishedPostList";
+        }
+        <li class="menu-item @(isPublished ? "active" : "")">
             <a asp-area="Blogger" asp-controller="Post" asp-action="PublishedPostList" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-news"></i>
-                <div data-i18n="Analytics">Published</div>
+                <i class="menu-icon @(isPublished ? "bx bxs-check-circle" : "bx bx-check-circle")"></i>
+                <div>Published</div>
             </a>
         </li>
 
-        <!-- Draft Posts -->
-        <li class="menu-item">
+        <!-- Draft -->
+        @{
+            var isDraft = currentController == "Post" && currentAction == "DraftPostList";
+        }
+        <li class="menu-item @(isDraft ? "active" : "")">
             <a asp-area="Blogger" asp-controller="Post" asp-action="DraftPostList" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-news"></i>
-                <div data-i18n="Analytics">Draft</div>
-            </a>
-        </li>
-        <!-- Review Comments -->
-        <li class="menu-item">
-            <a asp-area="Blogger" asp-controller="Comment" asp-action="Index" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-news"></i>
-                <div data-i18n="Analytics">Review Comments</div>
+                <i class="menu-icon @(isDraft ? "bx bxs-edit-alt" : "bx bx-edit-alt")"></i>
+                <div>Draft</div>
             </a>
         </li>
 
+        <!-- Review Comments -->
+        @{
+            var isComments = currentController == "Comment" && currentAction == "Index";
+        }
+        <li class="menu-item @(isComments ? "active" : "")">
+            <a asp-area="Blogger" asp-controller="Comment" asp-action="Index" class="menu-link">
+                <i class="menu-icon @(isComments ? "bx bxs-message-square-detail" : "bx bx-message-square-detail")"></i>
+                <div>Review Comments</div>
+            </a>
+        </li>
 
     </ul>
 </aside>

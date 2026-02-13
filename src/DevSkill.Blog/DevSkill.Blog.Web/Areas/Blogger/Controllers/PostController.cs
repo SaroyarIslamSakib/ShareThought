@@ -1,4 +1,5 @@
 ﻿using Cortex.Mediator;
+using DevSkill.Blog.Application.Features.BlogsArea.Queries;
 using DevSkill.Blog.Application.Features.Categories.Queries;
 using DevSkill.Blog.Application.Features.Posts.Commands;
 using DevSkill.Blog.Application.Features.Posts.Queries;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using System.Web;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
 {
@@ -38,16 +40,33 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
         /* =========================
            Published Posts List
         ==========================*/
-        public IActionResult PublishedPostList()
+        public async Task<IActionResult> PublishedPostList()
         {
+            var user = await _userManager.GetUserAsync(User);
+            var query = new GetBlogAreaByUserIdQuery
+            {
+                UserId = user.Id
+            };
+            var blog = await _mediator
+                    .SendQueryAsync<GetBlogAreaByUserIdQuery, BlogArea>(query);
+            ViewBag.BlogName = blog.Name;
+            
             return View();
         }
 
         /* =========================
            Draft Posts List
         ==========================*/
-        public IActionResult DraftPostList()
+        public async Task< IActionResult> DraftPostList()
         {
+            var user = await _userManager.GetUserAsync(User);
+            var query = new GetBlogAreaByUserIdQuery
+            {
+                UserId = user.Id
+            };
+            var blog = await _mediator
+                    .SendQueryAsync<GetBlogAreaByUserIdQuery, BlogArea>(query);
+            ViewBag.BlogName = blog.Name;
             return View();
         }
         /* =========================
