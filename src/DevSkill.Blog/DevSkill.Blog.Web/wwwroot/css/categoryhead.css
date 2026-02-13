@@ -1,6 +1,6 @@
 ﻿:root {
     --brand-red: #519bf7;
-    --brand-red-dark: #2975d5;
+    --brand-red-dark: #2e3237;
 }
 .hero {
     background-color: var(--brand-red-dark);

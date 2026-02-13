@@ -1,0 +1,21 @@
+﻿#layout-menu {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+.menu-icon {
+    transition: all 0.25s ease;
+    opacity: 1 !important;
+}
+
+.menu-item:hover .menu-icon {
+    transform: scale(1.1);
+}
+#layout-menu .menu-item .menu-icon {
+    color: #697a8d !important;
+}
+
+#layout-menu .menu-item.active .menu-icon {
+    color: #696cff !important; /* active purple */
+}

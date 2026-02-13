@@ -19,26 +19,31 @@
     position: relative;
     display: inline-flex;
     align-items: center;
+    overflow: visible; /* important */
 }
 
 .text-wrapper {
     overflow: hidden;
     width: 0;
     white-space: nowrap;
+    display: inline-block;
 }
 
     .text-wrapper h4 {
         font-size: 18px;
         font-weight: 600;
         margin: 0;
-        line-height: 1;
+        line-height: 1.3; /* আগে 1 ছিল */
+        padding-bottom: 2px; /* subtle breathing space */
+        letter-spacing: 0.5px;
+        display: inline-block;
     }
 
 .pencil {
     position: absolute;
     width: 16px;
     left: -20px;
-    top: -4px;
+    top: 0px; /* আগে ছিল -4px */
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;

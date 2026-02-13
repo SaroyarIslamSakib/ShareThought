@@ -1,7 +1,8 @@
 ﻿.why-section-wrapper {
-    background: linear-gradient(115deg, #3c8da9, #2c67f2);
-    padding: 80px 0;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    padding: 90px 0;
     color: #ffffff;
+    position: relative;
 }
 
 .why-header {
@@ -47,3 +48,12 @@
         box-shadow: 0 12px 28px rgba(53, 108, 177, 0.35);
         transform: translateY(-3px);
     }
+    /* Optional subtle overlay for premium feel */
+.why-section-wrapper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 30%, rgba(59,130,246,0.15), transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(99,102,241,0.12), transparent 40%);
+    pointer-events: none;
+}

@@ -1,0 +1,14 @@
+﻿#loginModal .card {
+    border: none;
+    background: #ffffff;
+    border-radius: 0 0 18px 18px;
+}
+
+#loginModal .card-body {
+    padding: 30px;
+}
+
+
+#registerModal .modal-dialog {
+    max-width: 500px; /* Wider than login */
+}

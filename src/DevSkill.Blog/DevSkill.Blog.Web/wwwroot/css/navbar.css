@@ -2,9 +2,14 @@
    CSS VARIABLES
 ================================ */
 :root {
-    --main-navbar-height: 56px;
-    --brand-red: #519bf7;
-    --brand-red-dark: #356cb1;
+    --main-navbar-height: 64px;
+    --brand-nav: #1e2329;
+    --brand-accent: #4f8cff; /* Elegant SaaS blue */
+    --brand-accent-hover: #3a6edc; /* Darker hover */
+    --nav-surface: #252b33; /* Slightly lighter than navbar */
+    --nav-border: #2f3640; /* Soft divider */
+    --nav-muted: #9aa4af; /* Muted text */
+    --nav-glass: rgba(255,255,255,0.06);
     --nav-search-height: 44px;
 }
 
@@ -16,17 +21,17 @@
     top: 0;
     z-index: 1050;
     height: var(--main-navbar-height);
-    padding: 10px 0;
+    padding: 0 0;
     display: flex;
     align-items: center;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 600;
 }
 
 /* Background */
 .nav-colour {
-    background-color: var(--brand-red);
+    background-color: var(--brand-nav);
 }
 
 /* Ensure container aligns content horizontally */
@@ -103,70 +108,99 @@
     transition: background-color 0.25s ease;
 }
 
-.main-navbar .btn.nav-colour:hover {
-    background-color: var(--brand-red-dark);
-    color: #ffffff;
-}
+    .main-navbar .btn.nav-colour:hover {
+        background-color: var(--nav-glass);
+        color: #ffffff;
+    }
 
-.main-navbar .btn.nav-colour:active {
-    outline: 3px dotted var(--brand-red-dark);
-    outline-offset: 3px;
-}
+    /* Remove ugly blue active background */
+    .main-navbar .btn.nav-colour:active,
+    .main-navbar .btn.nav-colour:focus,
+    .main-navbar .btn.nav-colour:focus-visible {
+        background-color: transparent !important;
+        color: #ffffff !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
 
 /* ===============================
    SEARCH BAR
 ================================ */
+
 .nav-search-group {
-    gap: 20px;
+    gap: 18px;
 }
+
+/* ===== Premium Signup Button ===== */
 .nav-signup-btn {
-    height: 44px; 
-    padding: 0 14px; 
-    display: inline-flex; 
-    align-items: center;
-    margin-left: 10px;
-    gap: 6px;
-    background-color: rgba(0, 0, 0, 0.18);
-    color: #ffffff;
-    text-decoration: none;
-
-    border: none;
-    border-radius: 12px;
-
-    font-size: 14px;
+    height: 42px;
+    padding: 0 20px;
+    border-radius: 8px;
+    font-size: 14.5px;
     font-weight: 600;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
-    white-space: nowrap;
-    transition: background-color 0.25s ease, transform 0.15s ease;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    letter-spacing: 0.4px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #ffffff;
+    backdrop-filter: blur(6px);
+    transition: all 0.25s ease;
 }
 
     /* Hover */
     .nav-signup-btn:hover {
-        background-color: rgba(0, 0, 0, 0.28);
-        transform: translateY(-1px);
-        color: #ffffff;
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
     }
 
-    /* Active / Focus (anchor-friendly) */
-    .nav-signup-btn:active,
-    .nav-signup-btn:focus:active {
-        background-color: rgba(0, 0, 0, 0.28);
-        transform: translateY(-1px);
-        color: #ffffff;
+    /* Active */
+    .nav-signup-btn:active {
+        transform: translateY(0);
+        box-shadow: none;
     }
 
-    /* Remove browser default effects */
+    /* Remove default focus outline */
     .nav-signup-btn:focus,
     .nav-signup-btn:focus-visible {
         outline: none;
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
     }
 
+.main-navbar .navbar-nav .nav-link {
+    position: relative;
+    color: #ffffff;
+    padding: 8px 12px;
+    transition: color 0.2s ease;
+}
 
-/* Wrapper */
+
+
+    /* Hover */
+    .main-navbar .navbar-nav .nav-link:hover {
+        color: var(--brand-accent);
+    }
+
+    /* Active style */
+    .main-navbar .navbar-nav .nav-link.active {
+        color: var(--brand-accent);
+    }
+
+        .main-navbar .navbar-nav .nav-link.active::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            width: 100%;
+            height: 3px;
+            background: var(--brand-accent);
+            border-radius: 2px;
+        }
+
+
+/* ===============================
+   SEARCH INPUT
+================================ */
+
 .nav-search-wrapper {
     position: relative;
     width: 100%;
@@ -174,41 +208,42 @@
     margin-left: auto;
 }
 
-/* Search input */
 .nav-search-input {
     height: var(--nav-search-height);
-    padding-left: calc(var(--nav-search-height) - 2px);
+    padding-left: calc(var(--nav-search-height) - 4px);
     padding-right: 16px;
-    border-radius: calc(var(--nav-search-height) / 3);
-    border: none;
-    outline: none;
-    font-size: calc(var(--nav-search-height) / 2.7);
+    border-radius: 999px; /* pill style */
+    border: 1px solid #d0d7de;
+    background-color: #ffffff; /* dark → white */
+    color: #1e2329;
+    font-size: 14px;
     font-weight: 500;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+    box-shadow: none;
+    transition: all 0.25s ease;
 }
 
     /* Placeholder */
     .nav-search-input::placeholder {
-        font-size: calc(var(--nav-search-height) / 2.8);
         color: #6c757d;
-        font-weight: 500;
+        font-weight: 400;
     }
 
-/* Search icon (Font Awesome) */
+/* Search icon */
 .nav-search-wrapper .fa-search {
     position: absolute;
-    left: calc(var(--nav-search-height) / 3);
+    left: 16px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: calc(var(--nav-search-height) / 2.6);
-    color: var(--brand-red-dark);
-    z-index: 2;
+    font-size: 14px;
+    color: #6c757d;
     pointer-events: none;
 }
 
 /* Focus state */
 .nav-search-input:focus {
-    box-shadow: 0 0 0 3px rgba(211, 58, 44, 0.25);
+    border-color: #4f8cff;
+    box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.25);
+    background-color: #ffffff;
 }
 
 /* ===============================
@@ -254,7 +289,7 @@
     font-size: 14px;
     font-weight: 600;
 
-    color: var(--brand-red);
+    color: var(--brand-nav);
     background-color: #ffffff;
 
     border: 1px solid transparent;
@@ -272,22 +307,22 @@
     }
 }
 .sub-nav-item:hover {
-    background-color: var(--brand-red);
+    background-color: var(--brand-nav);
     color: #FFFFFF;
-    border-color: rgba(211, 58, 44, 0.6);
+    border-color: rgba(79, 140, 255, 0.4);
 }
 
 .sub-nav-item.active,
 .sub-nav-item:active {
-    background-color: var(--brand-red);
+    background-color: var(--brand-nav);
     color: #ffffff;
 }
 .custom-btn-blue {
-    background-color: var(--brand-red);
+    background-color: var(--brand-nav);
     color:#ffffff;
 }
     .custom-btn-blue:hover {
-        background-color: var(--brand-red-dark);
+        background-color: var(--brand-accent-hover);
         color: #ffffff;
     }
 
@@ -296,15 +331,29 @@
 ================================ */
 
 .btn-signin {
-    background-color: #519bf7;
-    border-color: #519bf7;
+    height: 42px;
+    padding: 0 18px;
+    border-radius: 10px;
+    font-size: 14.5px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    background: linear-gradient(135deg, #3a6edc, #4f8cff);
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 6px 18px rgba(79, 140, 255, 0.35);
+    transition: all 0.25s ease;
 }
 
-    .btn-signin:hover,
-    .btn-signin:active,
-    .btn-signin:focus {
-        background-color: #356cb1; /* একটু darker hover */
-        border-color: #356cb1;
+    /* Hover */
+    .btn-signin:hover {
+        background: linear-gradient(135deg, #4478e6, #5a96ff);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(79, 140, 255, 0.45);
+    }
+
+    /* Active */
+    .btn-signin:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 12px rgba(79, 140, 255, 0.25);
     }
 
 /* ===== User Button ===== */
@@ -365,3 +414,22 @@
 .dropdown-divider {
     border-color: rgba(255, 255, 255, 0.1);
 }
+
+
+/* Remove default blue focus highlight */
+.main-navbar .navbar-nav .nav-link:focus,
+.main-navbar .navbar-nav .nav-link:active {
+    background-color: transparent !important;
+    outline: none;
+    box-shadow: none;
+}
+
+/* Remove mobile tap highlight */
+.main-navbar .navbar-nav .nav-link {
+    -webkit-tap-highlight-color: transparent;
+}
+    .main-navbar .navbar-nav .nav-link:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(79, 140, 255, 0.4);
+        border-radius: 6px;
+    }
