@@ -20,7 +20,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
 {
-    [Area("Blogger"), Authorize]
+    [Area("Blogger"), Authorize(Roles = "Blogger")]
     public class PostController : Controller
     {
         private readonly ILogger<PostController> _logger;

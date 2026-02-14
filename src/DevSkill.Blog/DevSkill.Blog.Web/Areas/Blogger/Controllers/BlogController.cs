@@ -18,7 +18,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
 {
-    [Area("Blogger"),Authorize]
+    [Area("Blogger"), Authorize(Roles = "Blogger")]
     public class BlogController : Controller
     {
         private readonly ILogger<BlogController> _logger;
@@ -50,6 +50,15 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
 
                 var blog = await _mediator
                     .SendQueryAsync<GetBlogAreaByUserIdQuery, BlogArea>(query);
+                if(blog is null)
+                {
+                    TempData.Put("ResponseMessage", new ResponseModel
+                    {
+                        Message = "You haven't any blog. Please Create a Blog",
+                        Response = ResponseTypes.danger
+                    });
+                    return RedirectToAction("Index", "Home", new { area = "" });
+                }
 
                 var item = await _mediator
                     .SendQueryAsync<GetBloggerDashboardItemQuery, BloggerDashboardDto>
@@ -105,7 +114,7 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
                         Response = ResponseTypes.danger
                     });
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Home", new { area = "" });
                 }
 
                 var command = new AddBlogAreaCommand
@@ -125,6 +134,7 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
                     Message = "Blog created successfully",
                     Response = ResponseTypes.success
                 });
+                await _userManager.AddToRoleAsync(user, "Blogger");
 
                 return RedirectToAction("Index");
             }

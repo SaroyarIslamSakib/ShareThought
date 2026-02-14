@@ -11,12 +11,13 @@ using DevSkill.Blog.Web.Areas.Admin.Models;
 using DevSkill.Blog.Web.Areas.Blogger.Models;
 using DevSkill.Blog.Web.Models;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
 
 namespace DevSkill.Blog.Web.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize(Roles = "Admin")]
     public class BlogController : Controller
     {
         private readonly ILogger<BlogController> _logger;

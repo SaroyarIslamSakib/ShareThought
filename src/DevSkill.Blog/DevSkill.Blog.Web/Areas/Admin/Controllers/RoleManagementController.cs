@@ -4,6 +4,7 @@ using DevSkill.Blog.Infrastructure.Identity;
 using DevSkill.Blog.Infrastructure.Utilities;
 using DevSkill.Blog.Web.Areas.Admin.Models;
 using DevSkill.Blog.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace DevSkill.Blog.Web.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize(Roles = "Admin")]
     public class RoleManagementController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;

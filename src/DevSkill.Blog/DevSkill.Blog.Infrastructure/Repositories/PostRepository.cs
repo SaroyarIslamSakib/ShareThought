@@ -49,7 +49,8 @@ namespace DevSkill.Blog.Infrastructure.Repositories
                 return await GetDynamicAsync(x => (x.Title.Contains(searchText)
                     || x.Tags.Any(t => t.Name.Contains(searchText)
                     || x.BlogArea.Name.Contains(searchText)))
-                    && x.IsPublished == true, 
+                    && x.IsPublished == true
+                    && x.IsSuspended != true,
 
                     sortOrder,
                     q=>q.Include(x => x.Comments.Where(m => m.IsDeleted ==false)).Include(x => x.BlogArea).Include(y => y.Reports), 
@@ -62,6 +63,7 @@ namespace DevSkill.Blog.Infrastructure.Repositories
                 || x.Tags.Any(t => t.Name.Contains(searchText)
                 || x.BlogArea.Name.Contains(searchText)))
                 && x.IsPublished == true 
+                && x.IsSuspended != true
                 && x.PostCategories.Any(c => c.Name == categoryName), 
                 sortOrder,
                 q => q.Include(x => x.Comments.Where(m => m.IsDeleted == false)).Include(x => x.BlogArea).Include(y => y.Reports),
@@ -125,6 +127,22 @@ namespace DevSkill.Blog.Infrastructure.Repositories
             );
 
             return posts.FirstOrDefault();
+        }
+
+        public async Task<(IList<Post>, int total, int totalDisplay)> GetPagedAdminPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder)
+        {
+
+                return await GetDynamicAsync(x => (x.Title.Contains(searchText)
+                    || x.Tags.Any(t => t.Name.Contains(searchText)
+                    || x.PostCategories.Any(c => c.Name.Contains(searchText))
+                    || x.BlogArea.Name.Contains(searchText)))
+                    && x.IsPublished == true,
+
+                    sortOrder,
+                    q => q.Include(x => x.Comments.Where(m => m.IsDeleted == false)).Include(x => x.BlogArea).Include(y => y.Reports),
+                    pageIndex,
+                    pageSize);
+
         }
     }
 }

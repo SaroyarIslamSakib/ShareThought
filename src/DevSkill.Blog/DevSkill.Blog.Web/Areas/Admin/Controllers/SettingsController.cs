@@ -7,11 +7,12 @@ using DevSkill.Blog.Infrastructure.Extensions;
 using DevSkill.Blog.Web.Areas.Admin.Models;
 using DevSkill.Blog.Web.Models;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DevSkill.Blog.Web.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize(Roles = "Admin")]
     public class SettingsController : Controller
     {
         private readonly ILogger<SettingsController> _logger;

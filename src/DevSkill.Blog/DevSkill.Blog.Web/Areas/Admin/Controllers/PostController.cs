@@ -9,13 +9,14 @@ using DevSkill.Blog.Infrastructure.Extensions;
 using DevSkill.Blog.Web.Areas.Blogger.Models;
 using DevSkill.Blog.Web.Models;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
 
 namespace DevSkill.Blog.Web.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize(Roles = "Admin")]
     public class PostController : Controller
     {
         private readonly ILogger<PostController> _logger;
@@ -37,7 +38,7 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
         {
             try
             {
-                var query = new GetPublicPostQuery
+                var query = new GetAdminPostQuery
                 {
                     SearchText = model.Search.Value,
                     SortOrder = model.FormatSortExpression("Title", "Content", "CreatedAt"),
@@ -47,7 +48,7 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
 
                 var (items, total, totalDisplay) =
                     await _mediator.SendQueryAsync<
-                        GetPublicPostQuery,
+                        GetAdminPostQuery,
                         (IList<Post>, int, int)>(query);
 
                 return Json(new

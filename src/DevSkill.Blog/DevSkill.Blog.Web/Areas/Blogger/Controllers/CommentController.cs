@@ -17,7 +17,7 @@ using System.Web;
 
 namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
 {
-    [Area("Blogger"), Authorize]
+    [Area("Blogger"), Authorize(Roles = "Blogger")]
     public class CommentController : Controller
     {
         private readonly ILogger<CommentController> _logger;

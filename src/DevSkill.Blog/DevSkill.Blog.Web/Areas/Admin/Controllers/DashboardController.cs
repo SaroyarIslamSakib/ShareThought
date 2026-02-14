@@ -4,11 +4,12 @@ using DevSkill.Blog.Domain.Dtos;
 using DevSkill.Blog.Infrastructure.Extensions;
 using DevSkill.Blog.Web.Areas.Admin.Models;
 using DevSkill.Blog.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DevSkill.Blog.Web.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize(Roles = "Admin")]
     public class DashboardController : Controller
     {
         private readonly ILogger<DashboardController> _logger;
