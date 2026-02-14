@@ -63,6 +63,7 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
                     TotalLike = item.TotalLike,
                 };
                 ViewBag.BlogName = blog.Name;
+                ViewBag.BlogSlug = blog.Slug;
                 return View(model);
             }
             catch (Exception ex)

@@ -49,6 +49,12 @@ namespace DevSkill.Blog.Infrastructure.Data
                    .WithOne(p => p.BlogArea)
                    .HasForeignKey(p => p.BlogAreaId)
                    .OnDelete(DeleteBehavior.Cascade);
+                   
+
+            builder.Entity<Post>()
+                   .HasIndex(x => x.Slug).IsUnique();
+            builder.Entity<BlogArea>()
+                   .HasIndex(x => x.Slug).IsUnique();
 
         }
         public DbSet<ContactMessage> ContactMessages { get; set; }

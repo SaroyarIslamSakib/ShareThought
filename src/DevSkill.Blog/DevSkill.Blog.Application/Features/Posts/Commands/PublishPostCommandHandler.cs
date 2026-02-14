@@ -1,4 +1,5 @@
 ﻿using Cortex.Mediator.Commands;
+using DevSkill.Blog.Application.Services;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Domain.Utilities;
@@ -14,10 +15,12 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
     {
         private readonly IApplicationUnitOfWork _unitOfWork;
         private readonly IServerTime _serverTime;
-        public PublishPostCommandHandler(IApplicationUnitOfWork unitOfWork, IServerTime serverTime)
+        private readonly ISlugService _slugService;
+        public PublishPostCommandHandler(IApplicationUnitOfWork unitOfWork, IServerTime serverTime, ISlugService slugService)
         {
             _unitOfWork = unitOfWork;
             _serverTime = serverTime;
+            _slugService = slugService;
         }
         public async Task<Guid> Handle(PublishPostCommand command, CancellationToken cancellationToken)
         {
@@ -108,6 +111,13 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                FEATURE IMAGE
             ==========================*/
             post.FeatureImagePath = command.FeatureImagePath;
+
+            /* =========================
+               SLUG UPDATE LOGIC
+            =========================*/
+
+                post.Slug = await _slugService
+                    .GenerateUniqueSlugAsync(post.Title);
 
             /* =========================
                PUBLISH STATE CHANGE

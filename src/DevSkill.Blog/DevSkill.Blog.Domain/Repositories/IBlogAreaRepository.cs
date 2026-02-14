@@ -10,6 +10,7 @@ namespace DevSkill.Blog.Domain.Repositories
 {
     public interface IBlogAreaRepository : IRepository<BlogArea, Guid>
     {
+        Task<BlogArea> GetBlogBySlug(string slug);
         Task<IList<BlogArea>> GetByUserIdAsync(Guid userId);
         Task<(IList<BlogArea>, int total, int totalDisplay)> GetPagedBlogsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder);
     }

@@ -16,5 +16,7 @@ namespace DevSkill.Blog.Domain.Repositories
         Task<Post> GetPostWithCategoriesTagsAsync(Guid postId);
         Task<int> TotalLikeCountInBlogAsync(Guid blogId);
         Task<int> TotalCommentCountInBlogAsync(Guid blogId);
+        Task<bool> ExistsBySlugAsync(string slug);
+        Task<Post> GetPostBySlugAsync(string blogSlug, string postSlug);
     }
 }

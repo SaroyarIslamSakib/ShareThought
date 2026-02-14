@@ -16,6 +16,13 @@ namespace DevSkill.Blog.Infrastructure.Repositories
         {
 
         }
+
+        public async Task<BlogArea> GetBlogBySlug(string slug)
+        {
+            var result = await GetAsync(x => x.Slug == slug, null);
+            return result.FirstOrDefault();
+        }
+
         public async Task<IList<BlogArea>> GetByUserIdAsync(Guid userId)
         {
             return await GetAsync(

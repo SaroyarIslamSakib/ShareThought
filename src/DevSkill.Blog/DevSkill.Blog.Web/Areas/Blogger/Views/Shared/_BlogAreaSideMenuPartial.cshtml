@@ -14,7 +14,10 @@
             var isDashboard = currentController == "Blog" && currentAction == "Index";
         }
         <li class="menu-item @(isDashboard ? "active" : "")">
-            <a asp-area="Blogger" asp-controller="Blog" asp-action="Index" class="menu-link">
+            <a asp-area="Blogger"
+               asp-controller="Blog"
+               asp-action="Index"
+               class="menu-link">
                 <i class="menu-icon bx @(isDashboard ? "bxs-home" : "bx-home")"></i>
                 <div>Dashboard</div>
             </a>
@@ -25,7 +28,10 @@
             var isPublished = currentController == "Post" && currentAction == "PublishedPostList";
         }
         <li class="menu-item @(isPublished ? "active" : "")">
-            <a asp-area="Blogger" asp-controller="Post" asp-action="PublishedPostList" class="menu-link">
+            <a asp-area="Blogger"
+               asp-controller="Post"
+               asp-action="PublishedPostList"
+               class="menu-link">
                 <i class="menu-icon @(isPublished ? "bx bxs-check-circle" : "bx bx-check-circle")"></i>
                 <div>Published</div>
             </a>
@@ -36,7 +42,10 @@
             var isDraft = currentController == "Post" && currentAction == "DraftPostList";
         }
         <li class="menu-item @(isDraft ? "active" : "")">
-            <a asp-area="Blogger" asp-controller="Post" asp-action="DraftPostList" class="menu-link">
+            <a asp-area="Blogger"
+               asp-controller="Post"
+               asp-action="DraftPostList"
+               class="menu-link">
                 <i class="menu-icon @(isDraft ? "bx bxs-edit-alt" : "bx bx-edit-alt")"></i>
                 <div>Draft</div>
             </a>
@@ -47,7 +56,10 @@
             var isComments = currentController == "Comment" && currentAction == "Index";
         }
         <li class="menu-item @(isComments ? "active" : "")">
-            <a asp-area="Blogger" asp-controller="Comment" asp-action="Index" class="menu-link">
+            <a asp-area="Blogger"
+               asp-controller="Comment"
+               asp-action="Index"
+               class="menu-link">
                 <i class="menu-icon @(isComments ? "bx bxs-message-square-detail" : "bx bx-message-square-detail")"></i>
                 <div>Review Comments</div>
             </a>

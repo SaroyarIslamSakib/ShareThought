@@ -46,10 +46,12 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
             var query = new GetBlogAreaByUserIdQuery
             {
                 UserId = user.Id
+                
             };
             var blog = await _mediator
                     .SendQueryAsync<GetBlogAreaByUserIdQuery, BlogArea>(query);
             ViewBag.BlogName = blog.Name;
+            ViewBag.BlogSlug = blog.Slug;
             
             return View();
         }
@@ -67,6 +69,7 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
             var blog = await _mediator
                     .SendQueryAsync<GetBlogAreaByUserIdQuery, BlogArea>(query);
             ViewBag.BlogName = blog.Name;
+            ViewBag.BlogSlug = blog.Slug;
             return View();
         }
         /* =========================

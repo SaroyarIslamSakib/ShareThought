@@ -1,4 +1,5 @@
 ﻿using Cortex.Mediator.Commands;
+using DevSkill.Blog.Application.Services;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Domain.Utilities;
@@ -49,7 +50,7 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                     Title = command.Title,
                     Content = command.Content,
                     CreatedAt = _serverTime.DateTime,
-                    IsPublished = false
+                    IsPublished = false,
                 };
 
                 await _unitOfWork.PostRepository.AddAsync(post);

@@ -1,4 +1,5 @@
 ﻿using Cortex.Mediator.Commands;
+using DevSkill.Blog.Application.Services;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Domain.Utilities;
@@ -104,7 +105,7 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                 Content = command.Content,
                 CreatedAt = command.CreatedAt,
                 FeatureImagePath = command.FeatureImagePath,
-                BlogAreaId = blog.Id
+                BlogAreaId = blog.Id,
             };
 
             /* =========================

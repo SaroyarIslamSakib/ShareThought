@@ -44,6 +44,7 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
             var blog = await _mediator
                     .SendQueryAsync<GetBlogAreaByUserIdQuery, BlogArea>(query);
             ViewBag.BlogName = blog.Name;
+            ViewBag.BlogSlug = blog.Slug;
             return View();
         }
 

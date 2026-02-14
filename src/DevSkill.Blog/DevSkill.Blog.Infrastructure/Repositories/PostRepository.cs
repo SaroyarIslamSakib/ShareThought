@@ -104,5 +104,27 @@ namespace DevSkill.Blog.Infrastructure.Repositories
             }
             return CommentCount;
         }
+
+
+        public async Task<bool> ExistsBySlugAsync(string slug)
+        {
+            var post = GetAsync(x => x.Slug == slug, null).Result;
+            if (post.Count == 0) return false;
+            else return true;
+        }
+
+        public async Task<Post> GetPostBySlugAsync(string blogSlug, string postSlug)
+        {
+            var posts = await GetAsync(
+                p => p.Slug == postSlug && p.BlogArea.Slug == blogSlug,
+                q => q
+                    .Include(p => p.PostCategories)
+                    .Include(p => p.Tags)
+                    .Include(p => p.Reports)
+                    .Include(p => p.Comments)
+            );
+
+            return posts.FirstOrDefault();
+        }
     }
 }

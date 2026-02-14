@@ -31,17 +31,17 @@ namespace DevSkill.Blog.Web.Controllers
         {
             return View();
         }
-
-        public async Task<IActionResult> PostDetails(Guid id)
+        [HttpGet("/blog/{blogSlug}/{postSlug}")]
+        public async Task<IActionResult> PostDetails(string blogSlug, string postSlug)
         {
             try
             {
-                var query = new GetPostByIdQuery()
+                var query = new GetPostBySlugQuery()
                 {
-                    PostId = id
+                    BlogSlug = blogSlug,
+                    PostSlug = postSlug
                 };
-                var post = await _mediator.SendQueryAsync<GetPostByIdQuery, Post>(query);
-                var commentsCount = await _mediator.SendQueryAsync<GetCommentCountByPostIdQuery, int>(new GetCommentCountByPostIdQuery { PostId = id });
+                var post = await _mediator.SendQueryAsync<GetPostBySlugQuery, Post>(query);
                 IndexViewModel model = new IndexViewModel()
                 {
                     PublicPostModel = new PublicPostViewModel()
@@ -52,11 +52,11 @@ namespace DevSkill.Blog.Web.Controllers
                         TagNames = post.Tags.Select(t => t.Name).ToList(),
                         Likes = post.Likes,
                         Id = post.Id,
-                        Comments = commentsCount
+                        Comments = post.Comments.Count()
                     }
 
                 };
-                return View(model); 
+                return View(model);
             }
             catch (Exception ex)
             {
@@ -105,7 +105,9 @@ namespace DevSkill.Blog.Web.Controllers
                         p.Likes.ToString(),
                         p.Id.ToString(),
                         p.Comments.Where(x => x.IsApproved && !x.IsDeleted).Count().ToString(),
-                        p.BlogArea.UserName.ToString()
+                        p.BlogArea.UserName.ToString(),
+                        p.BlogArea.Slug.ToString(),
+                        p.Slug.ToString()
                     }).ToArray()
                 });
             }

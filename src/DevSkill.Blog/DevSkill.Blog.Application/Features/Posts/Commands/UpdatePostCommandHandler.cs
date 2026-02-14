@@ -1,4 +1,5 @@
 ﻿using Cortex.Mediator.Commands;
+using DevSkill.Blog.Application.Services;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Domain.Utilities;
@@ -14,17 +15,19 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
     : ICommandHandler<UpdatePostCommand, Post>
     {
         private readonly IApplicationUnitOfWork _unitOfWork;
+        private readonly ISlugService _slugService;
 
-        public UpdatePostCommandHandler(IApplicationUnitOfWork unitOfWork)
+        public UpdatePostCommandHandler(IApplicationUnitOfWork unitOfWork, ISlugService slugService)
         {
             _unitOfWork = unitOfWork;
+            _slugService = slugService;
         }
 
         public async Task<Post> Handle(
      UpdatePostCommand command,
      CancellationToken cancellationToken)
         {
-            // 🔥 MUST eager load categories & tags
+            //  MUST eager load categories & tags
             var post = await _unitOfWork.PostRepository
                 .GetPostWithCategoriesTagsAsync(command.PostId);
 
@@ -34,9 +37,15 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
             /* =========================
                BASIC FIELDS
             ==========================*/
+            if (!string.Equals(post.Title, command.Title, StringComparison.OrdinalIgnoreCase))
+            {
+                post.Slug = await _slugService
+                    .GenerateUniqueSlugAsync(command.Title);
+            }
             post.Title = command.Title;
             post.Content = command.Content;
             post.FeatureImagePath = command.FeatureImagePath;
+
 
             /* =========================
                CATEGORY UPDATE (List<string>)
@@ -102,7 +111,7 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                 post.Tags.Add(tag);
             }
 
-            // ❌ DO NOT call Update/Edit — tracked entity
+            // DO NOT call Update/Edit — tracked entity
             await _unitOfWork.SaveAsync();
 
             return post;
