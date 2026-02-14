@@ -4,6 +4,7 @@ using DevSkill.Blog.Application.Features.Categories.Queries;
 using DevSkill.Blog.Application.Features.Posts.Commands;
 using DevSkill.Blog.Application.Features.Posts.Queries;
 using DevSkill.Blog.Application.Features.Tags.Queries;
+using DevSkill.Blog.Application.Services;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Infrastructure.Extensions;
@@ -26,15 +27,17 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
         private readonly ILogger<PostController> _logger;
         private readonly IMediator _mediator;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IImageChecker _imageChecker;
 
         public PostController(
             ILogger<PostController> logger,
             IMediator mediator,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,IImageChecker imageChecker)
         {
             _logger = logger;
             _mediator = mediator;
             _userManager = userManager;
+            _imageChecker = imageChecker;
         }
 
         /* =========================
@@ -151,12 +154,35 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
 
                 string featureImagePath = model.ExistingFeatureImagePath;
 
-                if (model.FeatureImage != null)
+                if (model.FeatureImage != null && model.FeatureImage.Length > 0)
                 {
-                    var fileName = Guid.NewGuid() + Path.GetExtension(model.FeatureImage.FileName);
-                    var path = Path.Combine("wwwroot/uploads/features", fileName);
+                    using var validationStream = model.FeatureImage.OpenReadStream();
 
-                    using var stream = new FileStream(path, FileMode.Create);
+                    bool isValid = _imageChecker.IsValidImageFile(validationStream, model.FeatureImage.FileName);
+
+                    if (!isValid)
+                    {
+                        TempData.Put("ResponseMessage", new ResponseModel
+                        {
+                            Message = "Invalid image file. Only valid images up to 2MB allowed.",
+                            Response = ResponseTypes.danger
+                        });
+
+                        return RedirectToAction("PublishedPostList", "Post", new { area = "Blogger" });
+                    }
+                    var extension = Path.GetExtension(model.FeatureImage.FileName);
+                    var fileName = Guid.NewGuid() + extension;
+                    var uploadFolder = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot/uploads/features"
+                    );
+
+                    if (!Directory.Exists(uploadFolder))
+                        Directory.CreateDirectory(uploadFolder);
+
+                    var uploadPath = Path.Combine(uploadFolder, fileName);
+
+                    using var stream = new FileStream(uploadPath, FileMode.Create);
                     await model.FeatureImage.CopyToAsync(stream);
 
                     featureImagePath = "/uploads/features/" + fileName;
@@ -237,12 +263,31 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
 
             if (model.FeatureImage != null && model.FeatureImage.Length > 0)
             {
-                var fileName = Guid.NewGuid() + Path.GetExtension(model.FeatureImage.FileName);
-                var uploadPath = Path.Combine(
+                using var validationStream = model.FeatureImage.OpenReadStream();
+
+                bool isValid = _imageChecker.IsValidImageFile(validationStream,model.FeatureImage.FileName);
+
+                if (!isValid)
+                {
+                    TempData.Put("ResponseMessage", new ResponseModel
+                    {
+                        Message = "Invalid image file. Only valid images up to 2MB allowed.",
+                        Response = ResponseTypes.danger
+                    });
+
+                    return RedirectToAction("DraftPostList", "Post", new { area = "Blogger" });
+                }
+                var extension = Path.GetExtension(model.FeatureImage.FileName);
+                var fileName = Guid.NewGuid() + extension;
+                var uploadFolder = Path.Combine(
                     Directory.GetCurrentDirectory(),
-                    "wwwroot/uploads/features",
-                    fileName
+                    "wwwroot/uploads/features"
                 );
+
+                if (!Directory.Exists(uploadFolder))
+                    Directory.CreateDirectory(uploadFolder);
+
+                var uploadPath = Path.Combine(uploadFolder, fileName);
 
                 using var stream = new FileStream(uploadPath, FileMode.Create);
                 await model.FeatureImage.CopyToAsync(stream);
@@ -276,12 +321,27 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
         public async Task<IActionResult> UploadImage(IFormFile file)
         {
             if (file == null || file.Length == 0)
-                return BadRequest();
+                return BadRequest("No file uploaded.");
 
-            var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
-            var path = Path.Combine("wwwroot/uploads/posts", fileName);
+            using var validationStream = file.OpenReadStream();
 
-            using var stream = new FileStream(path, FileMode.Create);
+            if (!_imageChecker.IsValidImageFile(validationStream, file.FileName))
+                return BadRequest("Invalid image file.");
+
+            var extension = Path.GetExtension(file.FileName);
+            var fileName = Guid.NewGuid() + extension;
+
+            var uploadFolder = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot/uploads/posts"
+            );
+
+            if (!Directory.Exists(uploadFolder))
+                Directory.CreateDirectory(uploadFolder);
+
+            var filePath = Path.Combine(uploadFolder, fileName);
+
+            using var stream = new FileStream(filePath, FileMode.Create);
             await file.CopyToAsync(stream);
 
             return Json(new

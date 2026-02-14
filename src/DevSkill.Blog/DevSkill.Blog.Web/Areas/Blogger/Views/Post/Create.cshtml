@@ -42,7 +42,7 @@
 <div class="mt-0 bg-white">
     <div class="write-page">
 
-        <!-- 🔴 IMPORTANT: Publish action -->
+        <!--  IMPORTANT: Publish action -->
         <form asp-area="Blogger"
               asp-controller="Post"
               asp-action="Publish"
@@ -53,7 +53,7 @@
 
             @Html.AntiForgeryToken()
 
-            <!-- 🔑 Draft Post Id (set by JS auto-save) -->
+            <!-- Draft Post Id (set by JS auto-save) -->
             <input type="hidden"
                    id="DraftPostId"
                    name="Id"
@@ -71,7 +71,7 @@
                       rows="1"
                       placeholder="Title">
                   </textarea>
-
+            <span asp-validation-for="Title" class="text-danger"></span>
             <!-- Editor -->
             <div class="editor-wrapper">
                 <div id="editor"></div>
@@ -81,7 +81,6 @@
                     <button type="button" data-format="bold"><b>B</b></button>
                     <button type="button" data-format="italic"><i>I</i></button>
                     <button type="button" data-format="underline"><u>U</u></button>
-                    <button type="button" data-format="link">🔗</button>
                 </div>
 
                 <!-- Floating Plus -->
@@ -98,7 +97,7 @@
 
                 <input type="file" id="imageInput" accept="image/*" hidden />
             </div>
-
+            <span asp-validation-for="Content" class="text-danger"></span>
             <!-- Content saved on publish -->
             <input type="hidden" asp-for="Content" id="content" />
 
@@ -163,5 +162,8 @@
 
         });
     </script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
 }
 
