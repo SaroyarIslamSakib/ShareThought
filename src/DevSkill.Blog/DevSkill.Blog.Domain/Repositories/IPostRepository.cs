@@ -19,5 +19,6 @@ namespace DevSkill.Blog.Domain.Repositories
         Task<bool> ExistsBySlugAsync(string slug);
         Task<Post> GetPostBySlugAsync(string blogSlug, string postSlug);
         Task<(IList<Post>, int total, int totalDisplay)> GetPagedAdminPostsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder);
+        Task<(IList<Post>, int total, int totalDisplay)> GetPagedPostsInBlogBySlugAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder, string? categoryName, string? blogSlug);
     }
 }

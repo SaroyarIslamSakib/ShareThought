@@ -85,10 +85,15 @@ try
     app.MapStaticAssets();
 
     app.MapControllerRoute(
-        name: "blogPost",
-        pattern: "{blogSlug}/{postSlug}",
-        defaults: new { controller = "Post", action = "PostDetails" }
-    );
+    name: "blogPosts",
+    pattern: "blog/{blogSlug}/posts/{postSlug}",
+    defaults: new { area = "", controller = "Post", action = "PostDetails" });
+
+    app.MapControllerRoute(
+    name: "blog",
+    pattern: "blog/{blogSlug}/posts",
+    defaults: new { area = "", controller = "Blog", action = "Posts" });
+
 
     app.MapControllerRoute(
         name: "areas",

@@ -15,5 +15,6 @@ namespace DevSkill.Blog.Domain.Dtos
         public int TotalPosts { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsSuspended { get; set; }
+        public string BlogSlug { get; set; }
     }
 }

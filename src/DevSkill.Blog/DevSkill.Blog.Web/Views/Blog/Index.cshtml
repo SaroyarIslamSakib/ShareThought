@@ -1,0 +1,220 @@
+﻿@model IndexViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/public-post-list.css" />
+    <link rel="stylesheet" href="~/css/navbar.css" />
+    <link rel="stylesheet" href="~/css/choice-section.css" />
+    <link rel="stylesheet" href="~/css/public-blog-list.css" />
+
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
+}
+<partial name="_LoginModalPartial" />
+<partial name="_RegisterModalPartial" model="new RegisterModel()" />
+<partial name="_ResponsePartial" />
+<partial name="_CreateBlogModalPartial" model="new CreateBlogAreaModel()" />
+<partial name="_ReportModalPartial" />
+
+<main>
+    <div class="landing-body">
+        <section class="hero">
+
+            <!-- MAIN CONTENT -->
+            <div class="container text-center">
+                <h6>Blogs</h6>
+                <h3 class="choice-title mb-4">What do you want to read?</h3>
+                <div class="search-center">
+                    <div class="search-box search-wrapper mb-4">
+                        <input type="text" class="search-input" id="searchInput" placeholder="">
+                    </div>
+                </div>
+            </div>
+
+
+        </section>
+        <!-- ================= DataTable Section ================= -->
+        <div class="container">
+            <table id="blogs" class="display w-100">
+                <thead>
+                    <tr>
+                        <th>Blogs</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+
+        <div class="add-section">
+        </div>
+    </div>
+</main>
+<script>
+    const text = "Learn HTML, CSS, Javascript, C#, Aspnet, Clean Architechture";
+    const input = document.getElementById("searchInput");
+
+    let index = 0;
+
+    function typeText() {
+        if (index <= text.length) {
+            input.setAttribute("placeholder", text.substring(0, index));
+            index++;
+        } else {
+            index = 0;
+        }
+    }
+    setInterval(typeText, 150);
+</script>
+<script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
+
+<script>
+    const isUserLoggedIn = @(User.Identity.IsAuthenticated.ToString().ToLower());
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const loginModalEl = document.getElementById("loginModal");
+        const registerModalEl = document.getElementById("registerModal");
+        const createBlogModalEl = document.getElementById("createBlogModal");
+
+        const loginModal = new bootstrap.Modal(loginModalEl);
+        const registerModal = new bootstrap.Modal(registerModalEl);
+        const createBlogModal = new bootstrap.Modal(createBlogModalEl);
+
+        // Login → Register
+        document.getElementById("openRegisterFromLogin")
+            .addEventListener("click", function () {
+                loginModal.hide();
+                setTimeout(() => {
+                    registerModal.show();
+                    $.validator.unobtrusive.parse($(this).find('form'));
+                }, 300);
+            });
+
+        // Register → Login
+        document.getElementById("openLoginFromRegister")
+            .addEventListener("click", function () {
+                registerModal.hide();
+                setTimeout(() => {
+                    loginModal.show();
+                    $.validator.unobtrusive.parse($(this).find('form'));
+                }, 300);
+            });
+
+        // Create Blog Button Logic
+        document.getElementById("openCreateBlog")
+            .addEventListener("click", function () {
+
+                if (!isUserLoggedIn) {
+                    // User NOT logged in → open login modal
+                    loginModal.show();
+                } else {
+                    // User logged in → open create blog modal
+                    createBlogModal.show();
+                }
+            });
+    });
+</script>
+
+
+<!--begin: When Unauthorize then automatic open modal-->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const loginModalElement = document.getElementById("loginModal");
+
+        if (!loginModalElement) return;
+
+        const loginModal = new bootstrap.Modal(loginModalElement);
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if (urlParams.get("loginRequired") === "true") {
+            loginModal.show();
+        }
+    });
+</script>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+                 $(function () {
+
+            const postsTable = $("#blogs").DataTable({
+                processing: true,
+                serverSide: true,
+                paging: true,
+                pagingType: "full_numbers",
+                lengthChange: false,
+                info: true,
+                ordering: false,
+                searching: false,
+
+                ajax: {
+                    url: "/Blog/GetBlogsJsonData",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: function (d) {
+
+                        d.search = {
+                            value: $("#searchInput").val()
+                        };
+
+                        return JSON.stringify(d);
+                    }
+                },
+
+                        columns: [
+                            {
+                                data: null,
+                                render: function (data, type, row) {
+
+                                    return `
+                                        <div class="choice-card text-center w-100">
+
+                                            <div class="icon-circle">
+                                                <i class="bi bi-journal-text"></i>
+                                            </div>
+
+                                            <h5>${row[0]}</h5>
+
+                                            <p>
+                                                <strong>Author:</strong> ${row[1]}<br/>
+                                                <strong>Email:</strong> ${row[2]}<br/>
+                                                <strong>Total Posts:</strong> ${row[3]}
+                                            </p>
+
+                                                    <a href="/blog/${row[7]}/posts"
+                                                       class="btn btn-dark btn-sm mt-2">
+                                                       Read Posts →
+                                                    </a>
+
+                                        </div>
+                                    `;
+                                }
+                            }
+                        ],
+
+                createdRow: function (row) {
+                    $("td", row).addClass("border-0");
+                }
+            });
+
+            // Search
+            let searchTimer;
+            $("#searchInput").on("keyup", function () {
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(() => {
+                    postsTable.ajax.reload();
+                }, 400);
+            });
+
+        });
+
+
+    </script>
+}
+
+

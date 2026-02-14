@@ -36,7 +36,8 @@ namespace DevSkill.Blog.Application.Features.BlogsArea.Queries
                     OwnerEmail = owner.Email,
                     TotalPosts = await _unitOfWork.PostRepository.GetCountAsync(x => x.BlogAreaId == blog.Id),
                     CreatedAt = blog.CreatedAt,
-                    IsSuspended = blog.IsSuspended
+                    IsSuspended = blog.IsSuspended,
+                    BlogSlug = blog.Slug
                 };
                 blogDtos.Add(blogDto);
 

@@ -144,5 +144,39 @@ namespace DevSkill.Blog.Infrastructure.Repositories
                     pageSize);
 
         }
+
+        public async Task<(IList<Post>, int total, int totalDisplay)> GetPagedPostsInBlogBySlugAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder, string? categoryName, string? blogSlug)
+        {
+            if (categoryName == string.Empty || categoryName == null)
+            {
+                return await GetDynamicAsync(x => (x.Title.Contains(searchText)
+                    || x.Tags.Any(t => t.Name.Contains(searchText)
+                    || x.BlogArea.Name.Contains(searchText)))
+                    && x.BlogArea.Slug == blogSlug
+                    && x.IsPublished == true
+                    && x.IsSuspended != true,
+                    
+
+                    sortOrder,
+                    q => q.Include(x => x.Comments.Where(m => m.IsDeleted == false)).Include(x => x.BlogArea).Include(y => y.Reports),
+                    pageIndex,
+                    pageSize);
+            }
+            else
+            {
+                return await GetDynamicAsync(x => (x.Title.Contains(searchText)
+                || x.Tags.Any(t => t.Name.Contains(searchText)
+                || x.BlogArea.Name.Contains(searchText)))
+                && x.BlogArea.Slug == blogSlug
+                && x.IsPublished == true
+                && x.IsSuspended != true
+                && x.PostCategories.Any(c => c.Name == categoryName),
+
+                sortOrder,
+                q => q.Include(x => x.Comments.Where(m => m.IsDeleted == false)).Include(x => x.BlogArea).Include(y => y.Reports),
+                pageIndex,
+                pageSize);
+            }
+        }
     }
 }

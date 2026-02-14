@@ -1,25 +1,25 @@
 ﻿using Cortex.Mediator;
-using DevSkill.Blog.Application.Features.Comments.Queries;
-using DevSkill.Blog.Application.Features.Posts.Commands;
+using DevSkill.Blog.Application.Features.BlogsArea.Queries;
 using DevSkill.Blog.Application.Features.Posts.Queries;
 using DevSkill.Blog.Domain;
+using DevSkill.Blog.Domain.Dtos;
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Infrastructure.Identity;
+using DevSkill.Blog.Web.Areas.Admin.Models;
 using DevSkill.Blog.Web.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
-
 namespace DevSkill.Blog.Web.Controllers
 {
-    public class PostController : Controller
+    public class BlogController : Controller
     {
-        private readonly ILogger<PostController> _logger;
+        private readonly ILogger<BlogController> _logger;
         private readonly IMediator _mediator;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public PostController(
-            ILogger<PostController> logger,
+        public BlogController(
+            ILogger<BlogController> logger,
             IMediator mediator,
             UserManager<ApplicationUser> userManager)
         {
@@ -31,63 +31,73 @@ namespace DevSkill.Blog.Web.Controllers
         {
             return View();
         }
-        //[HttpGet("/blog/{blogSlug}/{postSlug}")]
-        public async Task<IActionResult> PostDetails(string blogSlug, string postSlug)
+
+        [HttpPost]
+        public JsonResult GetBlogsJsonData([FromBody] BlogListModel model)
         {
             try
             {
-                var query = new GetPostBySlugQuery()
-                {
-                    BlogSlug = blogSlug,
-                    PostSlug = postSlug
-                };
-                var post = await _mediator.SendQueryAsync<GetPostBySlugQuery, Post>(query);
-                IndexViewModel model = new IndexViewModel()
-                {
-                    PublicPostModel = new PublicPostViewModel()
-                    {
-                        Title = post.Title,
-                        Content = post.Content,
-                        CategoryNames = post.PostCategories.Select(pc => pc.Name).ToList(),
-                        TagNames = post.Tags.Select(t => t.Name).ToList(),
-                        Likes = post.Likes,
-                        Id = post.Id,
-                        Comments = post.Comments.Count()
-                    }
+                var query = new GetBlogsQuery();
+                query.SearchText = model.Search.Value;
+                //query.SortOrder = model.FormatSortExpression("Title");
+                query.PageSize = model.PageSize;
+                query.PageIndex = model.PageIndex;
 
+
+                var (items, total, totalDisplay) = _mediator.SendQueryAsync<GetBlogsQuery, (IList<BlogDto>, int total, int totalDisplay)>(query).Result;
+
+                var messages = new
+                {
+                    recordsTotal = total,
+                    recordsFiltered = totalDisplay,
+                    data = (from item in items
+                            select new string[]
+                            {
+                        HttpUtility.HtmlEncode(item.Title),
+                        HttpUtility.HtmlEncode(item.OwnerName),
+                        HttpUtility.HtmlEncode(item.OwnerEmail),
+                        item.TotalPosts.ToString(),
+                        item.CreatedAt.ToString("dd-MM-yyyy"),
+                        item.IsSuspended.ToString(),
+                        item.Id.ToString(),
+                        item.BlogSlug.ToString()
+                            }).ToArray()
                 };
-                return View(model);
+                return Json(messages);
+
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                return RedirectToAction("Index", "Post");
+                _logger.LogError(ex, "Error occurred while fetching contact messages.");
+                return Json(DataTables.EmptyResult);
             }
         }
+        public IActionResult Posts(string blogSlug)
+        {
+            ViewBag.BlogSlug = blogSlug;
+            return View();
+        }
 
-
-        /* =========================
-          Public Post - DATATABLE
-       ==========================*/
         [HttpPost]
-        public async Task<JsonResult> GetPublicPostsJsonData([FromBody] PublicPostListModel model)
+        public async Task<JsonResult> GetPostsInBlogJsonData([FromBody] BlogPostListModel model)
         {
             try
             {
-                var query = new GetPublicPostQuery
+                var query = new GetPostsInBlogQuery
                 {
                     SearchText = model.Search.Value,
                     SortOrder = model.FormatSortExpression("Title", "Content", "CreatedAt"),
                     PageSize = model.PageSize,
                     PageIndex = model.PageIndex,
-                    CategoryName = model.CategoryName
+                    CategoryName = model.CategoryName,
+                    BlogSlug = model.BlogSlug,
                 };
 
                 var (items, total, totalDisplay) =
                     await _mediator.SendQueryAsync<
-                        GetPublicPostQuery,
+                        GetPostsInBlogQuery,
                         (IList<Post>, int, int)>(query);
-                
+
 
                 return Json(new
                 {
@@ -115,22 +125,6 @@ namespace DevSkill.Blog.Web.Controllers
             {
                 _logger.LogError(ex, "Error in GetPostsJsonData");
                 return Json(DataTables.EmptyResult);
-            }
-        }
-        [HttpPost]
-        public async Task<IActionResult> LikePost([FromBody] LikePostCommand command)
-        {
-            try
-            {
-                var updatedLikes =
-                    await _mediator.SendCommandAsync<LikePostCommand, int>(command);
-
-                return Json(new { likes = updatedLikes });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Like post failed");
-                return BadRequest();
             }
         }
     }
