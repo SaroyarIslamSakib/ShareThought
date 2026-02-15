@@ -24,10 +24,10 @@
             <!-- MAIN CONTENT -->
             <div class="container text-center">
                 <h1 class="hero-title">
-                    Welcome<br />What do you want to learn
+                    Welcome<br />What do you want to Read
                 </h1>
                 <p class="hero-subtitle mb-4">
-                    You can search for the type of blog you like.<br />
+                    You can search for the type of post you like.<br />
                 </p>
 
                 <div class="search-center">
@@ -43,7 +43,7 @@
                             id="openCreateBlog">
                         Create
                     </button>
-                    <button type="button" class="btn hero-btn-secondary">Sign up</button>
+                    <a asp-area="Blogger" asp-controller="Blog" asp-action="Index" class="btn hero-btn-secondary">My BLog</a>
                 </div>
             </div>
             <!-- Dark section -->
@@ -151,21 +151,22 @@
 
 
         </section>
+
         <!--begin: Choice section-->
         <section class="choice-section py-5">
             <div class="container text-center">
-                <h3 class="choice-title mb-5">How can we help you?</h3>
+                <h3 class="choice-title mb-5">How ShareThought Works</h3>
 
                 <div class="row g-4">
                     <!-- Card 1 -->
                     <div class="col-md-4">
                         <div class="choice-card">
                             <div class="icon-circle">
-                                <i class="bi bi-person"></i>
+                                <i class="bi bi-person-plus-fill"></i>
                             </div>
-                            <h5>Join our team</h5>
+                            <h5>Create Account</h5>
                             <p>
-                                Explore opportunities to join us and boost your career
+                                Sign up and verify your email to activate your blog.
                             </p>
                         </div>
                     </div>
@@ -174,11 +175,11 @@
                     <div class="col-md-4">
                         <div class="choice-card">
                             <div class="icon-circle">
-                                <i class="bi bi-box-seam"></i>
+                                <i class="bi bi-pencil-square"></i>
                             </div>
-                            <h5>Join as a supplier</h5>
+                            <h5>Launch Your Blog</h5>
                             <p>
-                                Enquire about working with us as a supplier and discover our range of services
+                                Set your blog name, create posts with markdown, and publish instantly.
                             </p>
                         </div>
                     </div>
@@ -187,11 +188,11 @@
                     <div class="col-md-4">
                         <div class="choice-card">
                             <div class="icon-circle">
-                                <i class="bi bi-cart"></i>
+                                <i class="bi bi-chat-dots-fill"></i>
                             </div>
-                            <h5>Join as a customer</h5>
+                            <h5>Share & Engage</h5>
                             <p>
-                                Enquire about becoming a customer to access market-leading support
+                                Readers explore, comment, and interact while you manage and moderate.
                             </p>
                         </div>
                     </div>
@@ -199,6 +200,7 @@
             </div>
         </section>
         <!--end: Choice section-->
+        
 
         <div class="add-section">
         </div>
@@ -208,22 +210,23 @@
             <div class="container">
                 <!-- Header -->
                 <h2 class="why-header text-center mb-5">
-                    Why learn with this BlogPost
+                    Why Choose ShareThought?
                 </h2>
 
                 <!-- Content Row -->
                 <div class="row g-4">
+
                     <!-- Item 1 -->
                     <div class="col-md-6">
                         <div class="row align-items-start">
                             <div class="why-photo-section col-3 text-center">
-                                <i class="bi bi-people-fill"></i>
+                                <i class="bi bi-globe2"></i>
                             </div>
                             <div class="why-section col-9">
-                                <h5>Large Community</h5>
+                                <h5>Multi-Blog Platform</h5>
                                 <p>
-                                    Join our vibrant learning community of students, alumni,
-                                    and educators.
+                                    Create and manage your own blog while being part of a powerful
+                                    multi-user ecosystem — all in one platform.
                                 </p>
                             </div>
                         </div>
@@ -233,13 +236,13 @@
                     <div class="col-md-6">
                         <div class="row align-items-start">
                             <div class="why-photo-section col-3 text-center">
-                                <i class="bi bi-currency-dollar"></i>
+                                <i class="bi bi-pencil-square"></i>
                             </div>
                             <div class="why-section col-9">
-                                <h5>Free Education</h5>
+                                <h5>Powerful Writing Experience</h5>
                                 <p>
-                                    Learn from our charity and save money on your education.
-                                    Supported by donors.
+                                    Write using a clean markdown editor, organize posts with
+                                    categories and tags, and generate SEO-friendly URLs automatically.
                                 </p>
                             </div>
                         </div>
@@ -249,13 +252,13 @@
                     <div class="col-md-6">
                         <div class="row align-items-start">
                             <div class="why-photo-section col-3 text-center">
-                                <i class="bi bi-mortarboard-fill"></i>
+                                <i class="bi bi-chat-dots-fill"></i>
                             </div>
                             <div class="why-section col-9">
-                                <h5>Extensive Certifications</h5>
+                                <h5>Smart Comment System</h5>
                                 <p>
-                                    Earn industry-recognized, verifiable certifications
-                                    in high-demand technologies.
+                                    Readers can comment on posts while you stay in control
+                                    with approval, moderation, and reply features.
                                 </p>
                             </div>
                         </div>
@@ -265,13 +268,13 @@
                     <div class="col-md-6">
                         <div class="row align-items-start">
                             <div class="why-photo-section col-3 text-center">
-                                <i class="bi bi-diagram-3-fill"></i>
+                                <i class="bi bi-shield-lock-fill"></i>
                             </div>
                             <div class="why-section col-9">
-                                <h5>Comprehensive Curriculum</h5>
+                                <h5>Secure & Scalable</h5>
                                 <p>
-                                    Enhance your technical skills with a linear,
-                                    world-class, project-based curriculum.
+                                    Built with Identity authentication, reCaptcha protection,
+                                    Clean Architecture and Docker for performance and growth.
                                 </p>
                             </div>
                         </div>
@@ -280,8 +283,8 @@
 
                 <!-- Button -->
                 <div class="text-center mt-5">
-                    <a href="#" class="btn btn-warning why-btn">
-                        Start Learning Now (it's free)
+                    <a asp-area="" asp-controller="Blog" asp-action="Index" class="btn btn-warning why-btn">
+                        See Our Free Blogs
                     </a>
                 </div>
             </div>
@@ -298,11 +301,11 @@
                     <div class="col-md-4">
                         <div class="choice-card">
                             <div class="icon-circle">
-                                <i class="bi bi-person"></i>
+                                <i class="bi bi-pencil-square"></i>
                             </div>
-                            <h5>Join our team</h5>
+                            <h5>For Bloggers</h5>
                             <p>
-                                Explore opportunities to join us and boost your career
+                                Create your blog, manage posts, approve comments, and grow your audience.
                             </p>
                         </div>
                     </div>
@@ -311,11 +314,11 @@
                     <div class="col-md-4">
                         <div class="choice-card">
                             <div class="icon-circle">
-                                <i class="bi bi-box-seam"></i>
+                                <i class="bi bi-book-half"></i>
                             </div>
-                            <h5>Join as a supplier</h5>
+                            <h5>For Readers</h5>
                             <p>
-                                Enquire about working with us as a supplier and discover our range of services
+                                Explore posts by category or tag, leave comments, and report inappropriate content.
                             </p>
                         </div>
                     </div>
@@ -324,11 +327,11 @@
                     <div class="col-md-4">
                         <div class="choice-card">
                             <div class="icon-circle">
-                                <i class="bi bi-cart"></i>
+                                <i class="bi bi-megaphone-fill"></i>
                             </div>
-                            <h5>Join as a customer</h5>
+                            <h5>Write & Share</h5>
                             <p>
-                                Enquire about becoming a customer to access market-leading support
+                                Use our markdown editor to write beautiful posts and share your thoughts with the world.
                             </p>
                         </div>
                     </div>
@@ -338,8 +341,10 @@
         <!--end: Choice section-->
     </div>
 </main>
+
+<!--begin: Search box-->
 <script>
-    const text = "Learn HTML, CSS, Javascript, C#, Aspnet, Clean Architechture";
+    const text = "Discover Your Favorite Posts Across All Blogs and Categories";
     const input = document.getElementById("searchInput");
 
     let index = 0;
@@ -355,10 +360,28 @@
 
     setInterval(typeText, 150);
 </script>
+<script>
+    const searchInput = document.getElementById("searchInput");
+
+    searchInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+
+            const searchText = this.value.trim();
+
+            if (searchText !== "") {
+                window.location.href = `/Post/Index?search=${encodeURIComponent(searchText)}`;
+            }
+        }
+    });
+</script>
+<!--end: Search box-->
+
 <script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
 
+
 <script>
-    const isUserLoggedIn = @(User.Identity.IsAuthenticated.ToString().ToLower());
+    //Identity JS
+        const isUserLoggedIn = @(User.Identity.IsAuthenticated.ToString().ToLower());
     document.addEventListener("DOMContentLoaded", function () {
 
         const loginModalEl = document.getElementById("loginModal");
@@ -403,6 +426,7 @@
             });
     });
 </script>
+
 
 
 <!--begin: When Unauthorize then automatic open modal-->

@@ -22,10 +22,10 @@ namespace DevSkill.Blog.Application.Features.BlogsArea.Queries
             var blog =  await _unitOfWork.BlogAreaRepository.GetBlogBySlug(query.Slug);
             if (blog == null)
                 return null;
-            if (query.UserId != blog.UserId)
-            {
-                throw new UnauthorizedAccessException("You are not allowed to access this blog");
-            }
+            //if (query.UserId != blog.UserId)
+            //{
+            //    throw new UnauthorizedAccessException("You are not allowed to access this blog");
+            //}
             return blog;
         }
     }

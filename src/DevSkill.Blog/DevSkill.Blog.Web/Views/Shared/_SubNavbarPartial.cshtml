@@ -1,19 +1,33 @@
-﻿<header class="bg-white border-bottom d-flex align-items-center py-2 sub-navbar">
-    <div class="container-fluid">
-        <div class="d-flex align-items-center gap-3 sub-navbar overflow-x-auto flex-nowrap">
-            <a asp-area="" asp-controller="Home" asp-action="BlogDetails" class="sub-nav-item">Aspnet</a>
-            <a href="#" class="sub-nav-item">UX</a>
-            <a href="#" class="sub-nav-item">CSS</a>
-            <a href="#" class="sub-nav-item">JavaScript</a>
-            <a href="#" class="sub-nav-item">Performance</a>
-            <a href="#" class="sub-nav-item">Design</a>
-            <a href="#" class="sub-nav-item">Figma</a>
-            <a href="#" class="sub-nav-item">React</a>
-            <a href="#" class="sub-nav-item">Vue</a>
-            <a href="#" class="sub-nav-item">Guides</a>
-            <a href="#" class="sub-nav-item">Business</a>
-            <a href="#" class="sub-nav-item">Career</a>
-            <a href="#" class="sub-nav-item">Privacy</a>
+﻿<div class="sub-nav-wrapper">
+
+    <button class="scroll-btn left" onclick="scrollNav(-200)">
+        &#10094;
+    </button>
+    <header class="bg-white d-flex align-items-center py-2 sub-navbar" id="subNavbar">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center gap-3 flex-nowrap">
+
+                <a href="/Post?category=Programming" class="sub-nav-item">Programming</a>
+                <a href="/Post?category=Lifestyle" class="sub-nav-item">Lifestyle</a>
+                <a href="/Post?category=Research" class="sub-nav-item">Research</a>
+                <a href="/Post?category=Guideline" class="sub-nav-item">Guideline</a>
+                <a href="/Post?category=Tutorials" class="sub-nav-item">Tutorials</a>
+                <a href="/Post?category=Career" class="sub-nav-item">Career</a>
+                <a href="/Post?category=Development" class="sub-nav-item">Development</a>
+                <a href="/Post?category=Development" class="sub-nav-item">Engineering</a>
+                <a href="/Post?category=AI" class="sub-nav-item">Marketing</a>
+                <a href="/Post?category=Architecture" class="sub-nav-item">Architecture</a>
+                <a href="/Post?category=ML" class="sub-nav-item">AI</a>
+                <a href="/Post?category=INSPIRATION" class="sub-nav-item">INSPIRATION</a>
+                <a href="/Post?category=Opinion" class="sub-nav-item">Opinion</a>
+                <a href="/Post?category=Business" class="sub-nav-item">Business</a>
+                <a href="/Post?category=Security" class="sub-nav-item">Security</a>
+
+            </div>
         </div>
-    </div>
-</header>
+    </header>
+    <button class="scroll-btn right" onclick="scrollNav(200)">
+        &#10095;
+    </button>
+
+</div>

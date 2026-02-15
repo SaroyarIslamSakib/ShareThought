@@ -28,6 +28,18 @@
     font-size: 17px;
     font-weight: 600;
 }
+.avatar-letter {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #afa797; 
+    color: #1e2329;
+    font-weight: 600;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 /* Background */
 .nav-colour {
@@ -246,85 +258,6 @@
     background-color: #ffffff;
 }
 
-/* ===============================
-   SUB NAVBAR
-================================ */
-.sub-navbar {
-    position: relative;
-    z-index: 1040;
-    background: #ffffff;
-    display: flex;
-    align-items: center;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    cursor: grab;
-}
-
-.sub-navbar::-webkit-scrollbar {
-    display: none;
-}
-
-.sub-navbar:active {
-    cursor: grabbing;
-}
-
-/* ===============================
-   SUB NAV ITEMS
-================================ */
-.sub-nav-item {
-    min-width: 110px;
-    height: 40px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 0 12px;
-    border-radius: 10px;
-
-    font-family: 'Inter', system-ui, sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-
-    color: var(--brand-nav);
-    background-color: #ffffff;
-
-    border: 1px solid transparent;
-    box-sizing: border-box;
-
-    text-decoration: none;
-    white-space: nowrap;
-
-    transition: all 0.2s ease;
-}
-@media (max-width: 576px) {
-    .sub-nav-item {
-        min-width: 90px;
-        font-size: 13px;
-    }
-}
-.sub-nav-item:hover {
-    background-color: var(--brand-nav);
-    color: #FFFFFF;
-    border-color: rgba(79, 140, 255, 0.4);
-}
-
-.sub-nav-item.active,
-.sub-nav-item:active {
-    background-color: var(--brand-nav);
-    color: #ffffff;
-}
-.custom-btn-blue {
-    background-color: var(--brand-nav);
-    color:#ffffff;
-}
-    .custom-btn-blue:hover {
-        background-color: var(--brand-accent-hover);
-        color: #ffffff;
-    }
 
 /* ===============================
    Login Button Styles
@@ -432,4 +365,117 @@
         outline: none;
         box-shadow: 0 0 0 2px rgba(79, 140, 255, 0.4);
         border-radius: 6px;
+    }
+
+
+
+/* ===============================
+   SUB NAVBAR
+================================ */
+.sub-navbar {
+    position: relative;
+    padding: 0 38px;
+    z-index: 1040;
+    background: #ffffff;
+    border-bottom: none !important;
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    /* Hide scrollbar */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE */
+
+    cursor: grab;
+}
+
+    .sub-navbar::-webkit-scrollbar {
+        display: none; /* Chrome, Safari */
+    }
+
+    .sub-navbar:active {
+        cursor: grabbing;
+    }
+
+
+/* ===============================
+   SUB NAV ITEMS
+================================ */
+.sub-nav-item {
+    min-width: 110px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 12px;
+    border-radius: 10px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--brand-nav);
+    background-color: #ffffff;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+@media (max-width: 576px) {
+    .sub-nav-item {
+        min-width: 90px;
+        font-size: 13px;
+    }
+}
+
+.sub-nav-item:hover {
+    background-color: var(--brand-nav);
+    color: #ffffff;
+    border-color: rgba(79, 140, 255, 0.4);
+}
+
+.sub-nav-item.active,
+.sub-nav-item:active {
+    background-color: var(--brand-nav);
+    color: #ffffff;
+}
+
+
+/* ===============================
+   CUSTOM BUTTON
+================================ */
+.custom-btn-blue {
+    background-color: var(--brand-nav);
+    color: #ffffff;
+}
+
+    .custom-btn-blue:hover {
+        background-color: var(--brand-accent-hover);
+        color: #ffffff;
+    }
+.sub-nav-wrapper {
+    position: relative;
+
+}
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 100%;
+    width: 40px;
+    border: none;
+    background: #ffffff;
+    cursor: pointer;
+    z-index: 1050;
+}
+
+    .scroll-btn.left {
+        left: 0;
+    }
+
+    .scroll-btn.right {
+        right: 0;
     }

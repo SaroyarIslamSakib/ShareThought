@@ -48,6 +48,8 @@ namespace DevSkill.Blog.Infrastructure.Repositories
             {
                 return await GetDynamicAsync(x => (x.Title.Contains(searchText)
                     || x.Tags.Any(t => t.Name.Contains(searchText)
+                    || x.PostCategories.Any(c => c.Name.Contains(searchText))
+
                     || x.BlogArea.Name.Contains(searchText)))
                     && x.IsPublished == true
                     && x.IsSuspended != true,
@@ -61,6 +63,7 @@ namespace DevSkill.Blog.Infrastructure.Repositories
             {
                 return await GetDynamicAsync(x => (x.Title.Contains(searchText)
                 || x.Tags.Any(t => t.Name.Contains(searchText)
+                || x.PostCategories.Any(c => c.Name.Contains(searchText))
                 || x.BlogArea.Name.Contains(searchText)))
                 && x.IsPublished == true 
                 && x.IsSuspended != true
@@ -151,6 +154,7 @@ namespace DevSkill.Blog.Infrastructure.Repositories
             {
                 return await GetDynamicAsync(x => (x.Title.Contains(searchText)
                     || x.Tags.Any(t => t.Name.Contains(searchText)
+                    || x.PostCategories.Any(c => c.Name.Contains(searchText))
                     || x.BlogArea.Name.Contains(searchText)))
                     && x.BlogArea.Slug == blogSlug
                     && x.IsPublished == true
@@ -166,6 +170,7 @@ namespace DevSkill.Blog.Infrastructure.Repositories
             {
                 return await GetDynamicAsync(x => (x.Title.Contains(searchText)
                 || x.Tags.Any(t => t.Name.Contains(searchText)
+                || x.PostCategories.Any(c => c.Name.Contains(searchText))
                 || x.BlogArea.Name.Contains(searchText)))
                 && x.BlogArea.Slug == blogSlug
                 && x.IsPublished == true

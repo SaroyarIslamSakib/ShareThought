@@ -72,9 +72,12 @@ namespace DevSkill.Blog.Web.Controllers
                 return Json(DataTables.EmptyResult);
             }
         }
-        public IActionResult Posts(string blogSlug)
+        public async Task<IActionResult> Posts(string blogSlug)
         {
+            var query = new GetBlogAreaBySlugQuery() { Slug = blogSlug };
+            var blog = await _mediator.SendQueryAsync<GetBlogAreaBySlugQuery, BlogArea>(query);
             ViewBag.BlogSlug = blogSlug;
+            ViewBag.BlogTitle = blog.Name;
             return View();
         }
 

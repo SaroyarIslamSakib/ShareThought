@@ -7,6 +7,9 @@
     var roles = currentUser != null
         ? await UserManager.GetRolesAsync(currentUser)
         : new List<string>();
+    var firstLetter = currentUser != null && !string.IsNullOrEmpty(currentUser.FirstName)
+    ? currentUser.FirstName.Substring(0, 1).ToUpper()
+    : "U";
 }
 <nav class="main-navbar navbar-expand-lg nav-colour navbar-dark">
     <div class="container-fluid">
@@ -42,21 +45,15 @@
                 </li>
 
                 <li class="nav-item">
-                    <a asp-area="Blogger" asp-controller="Blog" asp-action="Index" class="btn nav-colour fw-bold text-white px-3">
-                        Manage Blog
-                    </a>
-                </li>
-
-                <li class="nav-item">
                     <a asp-area="" asp-controller="Home" asp-action="ContactUs" class="btn nav-colour fw-bold text-white px-3">
                         Contact us
                     </a>
                 </li>
-                <li class="nav-item">
+                @* <li class="nav-item">
                     <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="btn nav-colour fw-bold text-white px-3">
                         Admin Panel
                     </a>
-                </li>
+                </li> *@
 
             </ul>
 
@@ -80,7 +77,9 @@
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
                     <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                         <div class="avatar avatar-online">
-                            <img src="~/sneat-1.0.0/assets/img/avatars/me.png" class="w-px-40 h-auto rounded-circle" />
+                            <div class="avatar-letter">
+                                @firstLetter
+                            </div>
                         </div>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
@@ -89,7 +88,9 @@
                                 <div class="d-flex">
                                     <div class="flex-shrink-0 me-3">
                                         <div class="avatar avatar-online">
-                                            <img src="~/sneat-1.0.0/assets/img/avatars/me.png" class="w-px-40 h-auto rounded-circle" />
+                                            <div class="avatar-letter">
+                                                @firstLetter
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="flex-grow-1">
@@ -120,15 +121,6 @@
                             <a class="dropdown-item" href="#">
                                 <i class="bx bx-cog me-2"></i>
                                 <span class="align-middle">Settings</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">
-                                <span class="d-flex align-items-center align-middle">
-                                    <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-                                    <span class="flex-grow-1 align-middle">Billing</span>
-                                    <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
-                                </span>
                             </a>
                         </li>
                         <li>

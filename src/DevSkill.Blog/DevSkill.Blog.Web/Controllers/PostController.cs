@@ -27,11 +27,12 @@ namespace DevSkill.Blog.Web.Controllers
             _mediator = mediator;
             _userManager = userManager;
         }
-        public IActionResult Index()
+        public IActionResult Index(string? category, string? search)
         {
+            ViewBag.SelectedCategory = category;
+            ViewBag.SearchText = search;
             return View();
         }
-        //[HttpGet("/blog/{blogSlug}/{postSlug}")]
         public async Task<IActionResult> PostDetails(string blogSlug, string postSlug)
         {
             try

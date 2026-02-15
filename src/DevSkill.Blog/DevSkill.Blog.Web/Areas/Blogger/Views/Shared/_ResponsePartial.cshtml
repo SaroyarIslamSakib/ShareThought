@@ -3,8 +3,10 @@
 @if (TempData.Peek<ResponseModel>("ResponseMessage") != null)
 {
     var response = TempData.Get<ResponseModel>("ResponseMessage");
-
-    <div class="bs-toast toast fade show bg-@response.Response alert-dismissible
+    string str;
+    if (@response.Response.ToString() == "success") { str = "info"; }
+    else { str = "danger"; }
+    <div class="bs-toast toast fade show bg-@str alert-dismissible
                 position-fixed top-0 end-0 m-3"
          role="alert"
          aria-live="assertive"

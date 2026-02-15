@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
     <link rel="stylesheet" href="~/css/public-post-list-item.css" />
+    <link rel="stylesheet" href="~/css/create-blog-modal.css" />
 }
 <partial name="_LoginModalPartial" />
 <partial name="_RegisterModalPartial" model="new RegisterModel()" />
@@ -22,11 +23,11 @@
 
             <!-- MAIN CONTENT -->
             <div class="container text-center">
-                <h6>Blogs</h6>
+                <h6>Posts</h6>
                 <h3 class="choice-title mb-4">What do you want to read?</h3>
                 <div class="search-center">
                     <div class="search-box search-wrapper mb-4">
-                        <input type="text" class="search-input" id="searchInput" placeholder="">
+                        <input type="text" class="search-input" id="searchInput" value="@ViewBag.SearchText" placeholder="">
                     </div>
                 </div>
             </div>
@@ -36,13 +37,13 @@
                     <div class="category-list">
                         <button class="category-item active" data-category="">All</button>
                         <button class="category-item" data-category="Programming">Programming</button>
-                        <button class="category-item" data-category="Architechture">Architechture</button>
-                        <button class="category-item" data-category="Framework">Framework</button>
-                        <button class="category-item" data-category="Life Style">Life Style</button>
+                        <button class="category-item" data-category="Research">Research</button>
+                        <button class="category-item" data-category="Tutorials">Tutorials</button>
+                        <button class="category-item" data-category="Life Style">Lifestyle</button>
                         <button class="category-item" data-category="Marketing">Marketing</button>
-                        <button class="category-item" data-category="Self-Publishing">Self-Publishing</button>
-                        <button class="category-item" data-category="Spines">Spines</button>
-                        <button class="category-item" data-category="Writing">Writing</button>
+                        <button class="category-item" data-category="Self-Publishing">Career</button>
+                        <button class="category-item" data-category="Spines">Business</button>
+                        <button class="category-item" data-category="Writing">Security</button>
                     </div>
                 </div>
             </section>
@@ -66,7 +67,7 @@
     </div>
 </main>
 <script>
-    const text = "Learn HTML, CSS, Javascript, C#, Aspnet, Clean Architechture";
+    const text = "Search Your Favorite Posts Across All Blogs, Categories & Tags";
     const input = document.getElementById("searchInput");
 
     let index = 0;
@@ -167,16 +168,16 @@
         $(function () {
 
             //  MUST be declared BEFORE DataTable
-            let selectedCategory = "";
+            let selectedCategory = "@ViewBag.SelectedCategory" || "";
 
             // ================= DataTable =================
             const postsTable = $("#posts").DataTable({
                 processing: true,
                 serverSide: true,
                 paging: true,
-                pagingType: "simple",
+                pagingType: "full_numbers",
                 lengthChange: false,
-                info: false,
+                info: true,
                 ordering: false,
                 searching: false,
 
