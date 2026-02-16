@@ -15,7 +15,9 @@
 <header class="write-header">
     <div class="write-header-inner">
 
-        <h1 class="blog-title">My Blog</h1>
+        <a asp-area="Blogger" asp-controller="Blog" asp-action="Index">
+            <h1 class="blog-title">@ViewBag.BlogName</h1>
+        </a>
 
         <div class="header-right">
             <div class="header-dropdown">

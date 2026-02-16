@@ -39,28 +39,50 @@ namespace DevSkill.Blog.Web.Controllers
         {
             return View();
         }
-        [HttpPost,ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> ContactUs(ContactMessageModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var command = _mapper.Map<ContactMessageAddCommand>(model);
-                command.CreatedAt = _serverTime.DateTime;
-                var result = await _mediator.SendCommandAsync<ContactMessageAddCommand, ContactMessage>(command);
+                if (ModelState.IsValid)
+                {
+                    var command = _mapper.Map<ContactMessageAddCommand>(model);
+                    command.CreatedAt = _serverTime.DateTime;
+
+                    var result = await _mediator
+                        .SendCommandAsync<ContactMessageAddCommand, ContactMessage>(command);
+
+                    TempData.Put("ResponseMessage", new ResponseModel
+                    {
+                        Message = "Message send Successfully",
+                        Response = ResponseTypes.success
+                    });
+
+                    return RedirectToAction("Index");
+                }
+
                 TempData.Put("ResponseMessage", new ResponseModel
                 {
-                    Message = "Message send Successfully",
-                    Response = ResponseTypes.success
+                    Message = "Failed to send message",
+                    Response = ResponseTypes.danger
                 });
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while submitting ContactUs form");
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Something went wrong. Please try again.",
+                    Response = ResponseTypes.danger
+                });
+
                 return RedirectToAction("Index");
             }
-            TempData.Put("ResponseMessage", new ResponseModel
-            {
-                Message = "Failed to send message",
-                Response = ResponseTypes.danger
-            });
-            return View();
         }
+
 
 
         public IActionResult Privacy()

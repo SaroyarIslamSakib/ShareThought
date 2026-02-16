@@ -33,96 +33,170 @@ namespace DevSkill.Blog.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> AddComment([FromForm] AddCommentModel model)
         {
-            if (!User.Identity!.IsAuthenticated)
-                return Unauthorized();
-
-            if (string.IsNullOrWhiteSpace(model.Content))
-                return BadRequest("Comment content is required");
-
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Unauthorized();
-
-            var command = new AddCommentCommand
+            try
             {
-                PostId = model.PostId,
-                ParentId = model.ParentId,
-                Content = model.Content,
-                UserId = user.Id
-            };
+                if (!User.Identity!.IsAuthenticated)
+                    return Unauthorized();
 
-            var commentDto = await _mediator.SendCommandAsync<AddCommentCommand,CommentDto>(command);
+                if (string.IsNullOrWhiteSpace(model.Content))
+                    return BadRequest("Comment content is required");
 
-            return Json(commentDto);
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return Unauthorized();
+
+                var command = new AddCommentCommand
+                {
+                    PostId = model.PostId,
+                    ParentId = model.ParentId,
+                    Content = model.Content,
+                    UserId = user.Id
+                };
+
+                var commentDto =
+                    await _mediator.SendCommandAsync<AddCommentCommand, CommentDto>(command);
+
+                return Json(commentDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Error while adding comment. PostId: {PostId}, User: {UserName}",
+                    model.PostId,
+                    User?.Identity?.Name);
+
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Failed to add comment. Please try again."
+                });
+            }
         }
+
 
 
         [HttpGet]
         public async Task<IActionResult> GetComments(Guid postId)
         {
-            Guid? userId = null;
-
-            if (User.Identity!.IsAuthenticated)
+            try
             {
-                var user = await _userManager.GetUserAsync(User);
-                userId = user?.Id;
+                Guid? userId = null;
+
+                if (User.Identity!.IsAuthenticated)
+                {
+                    var user = await _userManager.GetUserAsync(User);
+                    userId = user?.Id;
+                }
+
+                var query = new GetCommentsByPostIdQuery
+                {
+                    PostId = postId,
+                    CurrentUserId = userId
+                };
+
+                var comments =
+                    await _mediator.SendQueryAsync<
+                        GetCommentsByPostIdQuery,
+                        IList<CommentDto>>(query);
+
+                return Json(comments);
             }
-
-            var query = new GetCommentsByPostIdQuery
+            catch (Exception ex)
             {
-                PostId = postId,
-                CurrentUserId = userId
-            };
+                _logger.LogError(ex,
+                    "Error while fetching comments for PostId: {PostId}, User: {UserName}",
+                    postId,
+                    User?.Identity?.Name);
 
-            var comments = await _mediator.SendQueryAsync<GetCommentsByPostIdQuery, IList<CommentDto>>(query);
-
-            return Json(comments);
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Failed to load comments. Please try again."
+                });
+            }
         }
         [HttpPut]
-        public async Task<IActionResult> EditComments(Guid id,[FromForm] EditCommentModel model)
+        public async Task<IActionResult> EditComments(Guid id, [FromForm] EditCommentModel model)
         {
-            if (!User.Identity!.IsAuthenticated)
-                return Unauthorized();
-
-            if (string.IsNullOrWhiteSpace(model.Content))
-                return BadRequest("Comment content is required");
-
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Unauthorized();
-
-            var command = new EditCommentCommand
+            try
             {
-                CommentId = id,
-                Content = model.Content,
-                UserId = user.Id
-            };
+                if (!User.Identity!.IsAuthenticated)
+                    return Unauthorized();
 
-            var updatedComment = await _mediator
-                .SendCommandAsync<EditCommentCommand, CommentDto>(command);
+                if (string.IsNullOrWhiteSpace(model.Content))
+                    return BadRequest("Comment content is required");
 
-            return Json(updatedComment);
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return Unauthorized();
+
+                var command = new EditCommentCommand
+                {
+                    CommentId = id,
+                    Content = model.Content,
+                    UserId = user.Id
+                };
+
+                var updatedComment =
+                    await _mediator.SendCommandAsync<EditCommentCommand, CommentDto>(command);
+
+                return Json(updatedComment);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Error while editing comment. CommentId: {CommentId}, User: {UserName}",
+                    id,
+                    User?.Identity?.Name);
+
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Failed to update comment. Please try again."
+                });
+            }
         }
+
 
 
         [HttpDelete]
         public async Task<IActionResult> RemoveComment(Guid id)
         {
-            if (!User.Identity!.IsAuthenticated)
-                return Unauthorized();
-
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Unauthorized();
-
-            var command = new DeleteCommentCommand
+            try
             {
-                CommentId = id
-            };
+                if (!User.Identity!.IsAuthenticated)
+                    return Unauthorized();
 
-            await _mediator.SendCommandAsync<DeleteCommentCommand, Guid>(command);
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return Unauthorized();
 
-            return Ok();
+                var command = new DeleteCommentCommand
+                {
+                    CommentId = id
+                };
+
+                await _mediator.SendCommandAsync<DeleteCommentCommand, Guid>(command);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Comment deleted successfully."
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Error while deleting comment. CommentId: {CommentId}, User: {UserName}",
+                    id,
+                    User?.Identity?.Name);
+
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Failed to delete comment. Please try again."
+                });
+            }
         }
     }
 }

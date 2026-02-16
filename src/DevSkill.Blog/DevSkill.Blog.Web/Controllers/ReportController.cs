@@ -24,38 +24,61 @@ namespace DevSkill.Blog.Web.Controllers
             _mediator = mediator;
             _serverTime = serverTime;
         }
-        [HttpPost,ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> SendReport(IndexViewModel model)
         {
-            if (string.IsNullOrWhiteSpace(model.SendReportModel.Reason) &&
-                string.IsNullOrWhiteSpace(model.SendReportModel.CustomReason))
+            try
             {
+                if (string.IsNullOrWhiteSpace(model.SendReportModel.Reason) &&
+                    string.IsNullOrWhiteSpace(model.SendReportModel.CustomReason))
+                {
+                    TempData.Put("ResponseMessage", new ResponseModel
+                    {
+                        Message = "Report send failed. Please enter a valid reason ",
+                        Response = ResponseTypes.danger
+                    });
+
+                    return RedirectToAction("Index", "Post");
+                }
+
+                var command = new AddReportCommand
+                {
+                    PostId = model.SendReportModel.PostId,
+                    UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                    Reason = model.SendReportModel.Reason != null
+                                ? Enum.Parse<ReportReason>(model.SendReportModel.Reason)
+                                : null,
+                    CustomReason = model.SendReportModel.CustomReason,
+                    CreatedAt = _serverTime.DateTime,
+                };
+
+                var id = await _mediator
+                    .SendCommandAsync<AddReportCommand, Guid>(command);
+
                 TempData.Put("ResponseMessage", new ResponseModel
                 {
-                    Message = "Report send failed. Please enter a valid reason ",
-                    Response = ResponseTypes.danger
+                    Message = "Report send successfully",
+                    Response = ResponseTypes.success
                 });
+
                 return RedirectToAction("Index", "Post");
             }
-
-            var command = new AddReportCommand
+            catch (Exception ex)
             {
-                PostId = model.SendReportModel.PostId,
-                UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-                Reason = model.SendReportModel.Reason != null
-                            ? Enum.Parse<ReportReason>(model.SendReportModel.Reason)
-                            : null,
-                CustomReason = model.SendReportModel.CustomReason,
-                CreatedAt = _serverTime.DateTime,
-            };
+                _logger.LogError(ex,
+                    "Error while sending report. PostId: {PostId}, User: {UserId}",
+                    model?.SendReportModel?.PostId,
+                    User?.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
-            var id = await _mediator.SendCommandAsync<AddReportCommand, Guid>(command);
-            TempData.Put("ResponseMessage", new ResponseModel
-            {
-                Message = "Report send successfully",
-                Response = ResponseTypes.success
-            });
-            return RedirectToAction("Index","Post");
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Something went wrong while sending the report.",
+                    Response = ResponseTypes.danger
+                });
+
+                return RedirectToAction("Index", "Post");
+            }
         }
+
     }
 }

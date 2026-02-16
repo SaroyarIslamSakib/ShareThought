@@ -17,6 +17,12 @@ namespace DevSkill.Blog.Infrastructure.Repositories
 
         }
 
+        public async Task<(IList<BlogArea>, int total, int totalDisplay)> GetAdminPagedBlogsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder)
+        {
+            return await GetDynamicAsync(x => x.Name.Contains(searchText)
+                                             , sortOrder, null, pageIndex, pageSize);
+        }
+
         public async Task<BlogArea> GetBlogBySlug(string slug)
         {
             var result = await GetAsync(x => x.Slug == slug, null);
@@ -33,7 +39,7 @@ namespace DevSkill.Blog.Infrastructure.Repositories
 
         public async Task<(IList<BlogArea>, int total, int totalDisplay)> GetPagedBlogsAsync(int pageIndex, int pageSize, string? searchText, string? sortOrder)
         {
-            return await GetDynamicAsync(x => x.Name.Contains(searchText)
+            return await GetDynamicAsync(x => x.Name.Contains(searchText) && x.IsSuspended == false
                                               , sortOrder, null, pageIndex, pageSize);
         }
     }

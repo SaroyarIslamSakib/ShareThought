@@ -43,14 +43,14 @@ namespace DevSkill.Blog.Web.Areas.Admin.Controllers
         {
             try
             {
-                var query = new GetBlogsQuery();
+                var query = new GetAdminBlogsQuery();
                 query.SearchText = model.Search.Value;
                 query.SortOrder = model.FormatSortExpression("Name","CreatedAt");
                 query.PageSize = model.PageSize;
                 query.PageIndex = model.PageIndex;
 
 
-                var (items, total, totalDisplay) = _mediator.SendQueryAsync<GetBlogsQuery, (IList<BlogDto>, int total, int totalDisplay)>(query).Result;
+                var (items, total, totalDisplay) = _mediator.SendQueryAsync<GetAdminBlogsQuery, (IList<BlogDto>, int total, int totalDisplay)>(query).Result;
 
                 var messages = new
                 {

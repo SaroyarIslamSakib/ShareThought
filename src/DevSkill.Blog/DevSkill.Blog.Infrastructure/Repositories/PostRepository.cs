@@ -52,7 +52,9 @@ namespace DevSkill.Blog.Infrastructure.Repositories
 
                     || x.BlogArea.Name.Contains(searchText)))
                     && x.IsPublished == true
+                    && x.BlogArea.IsSuspended == false
                     && x.IsSuspended != true,
+
 
                     sortOrder,
                     q=>q.Include(x => x.Comments.Where(m => m.IsDeleted ==false)).Include(x => x.BlogArea).Include(y => y.Reports), 
@@ -65,7 +67,8 @@ namespace DevSkill.Blog.Infrastructure.Repositories
                 || x.Tags.Any(t => t.Name.Contains(searchText)
                 || x.PostCategories.Any(c => c.Name.Contains(searchText))
                 || x.BlogArea.Name.Contains(searchText)))
-                && x.IsPublished == true 
+                && x.IsPublished == true
+                && x.BlogArea.IsSuspended == false
                 && x.IsSuspended != true
                 && x.PostCategories.Any(c => c.Name == categoryName), 
                 sortOrder,
@@ -157,6 +160,7 @@ namespace DevSkill.Blog.Infrastructure.Repositories
                     || x.PostCategories.Any(c => c.Name.Contains(searchText))
                     || x.BlogArea.Name.Contains(searchText)))
                     && x.BlogArea.Slug == blogSlug
+                    && x.BlogArea.IsSuspended == false
                     && x.IsPublished == true
                     && x.IsSuspended != true,
                     
@@ -173,6 +177,7 @@ namespace DevSkill.Blog.Infrastructure.Repositories
                 || x.PostCategories.Any(c => c.Name.Contains(searchText))
                 || x.BlogArea.Name.Contains(searchText)))
                 && x.BlogArea.Slug == blogSlug
+                && x.BlogArea.IsSuspended == false
                 && x.IsPublished == true
                 && x.IsSuspended != true
                 && x.PostCategories.Any(c => c.Name == categoryName),

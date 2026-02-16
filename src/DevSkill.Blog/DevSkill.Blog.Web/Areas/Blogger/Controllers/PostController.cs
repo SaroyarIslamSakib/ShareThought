@@ -45,45 +45,101 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
         ==========================*/
         public async Task<IActionResult> PublishedPostList()
         {
-            var user = await _userManager.GetUserAsync(User);
-            var query = new GetBlogAreaByUserIdQuery
+            try
             {
-                UserId = user.Id
-                
-            };
-            var blog = await _mediator
+                var user = await _userManager.GetUserAsync(User);
+
+                var query = new GetBlogAreaByUserIdQuery
+                {
+                    UserId = user.Id
+                };
+
+                var blog = await _mediator
                     .SendQueryAsync<GetBlogAreaByUserIdQuery, BlogArea>(query);
-            ViewBag.BlogName = blog.Name;
-            ViewBag.BlogSlug = blog.Slug;
-            
-            return View();
+
+                ViewBag.BlogName = blog.Name;
+                ViewBag.BlogSlug = blog.Slug;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Error while loading PublishedPostList. User: {UserName}",
+                    User?.Identity?.Name);
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to load published posts.",
+                    Response = ResponseTypes.danger
+                });
+
+                return RedirectToAction("Index", "Blog", new { area = "Blogger" });
+            }
         }
 
         /* =========================
            Draft Posts List
         ==========================*/
-        public async Task< IActionResult> DraftPostList()
+        public async Task<IActionResult> DraftPostList()
         {
-            var user = await _userManager.GetUserAsync(User);
-            var query = new GetBlogAreaByUserIdQuery
+            try
             {
-                UserId = user.Id
-            };
-            var blog = await _mediator
+                var user = await _userManager.GetUserAsync(User);
+
+                var query = new GetBlogAreaByUserIdQuery
+                {
+                    UserId = user.Id
+                };
+
+                var blog = await _mediator
                     .SendQueryAsync<GetBlogAreaByUserIdQuery, BlogArea>(query);
-            ViewBag.BlogName = blog.Name;
-            ViewBag.BlogSlug = blog.Slug;
-            return View();
+
+                ViewBag.BlogName = blog.Name;
+                ViewBag.BlogSlug = blog.Slug;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Error while loading DraftPostList. User: {UserName}",
+                    User?.Identity?.Name);
+
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to load draft posts.",
+                    Response = ResponseTypes.danger
+                });
+
+                return RedirectToAction("Index", "Blog", new { area = "Blogger" });
+            }
         }
         /* =========================
            CREATE (OPEN EDITOR)
         ==========================*/
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View(new CreatePostViewModel
+            try
             {
-                IsPublished = false
-            });
+                var user = await _userManager.GetUserAsync(User);
+                var query = new GetBlogAreaByUserIdQuery() { UserId = user.Id };
+                var blog = await _mediator.SendQueryAsync<GetBlogAreaByUserIdQuery, BlogArea>(query);
+                ViewBag.BlogName = blog.Name;
+                return View(new CreatePostViewModel
+                {
+                    IsPublished = false
+                });
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return View(new CreatePostViewModel
+                {
+                    IsPublished = false
+                });
+            }
+
         }
 
         /* =========================
@@ -91,58 +147,81 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
         ==========================*/
         public async Task<IActionResult> Edit(Guid id)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Unauthorized();
-
-            var post = await _mediator.SendQueryAsync<GetPostByIdQuery, Post>(
-                new GetPostByIdQuery
-                {
-                    PostId = id,
-                    UserId = user.Id
-                });
-
-            if (post == null)
-                return NotFound();
-
-            // 🟢 Draft → same editor, auto-save ON
-            if (!post.IsPublished)
+            try
             {
-                return View("Create", new CreatePostViewModel
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return Unauthorized();
+
+                var getBlogQury = new GetBlogAreaByUserIdQuery()
                 {
-                    Id = post.Id,
-                    Title = post.Title,
-                    Content = post.Content,
-                    IsPublished = false
-                });
+                    UserId = user.Id
+                };
+
+                var blog = await _mediator
+                    .SendQueryAsync<GetBlogAreaByUserIdQuery, BlogArea>(getBlogQury);
+
+                ViewBag.BlogName = blog.Name;
+
+                var post = await _mediator.SendQueryAsync<GetPostByIdQuery, Post>(
+                    new GetPostByIdQuery
+                    {
+                        PostId = id,
+                        UserId = user.Id
+                    });
+
+                if (post == null)
+                    return NotFound();
+
+                // 🟢 Draft → same editor, auto-save ON
+                if (!post.IsPublished)
+                {
+                    return View("Create", new CreatePostViewModel
+                    {
+                        Id = post.Id,
+                        Title = post.Title,
+                        Content = post.Content,
+                        IsPublished = false
+                    });
+                }
+                else
+                {
+                    var model = new EditPostViewModel
+                    {
+                        Id = post.Id,
+                        Title = post.Title,
+                        Content = post.Content,
+                        ExistingFeatureImagePath = post.FeatureImagePath,
+
+                        CategoryNames = post.PostCategories
+                                .Select(c => c.Name)
+                                .ToList(),
+
+                        TagNames = post.Tags
+                           .Select(t => t.Name)
+                           .ToList()
+                    };
+
+                    return View("EditPublished", model);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var query = new GetPostByIdQuery
+                _logger.LogError(ex,
+                    "Error while editing post. PostId: {PostId}, User: {UserName}",
+                    id,
+                    User?.Identity?.Name);
+
+                TempData.Put("ResponseMessage", new ResponseModel
                 {
-                    PostId = id,
-                    UserId = user.Id
-                };
+                    Message = "Failed to load post for editing.",
+                    Response = ResponseTypes.danger
+                });
 
-                var model = new EditPostViewModel
-                {
-                    Id = post.Id,
-                    Title = post.Title,
-                    Content = post.Content,
-                    ExistingFeatureImagePath = post.FeatureImagePath,
-
-                    CategoryNames = post.PostCategories
-                            .Select(c => c.Name)
-                            .ToList(),
-
-                    TagNames = post.Tags
-                       .Select(t => t.Name)
-                       .ToList()
-                };
-
-                return View("EditPublished", model);
+                return RedirectToAction("Index", "Post");
             }
         }
+
         [HttpPost,ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPublished(EditPostViewModel model)
         {
@@ -223,26 +302,42 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
         ==========================*/
         [HttpPost]
         public async Task<IActionResult> AutoSaveDraft([FromBody] DraftSaveModel model)
-         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Unauthorized();
-
-            var postId = await _mediator.SendCommandAsync<
-                SaveDraftPostCommand, Guid>(
-                new SaveDraftPostCommand
-                {
-                    Id = model.Id,
-                    Title = model.Title ?? "",
-                    Content = model.Content ?? "",
-                    UserId = user.Id
-                });
-
-            return Json(new
+        {
+            try
             {
-                postId,
-                savedAt = DateTime.Now.ToString("HH:mm:ss")
-            });
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return Unauthorized();
+
+                var postId = await _mediator.SendCommandAsync<
+                    SaveDraftPostCommand, Guid>(
+                    new SaveDraftPostCommand
+                    {
+                        Id = model.Id,
+                        Title = model.Title ?? "",
+                        Content = model.Content ?? "",
+                        UserId = user.Id
+                    });
+
+                return Json(new
+                {
+                    postId,
+                    savedAt = DateTime.Now.ToString("HH:mm:ss")
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Error while auto-saving draft. PostId: {PostId}, User: {UserName}",
+                    model?.Id,
+                    User?.Identity?.Name);
+
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Auto save failed."
+                });
+            }
         }
 
         /* =========================
@@ -252,67 +347,91 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Publish(CreatePostViewModel model)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Unauthorized();
-
-            if (model.Id == Guid.Empty)
-                return RedirectToAction(nameof(Create));
-
-            string? featureImagePath = null;
-
-            if (model.FeatureImage != null && model.FeatureImage.Length > 0)
+            try
             {
-                using var validationStream = model.FeatureImage.OpenReadStream();
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return Unauthorized();
 
-                bool isValid = _imageChecker.IsValidImageFile(validationStream,model.FeatureImage.FileName);
+                if (model.Id == Guid.Empty)
+                    return RedirectToAction(nameof(Create));
 
-                if (!isValid)
+                string? featureImagePath = null;
+
+                if (model.FeatureImage != null && model.FeatureImage.Length > 0)
                 {
-                    TempData.Put("ResponseMessage", new ResponseModel
+                    using var validationStream = model.FeatureImage.OpenReadStream();
+
+                    bool isValid = _imageChecker.IsValidImageFile(
+                        validationStream,
+                        model.FeatureImage.FileName);
+
+                    if (!isValid)
                     {
-                        Message = "Invalid image file. Only valid images up to 2MB allowed.",
-                        Response = ResponseTypes.danger
+                        TempData.Put("ResponseMessage", new ResponseModel
+                        {
+                            Message = "Invalid image file. Only valid images up to 2MB allowed.",
+                            Response = ResponseTypes.danger
+                        });
+
+                        return RedirectToAction("DraftPostList", "Post",
+                            new { area = "Blogger" });
+                    }
+
+                    var extension = Path.GetExtension(model.FeatureImage.FileName);
+                    var fileName = Guid.NewGuid() + extension;
+
+                    var uploadFolder = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot/uploads/features"
+                    );
+
+                    if (!Directory.Exists(uploadFolder))
+                        Directory.CreateDirectory(uploadFolder);
+
+                    var uploadPath = Path.Combine(uploadFolder, fileName);
+
+                    using var stream = new FileStream(uploadPath, FileMode.Create);
+                    await model.FeatureImage.CopyToAsync(stream);
+
+                    featureImagePath = "/uploads/features/" + fileName;
+                }
+
+                await _mediator.SendCommandAsync<PublishPostCommand, Guid>(
+                    new PublishPostCommand
+                    {
+                        PostId = model.Id,
+                        UserId = user.Id,
+                        CategoryNames = model.CategoryNames,
+                        TagNames = model.TagNames,
+                        FeatureImagePath = featureImagePath
                     });
 
-                    return RedirectToAction("DraftPostList", "Post", new { area = "Blogger" });
-                }
-                var extension = Path.GetExtension(model.FeatureImage.FileName);
-                var fileName = Guid.NewGuid() + extension;
-                var uploadFolder = Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "wwwroot/uploads/features"
-                );
-
-                if (!Directory.Exists(uploadFolder))
-                    Directory.CreateDirectory(uploadFolder);
-
-                var uploadPath = Path.Combine(uploadFolder, fileName);
-
-                using var stream = new FileStream(uploadPath, FileMode.Create);
-                await model.FeatureImage.CopyToAsync(stream);
-
-                featureImagePath = "/uploads/features/" + fileName;
-            }
-
-            await _mediator.SendCommandAsync<PublishPostCommand, Guid>(
-                new PublishPostCommand
+                TempData.Put("ResponseMessage", new ResponseModel
                 {
-                    PostId = model.Id,
-                    UserId = user.Id,
-                    CategoryNames = model.CategoryNames,
-                    TagNames = model.TagNames,
-                    FeatureImagePath = featureImagePath
+                    Message = "Post published successfully",
+                    Response = ResponseTypes.success
                 });
 
-            TempData.Put("ResponseMessage", new ResponseModel
+                return RedirectToAction(nameof(PublishedPostList));
+            }
+            catch (Exception ex)
             {
-                Message = "Post published successfully",
-                Response = ResponseTypes.success
-            });
+                _logger.LogError(ex,
+                    "Error while publishing post. PostId: {PostId}, User: {UserName}",
+                    model?.Id,
+                    User?.Identity?.Name);
 
-            return RedirectToAction(nameof(PublishedPostList));
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to publish post.",
+                    Response = ResponseTypes.danger
+                });
+
+                return RedirectToAction(nameof(DraftPostList));
+            }
         }
+
 
         /* =========================
            UPLOAD IMAGE (EDITOR)
@@ -320,35 +439,52 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadImage(IFormFile file)
         {
-            if (file == null || file.Length == 0)
-                return BadRequest("No file uploaded.");
-
-            using var validationStream = file.OpenReadStream();
-
-            if (!_imageChecker.IsValidImageFile(validationStream, file.FileName))
-                return BadRequest("Invalid image file.");
-
-            var extension = Path.GetExtension(file.FileName);
-            var fileName = Guid.NewGuid() + extension;
-
-            var uploadFolder = Path.Combine(
-                Directory.GetCurrentDirectory(),
-                "wwwroot/uploads/posts"
-            );
-
-            if (!Directory.Exists(uploadFolder))
-                Directory.CreateDirectory(uploadFolder);
-
-            var filePath = Path.Combine(uploadFolder, fileName);
-
-            using var stream = new FileStream(filePath, FileMode.Create);
-            await file.CopyToAsync(stream);
-
-            return Json(new
+            try
             {
-                url = "/uploads/posts/" + fileName
-            });
+                if (file == null || file.Length == 0)
+                    return BadRequest("No file uploaded.");
+
+                using var validationStream = file.OpenReadStream();
+
+                if (!_imageChecker.IsValidImageFile(validationStream, file.FileName))
+                    return BadRequest("Invalid image file.");
+
+                var extension = Path.GetExtension(file.FileName);
+                var fileName = Guid.NewGuid() + extension;
+
+                var uploadFolder = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot/uploads/posts"
+                );
+
+                if (!Directory.Exists(uploadFolder))
+                    Directory.CreateDirectory(uploadFolder);
+
+                var filePath = Path.Combine(uploadFolder, fileName);
+
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await file.CopyToAsync(stream);
+
+                return Json(new
+                {
+                    url = "/uploads/posts/" + fileName
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Error while uploading image. FileName: {FileName}, User: {UserName}",
+                    file?.FileName,
+                    User?.Identity?.Name);
+
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Image upload failed."
+                });
+            }
         }
+
 
         /* =========================
            Published Post - DATATABLE
@@ -465,25 +601,44 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Unauthorized();
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return Unauthorized();
 
-            await _mediator.SendCommandAsync<DeletePostCommand, Guid>(
-                new DeletePostCommand
+                await _mediator.SendCommandAsync<DeletePostCommand, Guid>(
+                    new DeletePostCommand
+                    {
+                        PostId = id,
+                        UserId = user.Id
+                    });
+
+                TempData.Put("ResponseMessage", new ResponseModel
                 {
-                    PostId = id,
-                    UserId = user.Id
+                    Message = "Post deleted successfully",
+                    Response = ResponseTypes.success
                 });
 
-            TempData.Put("ResponseMessage", new ResponseModel
+                return RedirectToAction(nameof(PublishedPostList));
+            }
+            catch (Exception ex)
             {
-                Message = "Post deleted successfully",
-                Response = ResponseTypes.success
-            });
+                _logger.LogError(ex,
+                    "Error while deleting post. PostId: {PostId}, User: {UserName}",
+                    id,
+                    User?.Identity?.Name);
 
-            return RedirectToAction(nameof(PublishedPostList));
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Failed to delete post.",
+                    Response = ResponseTypes.danger
+                });
+
+                return RedirectToAction(nameof(PublishedPostList));
+            }
         }
+
 
         /* =========================
            TAG / CATEGORY SEARCH
@@ -491,20 +646,52 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
         [HttpGet]
         public async Task<IActionResult> Search(string term)
         {
-            var tags = await _mediator.SendQueryAsync<GetTagsQuery, IList<Tag>>(
-                new GetTagsQuery { SearchTerm = term });
+            try
+            {
+                var tags = await _mediator.SendQueryAsync<GetTagsQuery, IList<Tag>>(
+                    new GetTagsQuery { SearchTerm = term });
 
-            return Json(tags.Select(t => new { id = t.Name, text = t.Name }));
+                return Json(tags.Select(t => new { id = t.Name, text = t.Name }));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Error while searching tags. Term: {SearchTerm}, User: {UserName}",
+                    term,
+                    User?.Identity?.Name);
+
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Tag search failed."
+                });
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> SearchCategory(string term)
         {
-            var categories = await _mediator.SendQueryAsync<
-                GetCategoriesQuery, IList<Category>>(
-                new GetCategoriesQuery { SearchTerm = term });
+            try
+            {
+                var categories = await _mediator.SendQueryAsync<
+                    GetCategoriesQuery, IList<Category>>(
+                    new GetCategoriesQuery { SearchTerm = term });
 
-            return Json(categories.Select(c => new { id = c.Name, text = c.Name }));
+                return Json(categories.Select(c => new { id = c.Name, text = c.Name }));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Error while searching categories. Term: {SearchTerm}, User: {UserName}",
+                    term,
+                    User?.Identity?.Name);
+
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Category search failed."
+                });
+            }
         }
 
         /* =========================
@@ -512,7 +699,7 @@ namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
         ==========================*/
         public IActionResult EditPublished(Guid id)
         {
-            return View("EditPublished"); // future
+            return View("EditPublished"); 
         }
     }
 }

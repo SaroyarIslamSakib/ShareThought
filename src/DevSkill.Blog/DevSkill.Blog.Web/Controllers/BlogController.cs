@@ -22,18 +22,21 @@ namespace DevSkill.Blog.Web.Controllers
         private readonly IMediator _mediator;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IServerTime _serverTime;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
 
         public BlogController(
             ILogger<BlogController> logger,
             IMediator mediator,
             UserManager<ApplicationUser> userManager,
-            IServerTime serverTime)
+            IServerTime serverTime,
+            SignInManager<ApplicationUser> signInManager)
         {
             _logger = logger;
             _mediator = mediator;
             _userManager = userManager;
             _serverTime = serverTime;
+            _signInManager = signInManager;
         }
         public IActionResult Index()
         {
@@ -47,7 +50,6 @@ namespace DevSkill.Blog.Web.Controllers
             {
                 var query = new GetBlogsQuery();
                 query.SearchText = model.Search.Value;
-                //query.SortOrder = model.FormatSortExpression("Title");
                 query.PageSize = model.PageSize;
                 query.PageIndex = model.PageIndex;
 
@@ -186,8 +188,8 @@ namespace DevSkill.Blog.Web.Controllers
                     Response = ResponseTypes.success
                 });
                 await _userManager.AddToRoleAsync(user, "Blogger");
-
-                return RedirectToAction("Index");
+                await _signInManager.RefreshSignInAsync(user);
+                return RedirectToAction("Index", "Blog", new { area = "Blogger" });
             }
             catch (InvalidOperationException ex)
             {
