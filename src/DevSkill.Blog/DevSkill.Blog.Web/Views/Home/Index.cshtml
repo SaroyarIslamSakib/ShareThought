@@ -380,72 +380,82 @@
 
 
 <script>
-    //Identity JS
-        const isUserLoggedIn = @(User.Identity.IsAuthenticated.ToString().ToLower());
+    const isUserLoggedIn = @(User.Identity.IsAuthenticated.ToString().ToLower());
+
     document.addEventListener("DOMContentLoaded", function () {
 
+        // ===== Modal Elements =====
         const loginModalEl = document.getElementById("loginModal");
         const registerModalEl = document.getElementById("registerModal");
         const createBlogModalEl = document.getElementById("createBlogModal");
 
-        const loginModal = new bootstrap.Modal(loginModalEl);
-        const registerModal = new bootstrap.Modal(registerModalEl);
-        const createBlogModal = new bootstrap.Modal(createBlogModalEl);
+        if (!loginModalEl) return;
 
-        // Login → Register
-        document.getElementById("openRegisterFromLogin")
-            .addEventListener("click", function () {
+        // ===== Get or Create Modal Instances (NO duplicate instance) =====
+        const loginModal = bootstrap.Modal.getOrCreateInstance(loginModalEl);
+        const registerModal = registerModalEl
+            ? bootstrap.Modal.getOrCreateInstance(registerModalEl)
+            : null;
+        const createBlogModal = createBlogModalEl
+            ? bootstrap.Modal.getOrCreateInstance(createBlogModalEl)
+            : null;
+
+        // ===== Login → Register =====
+        const openRegisterBtn = document.getElementById("openRegisterFromLogin");
+        if (openRegisterBtn && registerModal) {
+            openRegisterBtn.addEventListener("click", function () {
                 loginModal.hide();
+
                 setTimeout(() => {
                     registerModal.show();
-                    $.validator.unobtrusive.parse($(this).find('form'));
+                    if ($("#registerForm").length) {
+                        $.validator.unobtrusive.parse("#registerForm");
+                    }
                 }, 300);
             });
+        }
 
-        // Register → Login
-        document.getElementById("openLoginFromRegister")
-            .addEventListener("click", function () {
+        // ===== Register → Login =====
+        const openLoginBtn = document.getElementById("openLoginFromRegister");
+        if (openLoginBtn && registerModal) {
+            openLoginBtn.addEventListener("click", function () {
                 registerModal.hide();
+
                 setTimeout(() => {
                     loginModal.show();
-                    $.validator.unobtrusive.parse($(this).find('form'));
+                    if ($("#loginForm").length) {
+                        $.validator.unobtrusive.parse("#loginForm");
+                    }
                 }, 300);
             });
+        }
 
-        // Create Blog Button Logic
-        document.getElementById("openCreateBlog")
-            .addEventListener("click", function () {
+        // ===== Create Blog Button Logic =====
+        const openCreateBlogBtn = document.getElementById("openCreateBlog");
+        if (openCreateBlogBtn) {
+            openCreateBlogBtn.addEventListener("click", function () {
 
                 if (!isUserLoggedIn) {
-                    // User NOT logged in → open login modal
                     loginModal.show();
-                } else {
-                    // User logged in → open create blog modal
+                } else if (createBlogModal) {
                     createBlogModal.show();
                 }
             });
-    });
-</script>
+        }
 
-
-
-<!--begin: When Unauthorize then automatic open modal-->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-
-        const loginModalElement = document.getElementById("loginModal");
-
-        if (!loginModalElement) return;
-
-        const loginModal = new bootstrap.Modal(loginModalElement);
-
+        // ===== Auto Open Login (if loginRequired=true in URL) =====
         const urlParams = new URLSearchParams(window.location.search);
-
         if (urlParams.get("loginRequired") === "true") {
             loginModal.show();
         }
+
     });
 </script>
+
+
+
+
+
 @section Scripts {
     <!--begin: Client Side Validation-->
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
