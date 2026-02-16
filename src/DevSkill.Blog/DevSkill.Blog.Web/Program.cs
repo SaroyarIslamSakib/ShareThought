@@ -2,7 +2,9 @@ using Cortex.Mediator.DependencyInjection;
 using DevSkill.Blog.Application.Features.Blogs.Commands;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Infrastructure.Data;
+using DevSkill.Blog.Infrastructure.Data.Seeds;
 using DevSkill.Blog.Infrastructure.Extensions;
+using DevSkill.Blog.Infrastructure.Identity;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -64,6 +66,8 @@ try
     #endregion
     builder.Services.AddControllersWithViews();
 
+
+
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
@@ -105,7 +109,14 @@ try
 
     app.MapRazorPages()
        .WithStaticAssets();
+    //Add RoleSeed 
+    using (var scope = app.Services.CreateScope())
+    {
+        var roleManager = scope.ServiceProvider
+            .GetRequiredService<RoleManager<ApplicationRole>>();
 
+        await RoleSeeder.SeedAsync(roleManager);
+    }
     app.Run();
 }
 catch(Exception ex)
