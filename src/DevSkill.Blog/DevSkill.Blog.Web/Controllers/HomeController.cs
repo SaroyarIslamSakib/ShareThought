@@ -1,6 +1,4 @@
 using Cortex.Mediator;
-using DevSkill.Blog.Application.Features.Blogs.Commands;
-using DevSkill.Blog.Application.Features.Blogs.Queries;
 using DevSkill.Blog.Application.Features.Contacts.Commands;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Entities;

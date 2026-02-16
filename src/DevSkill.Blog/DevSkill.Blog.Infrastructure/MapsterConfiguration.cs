@@ -1,4 +1,4 @@
-﻿using DevSkill.Blog.Application.Features.Blogs.Commands;
+﻿using DevSkill.Blog.Application.Features.Posts.Commands;
 using DevSkill.Blog.Domain.Entities;
 using Mapster;
 using System;
@@ -13,7 +13,7 @@ namespace DevSkill.Blog.Infrastructure
     {
         public void Register(TypeAdapterConfig config)
         {
-            config.NewConfig<BlogPostAddCommand, BlogPost>();
+            config.NewConfig<AddPostCommand, Post>();
         }
     }
 }

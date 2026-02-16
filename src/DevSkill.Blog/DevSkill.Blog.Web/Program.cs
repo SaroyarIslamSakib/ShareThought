@@ -1,5 +1,5 @@
 using Cortex.Mediator.DependencyInjection;
-using DevSkill.Blog.Application.Features.Blogs.Commands;
+using DevSkill.Blog.Application.Features.Posts.Commands;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Infrastructure.Data;
 using DevSkill.Blog.Infrastructure.Data.Seeds;
@@ -37,7 +37,7 @@ try
     #region Mediator Configuration
     builder.Services.AddCortexMediator(
         builder.Configuration,
-        new[] { typeof(Program), typeof(BlogPostAddCommand) },
+        new[] { typeof(Program), typeof(AddPostCommand) },
         options => options.AddDefaultBehaviors());
     #endregion
 
