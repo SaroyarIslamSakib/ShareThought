@@ -3,11 +3,6 @@ using DevSkill.Blog.Application.Services;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Domain.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevSkill.Blog.Application.Features.Posts.Commands
 {
@@ -47,9 +42,9 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
             if (post.IsPublished)
                 throw new Exception("Post already published");
 
-            /* =========================
-               CATEGORY PROCESS
-            ==========================*/
+
+             //  CATEGORY PROCESS
+
             post.PostCategories.Clear();
 
             var categoryNames = command.CategoryNames
@@ -77,9 +72,9 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                 post.PostCategories.Add(category);
             }
 
-            /* =========================
-               TAG PROCESS
-            ==========================*/
+
+               // TAG PROCESS
+
             post.Tags.Clear();
 
             var tagNames = command.TagNames
@@ -107,21 +102,21 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                 post.Tags.Add(tag);
             }
 
-            /* =========================
-               FEATURE IMAGE
-            ==========================*/
+
+              // FEATURE IMAGE
+
             post.FeatureImagePath = command.FeatureImagePath;
 
-            /* =========================
-               SLUG UPDATE LOGIC
-            =========================*/
+
+               // SLUG UPDATE LOGIC
+
 
                 post.Slug = await _slugService
                     .GenerateUniqueSlugAsync(post.Title);
 
-            /* =========================
-               PUBLISH STATE CHANGE
-            ==========================*/
+
+               // PUBLISH STATE CHANGE
+
             post.IsPublished = true;
             post.PublishedAt = _serverTime.DateTime;
 

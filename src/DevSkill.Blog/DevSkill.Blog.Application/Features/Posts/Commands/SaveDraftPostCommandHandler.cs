@@ -1,13 +1,7 @@
 ﻿using Cortex.Mediator.Commands;
-using DevSkill.Blog.Application.Services;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Domain.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevSkill.Blog.Application.Features.Posts.Commands
 {
@@ -42,7 +36,7 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
             }
             else
             {
-                // 🟢 CREATE NEW DRAFT
+                //  CREATE NEW DRAFT
                 post = new Post
                 {
                     Id = IdentityGenerator.NewSequentialGuid(),

@@ -21,9 +21,4 @@
     <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Categories\Commands\" />
-    <Folder Include="Features\Tags\Commands\" />
-  </ItemGroup>
-
 </Project>

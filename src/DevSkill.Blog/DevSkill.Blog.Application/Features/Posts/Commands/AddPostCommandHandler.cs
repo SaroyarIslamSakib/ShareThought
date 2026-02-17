@@ -1,13 +1,7 @@
 ﻿using Cortex.Mediator.Commands;
-using DevSkill.Blog.Application.Services;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Domain.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevSkill.Blog.Application.Features.Posts.Commands
 {
@@ -29,19 +23,17 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
             if (blog == null)
                 throw new Exception("Blog not found.");
 
-            /* =========================
-               CATEGORY (List<string>)
-            ==========================*/
+
+               //CATEGORY
+
             var categoryNames = command.CategoryNames?
                 .Select(x => x.Trim())
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList()
                 ?? new List<string>();
-
-            /* =========================
-               TAG (List<string>)
-            ==========================*/
+                
+                //TAG
             var tagNames = command.TagNames?
                 .Select(x => x.Trim())
                 .Where(x => !string.IsNullOrWhiteSpace(x))
@@ -52,9 +44,8 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
             var categories = new List<Category>();
             var tags = new List<Tag>();
 
-            /* =========================
-               CATEGORY CREATE / ATTACH
-            ==========================*/
+              // CATEGORY CREATE / ATTACH
+
             foreach (var name in categoryNames)
             {
                 var category = await _unitOfWork
@@ -75,9 +66,9 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                 categories.Add(category);
             }
 
-            /* =========================
-               TAG CREATE / ATTACH
-            ==========================*/
+
+              // TAG CREATE / ATTACH
+
             foreach (var name in tagNames)
             {
                 var tag = await _unitOfWork
@@ -108,9 +99,9 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                 BlogAreaId = blog.Id,
             };
 
-            /* =========================
-               MANY-TO-MANY LINK
-            ==========================*/
+
+               // MANY-TO-MANY LINK
+
             foreach (var category in categories)
                 post.PostCategories.Add(category);
 

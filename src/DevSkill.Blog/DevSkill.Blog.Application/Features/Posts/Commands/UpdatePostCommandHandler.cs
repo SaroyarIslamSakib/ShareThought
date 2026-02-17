@@ -3,11 +3,6 @@ using DevSkill.Blog.Application.Services;
 using DevSkill.Blog.Domain;
 using DevSkill.Blog.Domain.Entities;
 using DevSkill.Blog.Domain.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevSkill.Blog.Application.Features.Posts.Commands
 {
@@ -34,9 +29,9 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
             if (post == null)
                 throw new Exception("Post not found.");
 
-            /* =========================
-               BASIC FIELDS
-            ==========================*/
+
+               // BASIC FIELDS
+
             if (!string.Equals(post.Title, command.Title, StringComparison.OrdinalIgnoreCase))
             {
                 post.Slug = await _slugService
@@ -47,9 +42,9 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
             post.FeatureImagePath = command.FeatureImagePath;
 
 
-            /* =========================
-               CATEGORY UPDATE (List<string>)
-            ==========================*/
+
+              // CATEGORY UPDATE 
+
             post.PostCategories.Clear();
 
             var categoryNames = command.CategoryNames?
@@ -79,9 +74,9 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                 post.PostCategories.Add(category);
             }
 
-            /* =========================
-               TAG UPDATE (List<string>)
-            ==========================*/
+
+              // TAG UPDATE 
+
             post.Tags.Clear();
 
             var tagNames = command.TagNames?
@@ -111,7 +106,6 @@ namespace DevSkill.Blog.Application.Features.Posts.Commands
                 post.Tags.Add(tag);
             }
 
-            // DO NOT call Update/Edit — tracked entity
             await _unitOfWork.SaveAsync();
 
             return post;

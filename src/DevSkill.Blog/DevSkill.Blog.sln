@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.1.11312.151 d18.0
+VisualStudioVersion = 18.1.11312.151
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevSkill.Blog.Web", "DevSkill.Blog.Web\DevSkill.Blog.Web.csproj", "{E65E4A35-098B-4A87-B767-AD021982F608}"
 EndProject
@@ -10,6 +10,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevSkill.Blog.Application", "DevSkill.Blog.Application\DevSkill.Blog.Application.csproj", "{DDF8F1A4-0EF5-4E16-8338-6FAC69AD17CA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevSkill.Blog.Infrastructure", "DevSkill.Blog.Infrastructure\DevSkill.Blog.Infrastructure.csproj", "{0D64F9C8-E95D-40C2-B117-283EDBFED8EF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{33D7D752-563A-40E8-9923-6C4BD7F135A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevSkill.Blog.Application.Tests", "..\..\DevSkill.Blog.Application.Tests\DevSkill.Blog.Application.Tests.csproj", "{5165FE49-97DA-4DCF-82E7-233A7833F077}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +37,16 @@ Global
 		{0D64F9C8-E95D-40C2-B117-283EDBFED8EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D64F9C8-E95D-40C2-B117-283EDBFED8EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D64F9C8-E95D-40C2-B117-283EDBFED8EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5165FE49-97DA-4DCF-82E7-233A7833F077}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5165FE49-97DA-4DCF-82E7-233A7833F077}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5165FE49-97DA-4DCF-82E7-233A7833F077}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5165FE49-97DA-4DCF-82E7-233A7833F077}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5165FE49-97DA-4DCF-82E7-233A7833F077} = {33D7D752-563A-40E8-9923-6C4BD7F135A3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EF2E81EF-4C61-44D4-BF95-C2E4BCF2AA0E}

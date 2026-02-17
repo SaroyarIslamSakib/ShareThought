@@ -1,11 +1,5 @@
 ﻿using Cortex.Mediator.Commands;
-using DevSkill.Blog.Application.Features.BlogsArea.Commands;
 using DevSkill.Blog.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevSkill.Blog.Application.Features.Posts.Commands
 {
