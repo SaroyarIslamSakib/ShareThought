@@ -1,6 +1,7 @@
 using Cortex.Mediator.DependencyInjection;
 using DevSkill.Blog.Application.Features.Posts.Commands;
 using DevSkill.Blog.Domain;
+using DevSkill.Blog.Domain.Utilities;
 using DevSkill.Blog.Infrastructure.Data;
 using DevSkill.Blog.Infrastructure.Data.Seeds;
 using DevSkill.Blog.Infrastructure.Extensions;
@@ -45,6 +46,9 @@ try
     builder.Services.AddMapster();
     #endregion
 
+    #region Docker IP Correction
+    builder.WebHost.UseUrls("http://*:80");
+    #endregion
     // Add services to the container.
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
     var migrationAssembly = Assembly.GetAssembly(typeof(ApplicationDbContext));
@@ -114,6 +118,9 @@ try
     {
         var roleManager = scope.ServiceProvider
             .GetRequiredService<RoleManager<ApplicationRole>>();
+
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        await dbInitializer.InitializeAsync();
 
         await RoleSeeder.SeedAsync(roleManager);
     }

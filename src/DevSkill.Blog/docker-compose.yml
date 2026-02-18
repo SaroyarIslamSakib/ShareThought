@@ -1,0 +1,28 @@
+services:
+    web:
+        build: 
+            context: .
+            dockerfile: DevSkill.Blog.Web/Dockerfile
+        image: devskill.blog.web
+        env_file: 
+            - DevSkill.Blog.Web/web.env
+        volumes:
+            - demoweb-data:/app/Logs/
+        ports:
+            - "8000:80"
+        entrypoint: ["dotnet", "DevSkill.Blog.Web.dll"]
+    db:
+        build: 
+            context: .
+            dockerfile: DevSkill.Blog.Db/Dockerfile
+        image: "devskill.blog.sqlserver"
+        env_file: 
+            - DevSkill.Blog.Db/db.env
+        expose:
+            - "55000"
+        ports: 
+            - "55000:1433"
+volumes:
+    demoweb-data:
+      external: true
+     

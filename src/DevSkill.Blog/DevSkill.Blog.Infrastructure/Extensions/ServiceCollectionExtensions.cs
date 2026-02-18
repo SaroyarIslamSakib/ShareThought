@@ -39,6 +39,7 @@ namespace DevSkill.Blog.Infrastructure.Extensions
             service.AddScoped<ISettingsRepository, SettingsRepository>();
             service.AddScoped<ISlugService, SlugService>();
             service.AddScoped<IImageChecker, ImageChecker>();
+            service.AddScoped<IDbInitializer, DbInitializer>();
         }
         //DbContext Configuration
         public static void AddDbContext(this IServiceCollection service,
