@@ -1,4 +1,5 @@
-﻿using DevSkill.Blog.Infrastructure.Identity;
+﻿using DevSkill.Blog.Domain.Utilities;
+using DevSkill.Blog.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;

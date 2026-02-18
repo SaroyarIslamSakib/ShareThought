@@ -86,6 +86,11 @@ try
         app.UseHsts();
     }
     app.UseHttpsRedirection();
+
+    //for docker
+    app.UseStaticFiles();
+
+
     app.UseRouting();
 
     app.UseAuthorization();
@@ -116,13 +121,14 @@ try
     //Add RoleSeed 
     using (var scope = app.Services.CreateScope())
     {
-        var roleManager = scope.ServiceProvider
-            .GetRequiredService<RoleManager<ApplicationRole>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
         var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
         await dbInitializer.InitializeAsync();
 
         await RoleSeeder.SeedAsync(roleManager);
+        await AdminUserSeeder.SeedAsync(userManager);
     }
     app.Run();
 }
