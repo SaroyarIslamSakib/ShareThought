@@ -9,12 +9,16 @@
 
   <ItemGroup>
     <Compile Remove="Areas\Admin\Data\**" />
+    <Compile Remove="Areas\Blogger\Data\**" />
     <Compile Remove="wwwroot\Admin\js\**" />
     <Content Remove="Areas\Admin\Data\**" />
+    <Content Remove="Areas\Blogger\Data\**" />
     <Content Remove="wwwroot\Admin\js\**" />
     <EmbeddedResource Remove="Areas\Admin\Data\**" />
+    <EmbeddedResource Remove="Areas\Blogger\Data\**" />
     <EmbeddedResource Remove="wwwroot\Admin\js\**" />
     <None Remove="Areas\Admin\Data\**" />
+    <None Remove="Areas\Blogger\Data\**" />
     <None Remove="wwwroot\Admin\js\**" />
   </ItemGroup>
 
@@ -41,7 +45,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Blogger\Data\" />
     <Folder Include="wwwroot\uploads\posts\" />
   </ItemGroup>
 

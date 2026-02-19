@@ -172,7 +172,7 @@
                                         <textarea asp-for="Message" class="form-control contact-form-control" rows="5"></textarea>
                                     </div>
                                 </div>
-
+                                <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
                                 <!-- ================= Button ================= -->
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-lg px-5 contact-us-btn">
@@ -280,5 +280,17 @@
         if (urlParams.get("loginRequired") === "true") {
             loginModal.show();
         }
+    });
+</script>
+@inject IConfiguration Configuration
+
+<script src="https://www.google.com/recaptcha/api.js?render=@Configuration["GoogleReCaptcha:SiteKey"]"></script>
+
+<script>
+    grecaptcha.ready(function () {
+        grecaptcha.execute('@Configuration["GoogleReCaptcha:SiteKey"]', { action: 'contact' })
+            .then(function (token) {
+                document.getElementById('g-recaptcha-response').value = token;
+            });
     });
 </script>

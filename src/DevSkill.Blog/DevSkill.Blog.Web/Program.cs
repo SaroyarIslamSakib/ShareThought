@@ -70,6 +70,8 @@ try
     #endregion
     builder.Services.AddControllersWithViews();
 
+    //For ReCaptcha validation in ContactUs form
+    builder.Services.AddHttpClient();
 
 
     var app = builder.Build();

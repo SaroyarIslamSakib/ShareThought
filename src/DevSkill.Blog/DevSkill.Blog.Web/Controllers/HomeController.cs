@@ -7,6 +7,7 @@ using DevSkill.Blog.Infrastructure.Extensions;
 using DevSkill.Blog.Web.Models;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Diagnostics;
 
 namespace DevSkill.Blog.Web.Controllers
@@ -18,14 +19,20 @@ namespace DevSkill.Blog.Web.Controllers
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         private readonly IServerTime _serverTime;
+        private readonly IConfiguration _configuration;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public HomeController(ILogger<HomeController> logger,IMediator mediator, IApplicationUnitOfWork unitOfWork,IMapper mapper, IServerTime serverTime)
+        public HomeController(ILogger<HomeController> logger,IMediator mediator,
+            IApplicationUnitOfWork unitOfWork, IMapper mapper, IServerTime serverTime,
+            IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
             _mediator = mediator;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _serverTime = serverTime;
+            _configuration = configuration;
+            _httpClientFactory = httpClientFactory;
         }
 
         public async Task<IActionResult> Index()
@@ -42,6 +49,14 @@ namespace DevSkill.Blog.Web.Controllers
         {
             try
             {
+                var token = Request.Form["g-recaptcha-response"];
+
+                if (!await IsReCaptchaValid(token, "contact"))
+                {
+                    ModelState.AddModelError("", "reCAPTCHA validation failed. Please try again.");
+                    return View(model);
+                }
+
                 if (ModelState.IsValid)
                 {
                     var command = _mapper.Map<ContactMessageAddCommand>(model);
@@ -92,6 +107,25 @@ namespace DevSkill.Blog.Web.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private async Task<bool> IsReCaptchaValid(string token, string expectedAction)
+        {
+            var secretKey = _configuration["GoogleReCaptcha:SecretKey"];
+
+            var client = _httpClientFactory.CreateClient();
+
+            var response = await client.PostAsync(
+                $"https://www.google.com/recaptcha/api/siteverify?secret={secretKey}&response={token}",
+                null);
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<ReCaptchaResponse>(json);
+
+            return result.Success
+                   && result.Score >= 0.5
+                   && result.Action == expectedAction;
         }
     }
 }
