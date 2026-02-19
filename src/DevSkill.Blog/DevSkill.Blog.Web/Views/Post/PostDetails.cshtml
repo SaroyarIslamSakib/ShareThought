@@ -276,6 +276,7 @@
                         data: commentJSON,
                         success: function (comment) {
                             success(comment);
+                            location.reload();
                         },
                         error: error
                     });

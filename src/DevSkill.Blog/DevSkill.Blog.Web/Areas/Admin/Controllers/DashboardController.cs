@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DevSkill.Blog.Web.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
+    [Area("Admin"), Authorize(Roles = "Admin,Support")]
     public class DashboardController : Controller
     {
         private readonly ILogger<DashboardController> _logger;

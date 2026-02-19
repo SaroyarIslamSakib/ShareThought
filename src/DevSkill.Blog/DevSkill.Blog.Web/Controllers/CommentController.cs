@@ -3,6 +3,7 @@ using DevSkill.Blog.Application.Features.Comments.Commands;
 using DevSkill.Blog.Application.Features.Comments.Queries;
 using DevSkill.Blog.Application.Features.Users.Queries;
 using DevSkill.Blog.Domain.Dtos;
+using DevSkill.Blog.Infrastructure.Extensions;
 using DevSkill.Blog.Infrastructure.Identity;
 using DevSkill.Blog.Web.Models;
 using Microsoft.AspNetCore.Identity;
@@ -55,7 +56,11 @@ namespace DevSkill.Blog.Web.Controllers
 
                 var commentDto =
                     await _mediator.SendCommandAsync<AddCommentCommand, CommentDto>(command);
-
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Your comment has been submitted and is awaiting blogger approval.",
+                    Response = ResponseTypes.success
+                });
                 return Json(commentDto);
             }
             catch (Exception ex)

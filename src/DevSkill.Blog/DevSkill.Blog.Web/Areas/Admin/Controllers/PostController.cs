@@ -16,7 +16,7 @@ using System.Web;
 
 namespace DevSkill.Blog.Web.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
+    [Area("Admin"), Authorize(Roles = "Admin,Support")]
     public class PostController : Controller
     {
         private readonly ILogger<PostController> _logger;

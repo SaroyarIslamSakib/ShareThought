@@ -32,8 +32,8 @@ namespace DevSkill.Blog.Web.Controllers
 
                 var model = new SettingsModel()
                 {
-                    TermsContent = settings.TermsContent,
-                    StorageType = settings.StorageType,
+                    TermsContent = settings?.TermsContent,
+                    StorageType = settings?.StorageType,
                 };
 
                 return View(model);
