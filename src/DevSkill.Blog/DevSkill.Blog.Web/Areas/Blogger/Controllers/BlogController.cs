@@ -18,7 +18,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DevSkill.Blog.Web.Areas.Blogger.Controllers
 {
-    [Area("Blogger"), Authorize(Roles = "Blogger")]
+    [Area("Blogger"),Authorize]
     public class BlogController : Controller
     {
         private readonly ILogger<BlogController> _logger;

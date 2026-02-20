@@ -64,7 +64,7 @@ namespace DevSkill.Blog.Infrastructure.Extensions
             service.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Home/Index";
-                options.AccessDeniedPath = "/Home/Index";
+                options.AccessDeniedPath = "/Account/AccessDenied";
                 options.Events.OnRedirectToLogin = context =>
                 {
                     context.Response.Redirect("/Home/Index?loginRequired=true");
