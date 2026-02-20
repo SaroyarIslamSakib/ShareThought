@@ -118,13 +118,17 @@ namespace DevSkill.Blog.Web.Controllers
                             return LocalRedirect(model.ReturnUrl);
                         }
                     }
+                    TempData.Put("ResponseMessage", new ResponseModel
+                    {
+                        Message = "Registration Failed",
+                        Response = ResponseTypes.danger
+                    });
                     foreach (var error in result.Errors)
                     {
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
                 }
-
-                return RedirectToAction("Index","Home");
+                return View(model);
             }
             catch(Exception ex)
             {
@@ -133,8 +137,8 @@ namespace DevSkill.Blog.Web.Controllers
                     Message = "Registration Failed",
                     Response = ResponseTypes.danger
                 });
+                return View("Index", "Home");
             }
-            return View("Index", "Home");
         }
         private ApplicationUser CreateUser()
         {

@@ -54,17 +54,17 @@
 
             
             <!-- Search -->
-            <form class="d-flex align-items-center nav-search-group me-3" role="search">
+            <a asp-area="Blogger" asp-controller="Blog" asp-action="Index" class="d-flex align-items-center nav-search-group me-3">
 
                 <!-- Search -->
                 <div class="nav-search-wrapper">
                     <input type="search"
                            class="form-control nav-search-input"
-                           placeholder="Share your Thought" 
+                           placeholder="Visit your blog" 
                            readonly/>
                 </div>
 
-            </form>
+            </a>
             <!-- Sign Up Button -->
             @if (SignInManager.IsSignedIn(User))
             {

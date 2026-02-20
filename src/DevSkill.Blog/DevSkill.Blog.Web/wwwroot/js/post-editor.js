@@ -56,7 +56,7 @@ const autoSaveEnabled = !window.isPublishedPost;
 
 function triggerAutoSave() {
     clearTimeout(autoSaveTimer);
-    autoSaveTimer = setTimeout(autoSaveDraft, 3000);
+    autoSaveTimer = setTimeout(autoSaveDraft, 1000);
 }
 
 if (autoSaveEnabled) {

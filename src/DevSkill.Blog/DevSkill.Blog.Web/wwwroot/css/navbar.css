@@ -141,8 +141,12 @@
 
 .nav-search-group {
     gap: 18px;
+    cursor: pointer !important;
+    user-select: none;
 }
-
+    .nav-search-group .nav-search-input {
+        cursor: pointer; 
+    }
 /* ===== Premium Signup Button ===== */
 .nav-signup-btn {
     height: 42px;
@@ -216,7 +220,7 @@
 .nav-search-wrapper {
     position: relative;
     width: 100%;
-    max-width: 260px;
+    max-width: 180px;
     margin-left: auto;
 }
 
