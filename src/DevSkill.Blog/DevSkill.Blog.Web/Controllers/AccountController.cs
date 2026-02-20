@@ -218,7 +218,14 @@ namespace DevSkill.Blog.Web.Controllers
                             Response = ResponseTypes.success
                         });
                         _logger.LogInformation("User logged in.");
-                        return LocalRedirect(model.ReturnUrl);
+                        if (Url.IsLocalUrl(model.ReturnUrl))
+                        {
+                            return Redirect(model.ReturnUrl);
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
                     if (result.RequiresTwoFactor)
                     {
