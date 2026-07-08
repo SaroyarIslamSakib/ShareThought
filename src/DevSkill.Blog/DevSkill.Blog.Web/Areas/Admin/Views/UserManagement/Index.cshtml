@@ -1,0 +1,240 @@
+﻿@model UserListModel
+@{
+    ViewData["Title"] = "User Management";
+}
+@Html.AntiForgeryToken()
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
+}
+
+<!-- ================= App Content Header ================= -->
+<div class="app-content-header">
+    <div class="container-fluid">
+
+        <!-- Alert / Response -->
+        <div class="row mb-3">
+            <div id="responseContainer" class="col-lg-4 col-md-6">
+                <partial name="_ResponsePartial" />
+
+            </div>
+            <div class="col-lg-4 col-md-6" id="deleteUserModalContainer">
+                <partial name="_UserDeleteModalPartial" />
+            </div>
+                <div id="assignRoleModalContainer"></div>
+            <div id="responseContainer"></div>
+        </div>
+
+        <!-- Title & Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb breadcrumb-style1 mb-2">
+                <li class="breadcrumb-item">
+                    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
+                </li>
+                <li class="breadcrumb-item active">User Management</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- ================= App Content ================= -->
+<div class="app-content">
+    <div class="container-fluid">
+        <!-- ================= DataTable Section ================= -->
+        <div class="card card-primary card-outline mb-4">
+            <div class="card-header">
+                <div class="row align-items-center g-2">
+
+                    <!-- Title -->
+                    <div class="col-lg-4 col-md-12">
+                        <h6 class="mb-0 fw-semibold">
+                            <i class="fa fa-users me-1 text-primary"></i> User List
+                        </h6>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="col-lg-8 col-md-12">
+                        <div class="row g-2 justify-content-end align-items-center">
+
+                            <!-- Name -->
+                            <div class="col-lg-4 col-md-6 d-flex align-items-center">
+                                <label class="me-2 small text-muted mb-0">Name</label>
+                                <input asp-for="SearchItem.Name"
+                                       class="form-control"
+                                       placeholder="Enter name" />
+                            </div>
+
+                            <!-- From -->
+                            <div class="col-lg-3 col-md-6 d-flex align-items-center">
+                                <label class="me-2 small text-muted mb-0">From</label>
+                                <input asp-for="SearchItem.RegistrationFrom"
+                                       type="date"
+                                       class="form-control" />
+                            </div>
+
+                            <!-- To -->
+                            <div class="col-lg-3 col-md-6 d-flex align-items-center">
+                                <label class="me-2 small text-muted mb-0">To</label>
+                                <input asp-for="SearchItem.RegistrationTo"
+                                       type="date"
+                                       class="form-control" />
+                            </div>
+
+                            <!-- Search Button (Small Width) -->
+                            <div class="col-auto">
+                                <button id="searchButton"
+                                        type="button"
+                                        class="btn btn-primary px-3">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="users" class="table table-bordered">
+                        <thead class="table-light text-muted small">
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Contact</th>
+                                <th>Roles</th>
+                                <th>Registration Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead> 
+                        <tbody></tbody>
+                         <tfoot class="table-light small">
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Contact</th>
+                                <th>Roles</th>
+                                <th>Registration Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+<!--end::App Content-->
+@section Scripts
+{
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
+    <script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
+
+
+    <script>
+        $(function () {
+
+            // ================= DataTable =================
+            const userTable = $("#users").DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                lengthChange: true,
+                autoWidth: false,
+                searching: false,
+                ajax: {
+                    url: "/Admin/UserManagement/GetUserJsonData",
+                    type: "POST",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: function (d) {
+                        d.SearchItem = {
+                            Name: $("#SearchItem_Name").val(),
+                            RegistrationFrom: $("#SearchItem_RegistrationFrom").val() || null,
+                            RegistrationTo: $("#SearchItem_RegistrationTo").val() || null
+                        };
+                        return JSON.stringify(d);
+                    }
+                },
+                columnDefs: [{
+                    orderable: false,
+                    targets: 5,
+                    render: function (data) {
+    return `
+    <div class="btn-group btn-group-sm">
+        <button class="btn btn-outline-secondary edit-user-modal" data-id="${data}" title="Edit">
+            <i class="fa fa-pencil"></i>
+        </button>
+        <button class="btn btn-outline-secondary delete-user-modal" data-id="${data}" title="Delete">
+            <i class="fa fa-trash"></i>
+        </button>
+    </div>`;
+}
+                }]
+            });
+
+            $("#searchButton").click(function () {
+                userTable.ajax.reload(null, false);
+            });
+
+                    // ================= Delete User =================
+            $("#users").on("click", ".delete-user-modal", function () {
+
+                const userId = $(this).data("id");
+
+                $.get("/Admin/UserManagement/GetUserForDelete", { userId: userId })
+                    .done(function (res) {
+
+                        $("#deleteUserId").val(res.userId);
+                        $("#deleteUserName").text(res.userName);
+
+                        new bootstrap.Modal("#deleteUserModal").show();
+                    });
+            });
+
+
+            // ================= Confirm Delete =================
+            $("#confirmDeleteUserBtn").click(function () {
+
+                $.ajax({
+                    url: "/Admin/UserManagement/Delete",
+                    type: "POST",
+                    data: {
+                        userId: $("#deleteUserId").val(),
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function () {
+
+                        bootstrap.Modal.getInstance("#deleteUserModal").hide();
+
+                        $("#responseContainer")
+                            .load("/Admin/UserManagement/ResponsePartial");
+
+                        $("#users").DataTable().ajax.reload(null, false);
+                    }
+                });
+            });
+
+            // ================= Show Assign Role Modal =================
+            $(document).on("click", ".edit-user-modal", function () {
+
+            const userId = $(this).data("id");
+
+            $.get("/Admin/UserManagement/AssignRoleModal", { userId: userId })
+                .done(function (html) {
+                    $("#assignRoleModalContainer").html(html);
+                    $("#assignRoleModal").modal("show");
+                });
+        });
+
+        });
+    </script>
+
+}
+
+
+
+

@@ -1,0 +1,41 @@
+﻿
+@{
+    ViewData["Title"] = "MailConfirmation";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/navbar.css" />
+    <link rel="stylesheet" href="~/css/email-confirm.css" />
+}
+<partial name="_ResponsePartial" />
+<div class="container min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="card email-card w-100">
+        <div class="card-body text-center p-4 p-md-5">
+
+            <!-- Icon -->
+            <div class="email-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-.5a.5.5 0 0 0-.5.5v.217l6.5 4.06 6.5-4.06V4a.5.5 0 0 0-.5-.5H2zm13 2.383-4.708 2.942L15 11.105V5.883zM14.247 11.86l-4.64-2.9L8 9.586l-1.607-.626-4.64 2.9A.5.5 0 0 0 2 12.5h12a.5.5 0 0 0 .247-.64zM1 11.105l4.708-2.28L1 5.883v5.222z" />
+                </svg>
+            </div>
+
+            <!-- Title -->
+            <h3 class="fw-bold mb-3">Confirm Your Email</h3>
+
+            <!-- Text -->
+            <p class="text-muted mb-4">
+                Verifying your email gives you access to more features like Create your own blog. Click the button below to check your email.
+            </p>
+
+            <!-- Button -->
+            <a href="https://mailtrap.io/inboxes/4381153/messages" class="btn btn-confirm text-white rounded-pill">
+                Check your Email
+            </a>
+
+        </div>
+    </div>
+</div>
+
+<script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
+
+

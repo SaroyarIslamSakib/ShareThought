@@ -1,0 +1,98 @@
+﻿@model LoginModel
+<div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content blog-modal">
+
+            <!-- HEADER (Same Style as Create Blog) -->
+            <div class="modal-header blog-header">
+
+                <div class="write-area-modal">
+                    <div class="text-wrapper-modal">
+                        <h5 class="modal-title mb-0">
+                            Login
+                        </h5>
+                    </div>
+
+                    <svg class="pencil-modal" viewBox="0 0 8 24">
+                        <defs>
+                            <linearGradient id="bodyGradLogin" x1="0" x2="0" y1="0" y2="1">
+                                <stop offset="0%" stop-color="#d1d5db" />
+                                <stop offset="100%" stop-color="#ffffff" />
+                            </linearGradient>
+                        </defs>
+
+                        <rect x="2.5" y="0" width="3" height="2.5" rx="0.7" fill="#e5e7eb" />
+                        <rect x="2.5" y="2.5" width="3" height="1.5" fill="#d1d5db" />
+                        <rect x="2.5" y="4" width="3" height="8" rx="0.8" fill="url(#bodyGradLogin)" />
+                        <polygon points="2.5,12 5.5,12 4,16" fill="#f3f4f6" />
+                        <polygon points="3,16 5,16 4,19" fill="#111827" />
+                    </svg>
+                </div>
+
+                <button type="button"
+                        class="custom-close-btn"
+                        data-bs-dismiss="modal">
+                    &times;
+                </button>
+
+            </div>
+
+            <!-- BODY -->
+            <div class="modal-body blog-body">
+
+                <h5 class="mb-2 fw-semibold">Please Login</h5>
+                <p class="mb-4 text-muted small">
+                    Please log in to manage your blog.
+                </p>
+
+                <!-- Login Form -->
+                <form id="loginForm"
+                      asp-controller="Account"
+                      asp-action="Login"
+                      method="post"
+                      class="mb-3">
+
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="ReturnUrl" value="@Context.Request.Path" />
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input asp-for="Email"
+                               name="Email"
+                               class="form-control blog-input"
+                               placeholder="Enter your email or username" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input name="Password"
+                               asp-for="Password"
+                               type="password"
+                               class="form-control blog-input"
+                               placeholder="Enter your password" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <button type="submit"
+                                class="btn blog-btn w-100"
+                                id="loginBtn">
+                            Sign In
+                        </button>
+                    </div>
+                </form>
+
+                <p class="text-center mt-3 small">
+                    <span>New on our platform?</span>
+                    <a href="javascript:void(0)"
+                       id="openRegisterFromLogin"
+                       class="fw-semibold text-dark">
+                        Create an account
+                    </a>
+                </p>
+
+            </div>
+
+        </div>
+    </div>
+</div>

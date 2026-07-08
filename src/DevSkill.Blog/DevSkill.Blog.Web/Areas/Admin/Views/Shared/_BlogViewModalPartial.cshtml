@@ -1,0 +1,47 @@
+﻿<!-- Blog View Modal -->
+<div class="modal fade" id="blogViewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="blogViewModalTitle">
+                    <i class="fa fa-eye me-2"></i> Blog Details
+                </h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="mb-3">
+                    <label class="fw-semibold text-muted">Title</label>
+                    <h5 id="blogTitle" class="mt-1"></h5>
+                </div>
+
+                <div class="mb-3">
+                    <label class="fw-semibold text-muted">Created Date</label>
+                    <div id="blogCreatedAt" class="text-secondary"></div>
+                </div>
+
+                <hr />
+
+                <div>
+                    <label class="fw-semibold text-muted mb-2">Body</label>
+                    <div id="blogBody" class="lh-lg"></div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: DevSkill.Blog.Web/Dockerfile
+    image: devskill.blog.web
+    env_file:
+      - DevSkill.Blog.Web/web.env
+    volumes:
+      - blog-logs-data:/app/Logs/
+      - blog-uploads-data:/app/wwwroot/uploads
+    ports:
+      - "8000:80"
+    entrypoint: ["dotnet", "DevSkill.Blog.Web.dll"]
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    build:
+      context: .
+      dockerfile: DevSkill.Blog.Db/Dockerfile
+    image: "devskill.blog.sqlserver"
+    env_file:
+      - DevSkill.Blog.Db/db.env
+    expose:
+      - "55000"
+    ports:
+      - "55000:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    restart: always
+
+volumes:
+  blog-logs-data:
+    external: true
+  blog-uploads-data: 
+  mssql-data:

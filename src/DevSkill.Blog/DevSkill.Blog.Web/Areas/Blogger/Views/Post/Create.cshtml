@@ -1,0 +1,171 @@
+﻿@model CreatePostViewModel
+@{
+    ViewData["Title"] = "Write a Blog";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/navbar.css" />
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/post-editor.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+}
+
+<partial name="_CreatePostModalPartial" model="Model" />
+
+<header class="write-header">
+    <div class="write-header-inner">
+
+        <a asp-area="Blogger" asp-controller="Blog" asp-action="Index">
+            <h1 class="blog-title">@ViewBag.BlogName</h1>
+        </a>
+        <small id="autosaveStatus" class="text-muted">
+            Draft not saved yet
+        </small>
+
+        <div class="header-right">
+            <div class="header-dropdown">
+                <button class="dropdown-btn" type="button">⋮</button>
+                <div class="dropdown-menu">
+                    <button type="button">Add Category</button>
+                    <button type="button">Add Tag</button>
+                </div>
+            </div>
+
+            <button type="button"
+                    id="openPublishModal"
+                    class="header-publish">
+                Publish
+            </button>
+        </div>
+
+    </div>
+</header>
+
+<div class="mt-0 bg-white">
+    <div class="write-page">
+
+        <!--  IMPORTANT: Publish action -->
+        <form asp-area="Blogger"
+              asp-controller="Post"
+              asp-action="Publish"
+              method="post"
+              enctype="multipart/form-data"
+              class="write-form"
+              id="writeForm">
+
+            @Html.AntiForgeryToken()
+
+            <!-- Draft Post Id (set by JS auto-save) -->
+            <input type="hidden"
+                   id="DraftPostId"
+                   name="Id"
+                   value="@Model.Id" />
+            <input type="hidden"
+                   asp-for="Content"
+                   id="content"
+                   value="@Model.Content" />
+
+
+
+            <!-- Title -->
+            <textarea asp-for="Title"
+                      class="post-title"
+                      rows="1"
+                      placeholder="Title">
+                  </textarea>
+            <span asp-validation-for="Title" class="text-danger"></span>
+            <!-- Editor -->
+            <div class="editor-wrapper">
+                <div id="editor"></div>
+
+                <!-- Floating Toolbar -->
+                <div class="floating-toolbar" id="floatingToolbar">
+                    <button type="button" data-format="bold"><b>B</b></button>
+                    <button type="button" data-format="italic"><i>I</i></button>
+                    <button type="button" data-format="underline"><u>U</u></button>
+                </div>
+
+                <!-- Floating Plus -->
+                <div class="floating-plus" id="floatingPlus">
+                    <button class="plus-btn" type="button">
+                        +
+                    </button>
+
+                    <div class="plus-menu">
+                        <button type="button" id="addImage">Image</button>
+                        <button type="button" id="addDivider">Divider</button>
+                    </div>
+                </div>
+
+                <input type="file" id="imageInput" accept="image/*" hidden />
+            </div>
+            <span asp-validation-for="Content" class="text-danger"></span>
+            <!-- Content saved on publish -->
+            <input type="hidden" asp-for="Content" id="content" />
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        window.isPublishedPost = @Model.IsPublished.ToString().ToLower();
+    </script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="~/js/post-editor.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            // TAG SELECT
+            $('#tagSelect').select2({
+                placeholder: "Type tags...",
+                multiple: true,
+                width: '100%',
+                dropdownParent: $('#publishModal'),
+                minimumInputLength: 1,
+                ajax: {
+                    url: '/Blogger/Post/Search',
+                    dataType: 'json',
+                    delay: 300,
+                    data: function (params) {
+                        return { term: params.term };
+                    },
+                    processResults: function (data) {
+                        return { results: data };
+                    }
+                },
+                tags: true
+            });
+
+            // CATEGORY SELECT
+            $('#categorySelect').select2({
+                placeholder: "Type categories...",
+                multiple: true,
+                width: '100%',
+                dropdownParent: $('#publishModal'),
+                minimumInputLength: 1,
+                ajax: {
+                    url: '/Blogger/Post/SearchCategory',
+                    dataType: 'json',
+                    delay: 300,
+                    data: function (params) {
+                        return { term: params.term };
+                    },
+                    processResults: function (data) {
+                        return { results: data };
+                    }
+                },
+                tags: true
+            });
+
+        });
+    </script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+}
+

@@ -1,0 +1,69 @@
+﻿@model CreatePostViewModel
+
+<div class="modal fade" id="publishModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Publish Post</h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <!-- CATEGORY -->
+                <div class="mb-3">
+                    <label class="form-label">Categories</label>
+                    <select id="categorySelect"
+                            name="CategoryNames"
+                            class="form-control"
+                            multiple
+                            style="width:100%"
+                            form="writeForm">
+                    </select>
+                </div>
+
+                <!-- TAGS -->
+                <div class="mb-3">
+                    <label class="form-label">Tags</label>
+                    <select id="tagSelect"
+                            name="TagNames"
+                            class="form-control"
+                            multiple
+                            style="width:100%"
+                            form="writeForm">
+                    </select>
+                </div>
+
+                <!-- FEATURE IMAGE (PUBLISH TIME ONLY) -->
+                <div class="mb-3">
+                    <label asp-for="FeatureImage" class="form-label"></label>
+                    <input asp-for="FeatureImage"
+                           class="form-control"
+                           id="featureImageInput"
+                           accept="image/*"
+                           form="writeForm" />
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <!-- ✅ REAL PUBLISH -->
+                <button type="submit"
+                        class="btn btn-primary"
+                        form="writeForm">
+                    Publish Now
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>

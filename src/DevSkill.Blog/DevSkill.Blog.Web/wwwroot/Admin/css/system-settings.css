@@ -1,0 +1,84 @@
+﻿
+
+/* Card Base */
+.settings-card {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #eef1f6;
+    padding: 25px;
+    transition: 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+    .settings-card:hover {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+    }
+
+/* Header */
+.card-header-custom {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.icon-box {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+/* Body */
+.card-body-custom {
+    flex-grow: 1;
+}
+
+/* Quill */
+#termsEditor {
+    height: 420px;
+    background: #fff;
+    border-radius: 10px;
+}
+
+/* Storage Option */
+.storage-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 18px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+    .storage-option:hover {
+        border-color: #0d6efd;
+        background: #f8fbff;
+    }
+
+    .storage-option input {
+        margin-top: 6px;
+        transform: scale(1.1);
+    }
+
+        .storage-option input:checked + div {
+            border-left: 4px solid #0d6efd;
+            padding-left: 10px;
+        }
+
+    .storage-option h6 {
+        margin-bottom: 4px;
+        font-weight: 600;
+    }
+
+    .storage-option p {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-bottom: 0;
+    }

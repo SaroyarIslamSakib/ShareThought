@@ -1,0 +1,212 @@
+﻿@{
+    ViewData["Title"] = "Published";
+}
+
+@Html.AntiForgeryToken()
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
+    <link rel="stylesheet" href="~/css/navbar.css" />
+    <link rel="stylesheet" href="~/css/blog-sub-nav.css" />
+    <link rel="stylesheet" href="~/css/bloger-post-listview.css" />
+
+}
+
+<main>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <!-- Menu -->
+            <partial name="_BlogAreaSideMenuPartial" />
+            <partial name="_ResponsePartial" />
+            <partial name="_DeleteModalPartial" />
+
+
+            <!-- / Menu -->
+
+            <div class="layout-page">
+                <!-- Navbar -->
+                <partial name="_BlogAreaNavbarPartial" />
+                <!-- / Navbar -->
+                <!-- ================= App Content Header ================= -->
+                <div class="app-content-header mt-3 mb-2">
+                    <div class="container-fluid">
+                        <!-- Title & Breadcrumb -->
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb breadcrumb-style1 mb-2">
+                                <li class="breadcrumb-item">
+                                    <a asp-area="Blogger" asp-controller="Blog" asp-action="Index">Blog</a>
+                                </li>
+                                <li class="breadcrumb-item active">Published Post</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+
+
+
+                <!-- ================= App Content ================= -->
+                <div class="app-content">
+                    <div class="container-fluid">
+                        
+                        <!-- ================= DataTable Section ================= -->
+                        <div class="card card-primary card-outline shadow-sm">
+                            <div class="mx-3">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table id="posts" class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Posts</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+                <!--end::App Content-->
+            </div>
+            <!-- / Layout page -->
+        </div>
+
+        <!-- Overlay -->
+        <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+    <!-- / Layout wrapper -->
+</main>
+
+@section Scripts
+{
+    <script src="~/sneat-1.0.0/assets/vendor/libs/popper/popper.js"></script>
+    <script src="~/sneat-1.0.0/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="~/sneat-1.0.0/assets/vendor/libs/masonry/masonry.js"></script>
+
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
+    <script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
+
+
+    <script>
+               $(function () {
+
+            // ================= DataTable =================
+        const postsTable = $("#posts").DataTable({
+        processing: true,
+        serverSide: true,
+        paging: true,
+        pagingType: "full_numbers",
+        lengthChange: true,
+        info: true,
+        ordering: false,
+
+        searching: true,
+            ajax: {
+                url: "/Blogger/Post/GetPublishedPostsJsonData",
+                type: "POST",
+                contentType: "application/json",
+                data: d => JSON.stringify(d)
+            },
+            columns: [
+                {
+                    data: null,
+                    orderable: false,
+                    render: function (data, type, row) {
+                        const isSuspended = row[7] === "True" || row[8] === "true";
+                        const statusBadge = isSuspended
+                                        ? `<span class="badge bg-warning text-dark ms-3">
+                                                <i class="fa-solid fa-ban me-1"></i> Banned
+                                           </span>`
+                                        : `<span class="badge bg-success ms-3">
+                                                <i class="fa-solid fa-check me-1"></i> Active
+                                           </span>`;
+
+            return `
+        <div class="post-row">
+
+            <img src="${row[0]}" alt="${row[1]}" />
+
+            <div class="flex-grow-1">
+                <h6>${row[1]}</h6>
+
+                <div class="post-meta">
+                    Published ${row[3]}
+                </div>
+
+                <div class="post-stats">
+                    <span>
+                        <i class="fa-solid fa-heart"></i> ${row[4]}
+                    </span>
+
+                    <span class="ms-3">
+                        <i class="fa-solid fa-comment"></i> ${row[6]}
+                    </span>
+                    ${statusBadge}
+                </div>
+            </div>
+
+            <div class="post-actions dropdown">
+                <button data-bs-toggle="dropdown">
+                    <i class="fa fa-ellipsis"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="/Blogger/Post/Edit/${row[5]}">Edit</a></li>
+                    <li>
+                    <button class="dropdown-item text-danger btn-delete-post"
+                            data-id="${row[5]}">
+                            Delete
+                    </button>
+                </li>
+                </ul>
+            </div>
+
+        </div>`;
+        }
+                }
+            ]
+        });
+        });
+    </script>
+    <script>
+        let deletePostId = null;
+        const deleteModal = new bootstrap.Modal(
+            document.getElementById('deletePostModal')
+        );
+
+        // open modal
+            $(document).on('click', '.btn-delete-post', function () {
+            $('#deletePostIdInput').val($(this).data('id'));
+            deleteModal.show();
+        });
+
+        // confirm delete
+        $('#confirmDeletePostBtn').on('click', function () {
+
+            if (!deletePostId) return;
+
+            $.ajax({
+                url: '/Blogger/Post/Delete',
+                type: 'POST',
+                data: {
+                    id: deletePostId,
+                    __RequestVerificationToken:
+                        $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function () {
+                    deleteModal.hide();
+                    deletePostId = null;
+
+                    // reload DataTable
+                    $('#posts').DataTable().ajax.reload(null, false);
+                },
+                error: function () {
+                    alert('Delete failed');
+                }
+            });
+        });
+    </script>
+
+}

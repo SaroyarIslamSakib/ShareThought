@@ -1,0 +1,342 @@
+﻿@model IndexViewModel
+@section Styles {
+    <link rel="stylesheet" href="~/css/navbar.css" />
+    <link rel="stylesheet" href="~/css/post-details.css" />
+    <link rel="stylesheet" href="~/comment/css/jquery-comments.css">
+    <link rel="stylesheet" href="~/css/create-blog-modal.css" />
+
+}
+<partial name="_LoginModalPartial" model="new LoginModel()" />
+<partial name="_RegisterModalPartial" model="new RegisterModel()" />
+<partial name="_ResponsePartial" />
+<partial name="_ReportModalPartial" />
+
+<main class="bg-white py-5">
+
+        <!-- Post Card -->
+        <article class="bg-white rounded-4 shadow-sm px-4 px-md-5 py-5 mx-auto post-article">
+            <input type="hidden" id="postId" value="@Model.PublicPostModel.Id" />
+            <!-- Title -->
+            <h1 class="fw-bold mb-3 text-dark">
+            @Model.PublicPostModel.Title
+            </h1>
+
+            <!-- Meta -->
+            <div class="post-meta mb-4">
+                <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+                    @foreach (var category in Model.PublicPostModel.CategoryNames)
+                    {
+                        <span class="badge badge-category">
+                            @category
+                        </span>
+                    }
+                    @foreach (var tag in Model.PublicPostModel.TagNames)
+                    {
+                        <span class="badge badge-tag">
+                            #@tag
+                        </span>
+                    }
+                </div>
+            </div>
+        <div class="post-actions">
+
+            <!-- Left -->
+            <div class="actions-left">
+                <button class="action-btn clap-btn"
+                        id="clapBtn"
+                        data-post-id="@Model.PublicPostModel.Id">
+                    <i class="fa-regular fa-heart"></i>
+                    <span id="clapCount">@Model.PublicPostModel.Likes</span>
+                </button>
+
+                <div class="action-btn"
+                     role="button"
+                     data-bs-toggle="offcanvas"
+                     data-bs-target="#commentPanel"
+                     aria-controls="commentPanel">
+
+                    <i class="fa-regular fa-comment"></i>
+                    <span>@Model.PublicPostModel.Comments</span>
+                </div>
+            </div>
+            <!-- Comment panel -->
+            <div class="offcanvas offcanvas-end comment-offcanvas"
+                 tabindex="-1"
+                 id="commentPanel">
+
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title">Responses</h5>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="offcanvas"></button>
+                </div>
+
+                <div class="offcanvas-body">
+                    <!-- AJAX / Partial view -->
+                    <div id="comments-offcanvas"></div>
+                </div>
+            </div>
+
+            <!-- Right -->
+            <div class="actions-right">
+                <i class="fa-regular fa-share-from-square"></i>
+                <div class="dropdown">
+                    <button class="btn p-0 border-0 bg-transparent shadow-none"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        <i class="fa-solid fa-ellipsis fs-5 text-muted"></i>
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item"
+                               href="#"
+                               data-bs-toggle="modal"
+                               data-bs-target="#reportModal"
+                               data-postid="@Model.PublicPostModel.Id">
+                                <i class="fa-solid fa-flag me-2 text-danger"></i>Report
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+            <!-- Content -->
+            <div class="post-content">
+                @Html.Raw(Model.PublicPostModel.Content)
+            <div id="comments-inline"></div>
+            </div>
+
+        </article>
+
+</main>
+<script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
+<script>
+    const isUserLoggedIn = @(User.Identity.IsAuthenticated.ToString().ToLower());
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // ===== Get Elements Safely =====
+        const loginModalEl = document.getElementById("loginModal");
+        const registerModalEl = document.getElementById("registerModal");
+        const createBlogModalEl = document.getElementById("createBlogModal");
+
+        const openRegisterBtn = document.getElementById("openRegisterFromLogin");
+        const openLoginBtn = document.getElementById("openLoginFromRegister");
+        const openCreateBlogBtn = document.getElementById("openCreateBlog");
+
+        // ===== Initialize Modals Only If Exist =====
+        const loginModal = loginModalEl ? new bootstrap.Modal(loginModalEl) : null;
+        const registerModal = registerModalEl ? new bootstrap.Modal(registerModalEl) : null;
+        const createBlogModal = createBlogModalEl ? new bootstrap.Modal(createBlogModalEl) : null;
+
+        // ===== Login → Register =====
+        if (openRegisterBtn && loginModal && registerModal) {
+            openRegisterBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                loginModal.hide();
+
+                setTimeout(() => {
+                    registerModal.show();
+
+                    // Re-parse validation safely
+                    const registerForm = document.querySelector("#registerModal form");
+                    if (registerForm) {
+                        $.validator.unobtrusive.parse(registerForm);
+                    }
+
+                }, 300);
+            });
+        }
+
+        // ===== Register → Login =====
+        if (openLoginBtn && loginModal && registerModal) {
+            openLoginBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                registerModal.hide();
+
+                setTimeout(() => {
+                    loginModal.show();
+
+                    const loginForm = document.querySelector("#loginModal form");
+                    if (loginForm) {
+                        $.validator.unobtrusive.parse(loginForm);
+                    }
+
+                }, 300);
+            });
+        }
+
+        // ===== Create Blog Button =====
+        if (openCreateBlogBtn) {
+            openCreateBlogBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                if (!isUserLoggedIn) {
+                    if (loginModal) loginModal.show();
+                } else {
+                    if (createBlogModal) createBlogModal.show();
+                }
+            });
+        }
+
+    });
+</script>
+
+
+
+
+<!--begin: When Unauthorize then automatic open modal-->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const loginModalElement = document.getElementById("loginModal");
+
+        if (!loginModalElement) return;
+
+        const loginModal = new bootstrap.Modal(loginModalElement);
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if (urlParams.get("loginRequired") === "true") {
+            loginModal.show();
+        }
+    });
+</script>
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/comment/js/jquery-comments.js"></script>
+
+    <script>
+        const clapBtn = document.getElementById("clapBtn");
+        const clapCount = document.getElementById("clapCount");
+
+            clapBtn.addEventListener("click", async () => {
+
+            const postId = clapBtn.dataset.postId;
+
+            const response = await fetch('/Post/LikePost', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ postId })
+            });
+
+            if (!response.ok) return;
+
+            const data = await response.json();
+
+            clapBtn.classList.add("active");
+            clapCount.innerText = data.likes;
+        });
+    </script>
+    <script>
+        //==============> Comment <===============
+
+        function initComments(selector) {
+            $(selector).comments({
+                currentUserId: '@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)',
+                textareaPlaceholderText: 'Write your response',
+                newestText: 'Latest',
+                oldestText: 'Old',
+                enableEditing: true,
+                enableDeleting: true,
+                postCommentOnEnter: true,
+
+                refresh: function () {
+                    $(selector).addClass('rendered');
+                },
+
+                getComments: function (success, error) {
+                    $.ajax({
+                        type: 'get',
+                        url: '/Comment/GetComments',
+                        data: {
+                            postId: $('#postId').val()
+                        },
+                        success: success,
+                        error: error
+                    });
+                },
+
+                postComment: function (commentJSON, success, error) {
+                    commentJSON.postId = $('#postId').val();
+                    commentJSON.parentId = commentJSON.parent;
+
+                    $.ajax({
+                        type: 'post',
+                        url: '/Comment/AddComment/',
+                        data: commentJSON,
+                        success: function (comment) {
+                            success(comment);
+                            location.reload();
+                        },
+                        error: error
+                    });
+                },
+
+                putComment: function (commentJSON, success, error) {
+                    $.ajax({
+                        type: 'put',
+                        url: '/Comment/EditComments/' + commentJSON.id,
+                        data: commentJSON,
+                        success: function (comment) {
+                            success(comment);
+                        },
+                        error: error
+                    });
+                },
+
+                deleteComment: function (commentJSON, success, error) {
+                    $.ajax({
+                        type: 'delete',
+                        url: '/Comment/DeleteComments/' + commentJSON.id,
+                        success: function () {
+                            success();
+                        },
+                        error: error
+                    });
+                }
+            });
+        }
+
+        // 1️⃣ Inline comments – page load এই
+        initComments('#comments-inline');
+
+        // 2️⃣ Offcanvas comments – lazy load
+        let offcanvasLoaded = false;
+        $('#commentPanel').on('shown.bs.offcanvas', function () {
+            if (!offcanvasLoaded) {
+                initComments('#comments-offcanvas');
+                offcanvasLoaded = true;
+            }
+        });
+
+    </script>
+    <script>
+            //Send PostId to Report Modal
+            document.addEventListener('DOMContentLoaded', function () {
+
+            var reportModal = document.getElementById('reportModal');
+
+            reportModal.addEventListener('show.bs.modal', function (event) {
+
+                var button = event.relatedTarget;
+                var postId = button.getAttribute('data-postid');
+
+                document.getElementById('reportPostId').value = postId;
+            });
+
+        });
+    </script>
+}
+
+
+

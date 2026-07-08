@@ -1,0 +1,23 @@
+﻿using DevSkill.Blog.Domain.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DevSkill.Blog.Domain
+{
+    public interface IApplicationUnitOfWork : IUnitOfWork
+    {
+        public IBlogPostRepository BlogPostRepository { get; }
+        public IContactMessageRepository ContactMessageRepository { get; }
+        public IBlogAreaRepository BlogAreaRepository { get; }
+        public IPostRepository PostRepository { get; }
+        public ICategoryRepository CategoryRepository { get; }
+        public ITagRepository TagRepository { get; }
+        public ICommentRepository CommentRepository { get; }
+        public IReportRepository ReportRepository { get; }
+        public ISettingsRepository SettingsRepository { get; }
+
+    }
+}

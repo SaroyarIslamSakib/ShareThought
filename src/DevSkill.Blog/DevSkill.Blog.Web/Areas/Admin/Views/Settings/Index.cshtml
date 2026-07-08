@@ -1,0 +1,170 @@
+﻿@model SettingsModel
+@{
+    ViewData["Title"] = "Settings";
+}
+
+@section Styles
+{
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Admin/css/system-settings.css" />
+}
+
+<!-- ================= App Content Header ================= -->
+<div class="app-content-header">
+    <div class="container-fluid">
+
+        <!-- Alert / Response -->
+        <div class="row mb-3">
+            <div id="responseContainer" class="col-lg-4 col-md-6">
+                <partial name="_ResponsePartial" />
+            </div>
+        </div>
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb breadcrumb-style1 mb-2">
+                <li class="breadcrumb-item">
+                    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
+                </li>
+                <li class="breadcrumb-item active">Settings</li>
+            </ol>
+        </nav>
+
+    </div>
+</div>
+
+<!-- ================= App Content ================= -->
+<div class="app-content">
+    <div class="container-fluid settings-wrapper">
+
+        <form asp-area="Admin"
+              asp-controller="Settings"
+              asp-action="TermAndCondition"
+              method="post"
+              id="settingsForm">
+
+            @Html.AntiForgeryToken()
+
+            <!-- Hidden Fields -->
+            <input asp-for="TermsContent" type="hidden" id="TermsContent" />
+
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold mb-1">System Settings</h4>
+                    <p class="text-muted mb-0">
+                        Manage legal content and image storage configuration
+                    </p>
+                </div>
+
+                <!-- TOP SAVE BUTTON -->
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="fa fa-save me-2"></i> Save Changes
+                </button>
+            </div>
+
+            <!-- Two Column Layout -->
+            <div class="row g-4">
+
+                <!-- LEFT COLUMN : Terms -->
+                <div class="col-lg-7">
+                    <div class="settings-card h-100">
+
+                        <div class="card-header-custom">
+                            <div class="icon-box bg-primary-subtle text-primary">
+                                <i class="fa fa-file-contract"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Terms & Conditions</h6>
+                                <small class="text-muted">
+                                    This content will appear on the public Terms page.
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="card-body-custom">
+                            <div id="termsEditor"></div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN : Storage -->
+                <div class="col-lg-5">
+                    <div class="settings-card h-100">
+
+                        <div class="card-header-custom">
+                            <div class="icon-box bg-success-subtle text-success">
+                                <i class="fa fa-database"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Image Storage</h6>
+                                <small class="text-muted">
+                                    Choose where uploaded images will be stored.
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="card-body-custom">
+
+                            <label class="storage-option">
+                                <input type="radio" asp-for="StorageType" value="Server" checked />
+                                <div>
+                                    <h6>Local Server</h6>
+                                    <p>Images will be saved in server directory.</p>
+                                </div>
+                            </label>
+
+                            <label class="storage-option mt-3">
+                                <input type="radio" asp-for="StorageType" value="S3" />
+                                <div>
+                                    <h6>AWS S3 Bucket</h6>
+                                    <p>Images will be uploaded to configured S3 bucket.</p>
+                                </div>
+                            </label>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<!-- ================= Scripts ================= -->
+@section Scripts {
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // Initialize Quill
+            var quill = new Quill('#termsEditor', {
+                theme: 'snow',
+                placeholder: 'Write your Terms & Conditions here...',
+                modules: {
+                    toolbar: [
+                        [{ header: [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline'],
+                        ['link', 'blockquote', 'code-block'],
+                        [{ list: 'ordered' }, { list: 'bullet' }],
+                        ['clean']
+                    ]
+                }
+            });
+
+            // Form Submit
+            document.getElementById("settingsForm")
+                .addEventListener("submit", function () {
+
+                    // Set Quill HTML to hidden input
+                    document.getElementById("TermsContent").value = quill.root.innerHTML;
+
+                });
+        });
+    </script>
+}

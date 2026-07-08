@@ -1,0 +1,202 @@
+﻿
+@{
+    ViewData["Title"] = "Blogs";
+}
+
+@Html.AntiForgeryToken()
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
+}
+
+<!-- ================= App Content Header ================= -->
+<div class="app-content-header">
+    <div class="container-fluid">
+
+        <!-- Alert / Response -->
+        <div class="row mb-3">
+            <div id="responseContainer" class="col-lg-4 col-md-6">
+                <partial name="_ResponsePartial" />
+            </div>
+            <partial name="_ChangeStatusModalPartial" />
+        </div>
+        <!-- Title & Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb breadcrumb-style1 mb-2">
+                <li class="breadcrumb-item">
+                    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
+                </li>
+                <li class="breadcrumb-item active">Blogs</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- ================= App Content ================= -->
+  <div class="app-content">
+    <div class="container-fluid">
+        <!-- ================= DataTable Section ================= -->
+        <div class="card card-primary card-outline shadow-sm">
+            
+            <div class="mx-3">
+
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="blogs" class="table table-hover align-middle table-bordered">
+                            <thead class="table-light text-muted small">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Owner</th>
+                                    <th>Mail</th>
+                                    <th>Total Post</th>
+                                    <th>Created Date</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot class="table-light small">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Owner</th>
+                                    <th>Mail</th>
+                                    <th>Total Post</th>
+                                    <th>Created Date</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--end::App Content-->
+@section Scripts
+{
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
+    <script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
+
+    <script>
+        $(function () {
+
+            let selectedBlogId = 0;
+            let shouldSuspend = false;
+
+            // ================= DataTable =================
+            const blogsTable = $("#blogs").DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                lengthChange: true,
+                autoWidth: false,
+                ajax: {
+                    url: "/Admin/Blog/GetBlogsJsonData",
+                    type: "POST",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: function (d) {
+                        return JSON.stringify(d);
+                    }
+                },
+                columnDefs: [
+                    {
+                        orderable: false,
+                        targets: 5,
+                        render: function (data) {
+                            if (data == "True" || data == "true") {
+                                return '<span class="badge bg-warning text-dark">Banned</span>';
+                            }
+                            else {
+                                return '<span class="badge bg-success">Active</span>';
+                            }
+                        }
+                    },
+                    {
+                        orderable: false,
+                        targets: 6,
+                        render: function (data, type, row) {
+
+                            const isSuspended = row[5];
+
+                            return `
+                            <div class="btn-group btn-group-sm">
+                                    <a href="/Admin/Blog/Posts/${data}"
+                                       class="btn btn-outline-secondary"
+                                       title="View">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                <button class="btn btn-outline-secondary toggle-status-modal"
+                                        data-id="${data}"
+                                        data-status="${isSuspended}"
+                                        title="Toggle Status">
+                                    <i class="fa-solid fa-ban"></i>
+                                </button>
+                            </div>`;
+                        }
+                    }
+                ]
+            });
+
+
+            // ================= Open Modal =================
+            $(document).on("click", ".toggle-status-modal", function () {
+
+                selectedBlogId = $(this).data("id");
+                const status = $(this).data("status");
+
+                if (status === "True" || status === "true") {
+                    // Already Suspended → Unblock
+                    shouldSuspend = false;
+                    $("#toggleMessage").text("Are you sure you want to unblock this Blog?");
+                    $("#confirmToggleBtn")
+                        .removeClass("btn-danger")
+                        .addClass("btn-success")
+                        .text("Yes, Unblock");
+                }
+                else {
+                    // Active → Block
+                    shouldSuspend = true;
+                    $("#toggleMessage").text("Are you sure you want to block this Blog?");
+                    $("#confirmToggleBtn")
+                        .removeClass("btn-success")
+                        .addClass("btn-danger")
+                        .text("Yes, Block");
+                }
+
+                $("#toggleStatusModal").modal("show");
+            });
+
+
+            // ================= Confirm Action =================
+            $("#confirmToggleBtn").click(function () {
+
+                $.ajax({
+                    url: "/Admin/Blog/ToggleSuspend",
+                    type: "POST",
+                    data: {
+                        id: selectedBlogId,
+                        suspend: shouldSuspend
+                    },
+                    success: function () {
+
+                        $("#toggleStatusModal").modal("hide");
+
+                        blogsTable.ajax.reload(null, false);
+
+                        toastr.success("Blog status updated successfully.");
+                    },
+                    error: function () {
+                        toastr.error("Something went wrong.");
+                    }
+                });
+
+            });
+
+        });
+    </script>
+}

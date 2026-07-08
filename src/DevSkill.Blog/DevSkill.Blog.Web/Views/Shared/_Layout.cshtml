@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DevSkill.Blog.Web</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="~/sneat-1.0.0/assets/vendor/fonts/boxicons.css" />
+    <!--Font Style -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- begin: My CSS-->
+    <link rel="stylesheet" href="~/css/footer.css" />
+    <link rel="stylesheet" href="~/css/login-modal.css" />
+    <link rel="stylesheet" href="~/css/create-blog-modal.css" />
+
+    <!-- end: My CSS-->
+    <!--begin: Core CSS -->
+    <link rel="stylesheet" href="~/sneat-1.0.0/assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="~/sneat-1.0.0/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="~/sneat-1.0.0/assets/css/demo.css" />
+    <!--end: Core CSS -->
+    <!--begin: Prism CSS -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism-tomorrow.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/prismjs/plugins/toolbar/prism-toolbar.min.css">
+    <!--end: Prism CSS -->
+    <script src="~/sneat-1.0.0/assets/vendor/js/helpers.js"></script>
+    <script src="~/sneat-1.0.0/assets/js/config.js"></script>
+        @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    
+    <!-- MAIN NAVBAR -->
+    <div>
+        <partial name="_NavbarPartial" />
+    </div>
+    
+    <!--begin: MAIN CONTENT -->
+    @RenderBody()
+    <!--end: MAIN CONTENT -->
+    <!--begin: FOOTER -->
+    <partial name="_FooterPartial" />
+
+    <!--end: FOOTER -->
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/sneat-1.0.0/assets/vendor/js/menu.js"></script>
+    <script src="~/sneat-1.0.0/assets/js/main.js"></script>
+    <script src="~/js/navbar.js"></script>
+    <script src="~/js/site.js"></script>
+
+    <script src="~/js/login-modal.js"></script>
+
+
+
+    <!--begin: Prism JS -->
+    <!-- Prism Core -->
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.min.js"></script>
+
+    <!-- C# Language -->
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-csharp.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <!--end: Prism JS -->
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+</body>
+</html>

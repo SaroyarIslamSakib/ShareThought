@@ -1,0 +1,32 @@
+﻿﻿@using DevSkill.Blog.Infrastructure.Extensions
+
+@if (TempData.Peek<ResponseModel>("ResponseMessage") != null)
+{
+    var response = TempData.Get<ResponseModel>("ResponseMessage");
+    string str;
+    if (@response.Response.ToString() == "success") { str = "info"; }
+    else { str = "danger"; }
+    <div class="bs-toast toast fade show bg-@str alert-dismissible
+                position-fixed top-0 end-0 m-3"
+         role="alert"
+         aria-live="assertive"
+         aria-atomic="true"
+         data-bs-autohide="true"
+         data-bs-delay="4000">
+
+        <div class="toast-header">
+            <i class="bx bx-bell me-2"></i>
+            <div class="me-auto fw-semibold">Notification</div>
+            <small>Just now</small>
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+        </div>
+
+        <div class="toast-body">
+            @(response.Message)
+        </div>
+    </div>
+
+}

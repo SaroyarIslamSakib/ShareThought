@@ -1,0 +1,296 @@
+﻿@model ContactMessageModel
+@{
+    ViewData["Title"] = "ContactUs";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/navbar.css" />
+    <link rel="stylesheet" href="~/css/categoryhead.css" />
+    <link rel="stylesheet" href="~/css/contact-us.css"/>
+    <link rel="stylesheet" href="~/css/create-blog-modal.css" />
+
+
+}
+<main>
+    <partial name="_LoginModalPartial" />
+    <partial name="_RegisterModalPartial" model="new RegisterModel()" />
+    <partial name="_ResponsePartial" />
+
+    <section class="tab-content-area">
+
+        <div class="tab-content-item">
+            <header class="hero">
+                <div class="container">
+                    <div class="row align-items-center">
+
+                        <!-- LEFT CONTENT -->
+                        <div class="col-12 col-lg-8 text-center">
+                            <h1>Have a question, suggestion, or feedback?</h1>
+
+                            <p class="mt-3">
+                                Feel free to reach out — I’d love to hear from you.
+                            </p>
+
+                            <p class="fw-semibold mt-2">
+                                Thank you
+                            </p>
+
+                            <a asp-area="" asp-controller="Home" asp-action="Index" class="hero-btn">
+                                Back To The Homepage →
+                            </a>
+                        </div>
+
+                        <!-- RIGHT IMAGE -->
+                        <div class="col-12 col-lg-4 text-center mt-4 mt-lg-0 container">
+                            <img src="~/photos/contact-us.png" alt="Hero Image" class="hero-img">
+                        </div>
+
+                    </div>
+                </div>
+            </header>
+            <div class="bg-white">
+                <div class="container py-5">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-6 col-lg-7 col-md-9 col-sm-11">
+                            <form asp-area="" asp-controller="Home" asp-action="ContactUs" asp-antiforgery="true" method="post">
+
+                            
+                                <!-- ================= About You ================= -->
+                                <div class="form-section mb-5 shadow-sm">
+                                    <div class="section-badge">
+                                        Please tell us about yourself.
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <div class="mb-3">
+                                            <label asp-for="Name" class="form-label">What's your name?</label>
+                                            <input asp-for="Name" type="text" class="form-control contact-form-control">
+                                            <span asp-validation-for="Name" class="text-danger"></span>
+                                        </div>
+
+                                        <div>
+                                            <label asp-for="Email" class="form-label">What email can we reach you at?</label>
+                                            <input asp-for="Email" type="email" class="form-control contact-form-control">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- ================= What is it about ================= -->
+                                <div class="form-section mb-5 shadow-sm">
+                                    <div class="section-badge">
+                                        What is it about?
+                                    </div>
+
+                                    <div class="mt-4">
+
+                                        <div class="form-check radio-box">
+                                            <input asp-for="Topic" class="form-check-input"
+                                                   type="radio" value="CreateBlog" />
+                                            <label class="form-check-label">
+                                                Create a Blog / Become a Blogger
+                                            </label>
+                                        </div>
+
+                                        <div class="form-check radio-box">
+                                            <input asp-for="Topic" class="form-check-input"
+                                                   type="radio" value="LoginProblem" />
+                                            <label class="form-check-label">
+                                                Login / Registration Problem
+                                            </label>
+                                        </div>
+
+                                        <div class="form-check radio-box">
+                                            <input asp-for="Topic" class="form-check-input"
+                                                   type="radio" value="AccountSuspension" />
+                                            <label class="form-check-label">
+                                                Account Suspension / Access Issue
+                                            </label>
+                                        </div>
+
+                                        <div class="form-check radio-box">
+                                            <input asp-for="Topic" class="form-check-input"
+                                                   type="radio" value="PostPublishing" />
+                                            <label class="form-check-label">
+                                                Post Publishing Issue
+                                            </label>
+                                        </div>
+
+                                        <div class="form-check radio-box">
+                                            <input asp-for="Topic" class="form-check-input"
+                                                   type="radio" value="CommentModeration" />
+                                            <label class="form-check-label">
+                                                Comment & Moderation Issue
+                                            </label>
+                                        </div>
+
+                                        <div class="form-check radio-box">
+                                            <input asp-for="Topic" class="form-check-input"
+                                                   type="radio" value="ReportContent" />
+                                            <label class="form-check-label">
+                                                Report a Blog or Post
+                                            </label>
+                                        </div>
+
+                                        <div class="form-check radio-box">
+                                            <input asp-for="Topic" class="form-check-input"
+                                                   type="radio" value="BugReport" />
+                                            <label class="form-check-label">
+                                                Bug Report / Technical Issue
+                                            </label>
+                                        </div>
+
+                                        <div class="form-check radio-box">
+                                            <input asp-for="Topic" class="form-check-input"
+                                                   type="radio" value="Copyright" />
+                                            <label class="form-check-label">
+                                                Copyright / Legal
+                                            </label>
+                                        </div>
+
+                                        <div class="form-check radio-box">
+                                            <input asp-for="Topic" class="form-check-input"
+                                                   type="radio" value="Feedback" />
+                                            <label class="form-check-label">
+                                                General Feedback / Opinion
+                                            </label>
+                                        </div>
+
+                                        <span asp-validation-for="Topic" class="text-danger"></span>
+
+                                    </div>
+                                </div>
+
+                                <!-- ================= Message ================= -->
+                                <div class="form-section mb-5 shadow-sm">
+                                    <div class="section-badge">
+                                        What's up?
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <label asp-for="Message" class="form-label">
+                                            How can we help you? We are listening
+                                        </label>
+                                        <textarea asp-for="Message" class="form-control contact-form-control" rows="5"></textarea>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
+                                <!-- ================= Button ================= -->
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-lg px-5 contact-us-btn">
+                                        Send a message!
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</main>
+
+<script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
+<script>
+    const isUserLoggedIn = @(User.Identity.IsAuthenticated.ToString().ToLower());
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // ===== Get Elements Safely =====
+        const loginModalEl = document.getElementById("loginModal");
+        const registerModalEl = document.getElementById("registerModal");
+        const createBlogModalEl = document.getElementById("createBlogModal");
+
+        const openRegisterBtn = document.getElementById("openRegisterFromLogin");
+        const openLoginBtn = document.getElementById("openLoginFromRegister");
+        const openCreateBlogBtn = document.getElementById("openCreateBlog");
+
+        // ===== Initialize Modals Only If Exist =====
+        const loginModal = loginModalEl ? new bootstrap.Modal(loginModalEl) : null;
+        const registerModal = registerModalEl ? new bootstrap.Modal(registerModalEl) : null;
+        const createBlogModal = createBlogModalEl ? new bootstrap.Modal(createBlogModalEl) : null;
+
+        // ===== Login → Register =====
+        if (openRegisterBtn && loginModal && registerModal) {
+            openRegisterBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                loginModal.hide();
+
+                setTimeout(() => {
+                    registerModal.show();
+
+                    // Re-parse validation safely
+                    const registerForm = document.querySelector("#registerModal form");
+                    if (registerForm) {
+                        $.validator.unobtrusive.parse(registerForm);
+                    }
+
+                }, 300);
+            });
+        }
+
+        // ===== Register → Login =====
+        if (openLoginBtn && loginModal && registerModal) {
+            openLoginBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                registerModal.hide();
+
+                setTimeout(() => {
+                    loginModal.show();
+
+                    const loginForm = document.querySelector("#loginModal form");
+                    if (loginForm) {
+                        $.validator.unobtrusive.parse(loginForm);
+                    }
+
+                }, 300);
+            });
+        }
+
+        // ===== Create Blog Button =====
+        if (openCreateBlogBtn) {
+            openCreateBlogBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                if (!isUserLoggedIn) {
+                    if (loginModal) loginModal.show();
+                } else {
+                    if (createBlogModal) createBlogModal.show();
+                }
+            });
+        }
+
+    });
+</script>
+
+
+<!--begin: When Unauthorize then automatic open modal-->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const loginModalElement = document.getElementById("loginModal");
+
+        if (!loginModalElement) return;
+
+        const loginModal = new bootstrap.Modal(loginModalElement);
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if (urlParams.get("loginRequired") === "true") {
+            loginModal.show();
+        }
+    });
+</script>
+@inject IConfiguration Configuration
+
+<script src="https://www.google.com/recaptcha/api.js?render=@Configuration["GoogleReCaptcha:SiteKey"]"></script>
+
+<script>
+    grecaptcha.ready(function () {
+        grecaptcha.execute('@Configuration["GoogleReCaptcha:SiteKey"]', { action: 'contact' })
+            .then(function (token) {
+                document.getElementById('g-recaptcha-response').value = token;
+            });
+    });
+</script>

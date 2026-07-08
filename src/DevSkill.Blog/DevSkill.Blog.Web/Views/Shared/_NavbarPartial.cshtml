@@ -1,0 +1,154 @@
+﻿@using DevSkill.Blog.Infrastructure.Identity
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+    var roles = currentUser != null
+        ? await UserManager.GetRolesAsync(currentUser)
+        : new List<string>();
+    var firstLetter = currentUser != null && !string.IsNullOrEmpty(currentUser.FirstName)
+    ? currentUser.FirstName.Substring(0, 1).ToUpper()
+    : "U";
+}
+<nav class="main-navbar navbar-expand-lg nav-colour navbar-dark">
+    <div class="container-fluid">
+
+        <!-- Logo -->
+        <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+            <img src="~/photos/TS-black.png"
+                 alt="Logo"
+                 class="navbar-logo">
+        </a>
+
+        <!-- Mobile Toggle -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Content -->
+        <div class="collapse navbar-collapse" id="mainNavbar">
+
+            <!-- Left Menu -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-2">
+
+                <li class="nav-item">
+                    <a asp-area="" asp-controller="Post" asp-action="Index" class="btn nav-colour fw-bold text-white px-3">
+                        Articles
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a asp-area="" asp-controller="Blog" asp-action="Index" class="btn nav-colour fw-bold text-white px-3">
+                        Blogs
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a asp-area="" asp-controller="Home" asp-action="ContactUs" class="btn nav-colour fw-bold text-white px-3">
+                        Contact us
+                    </a>
+                </li>
+
+            </ul>
+
+            
+            <!-- Search -->
+            <a asp-area="Blogger" asp-controller="Blog" asp-action="Index" class="d-flex align-items-center nav-search-group me-3">
+
+                <!-- Search -->
+                <div class="nav-search-wrapper">
+                    <input type="search"
+                           class="form-control nav-search-input"
+                           placeholder="Visit your blog" 
+                           readonly/>
+                </div>
+
+            </a>
+            <!-- Sign Up Button -->
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <!-- User -->
+                <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                    <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                        <div class="avatar avatar-online">
+                            <div class="avatar-letter">
+                                @firstLetter
+                            </div>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 me-3">
+                                        <div class="avatar avatar-online">
+                                            <div class="avatar-letter">
+                                                @firstLetter
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        @if (currentUser != null)
+                                        {
+                                            <span class="fw-semibold d-block">
+                                                @currentUser.FirstName @currentUser.LastName
+                                            </span>
+                                        }
+                                        @if (roles.Any())
+                                        {
+                                            <small class="text-muted">@roles.First()</small>
+                                        }
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <div class="dropdown-divider"></div>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="bx bx-user me-2"></i>
+                                <span class="align-middle">My Profile</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="bx bx-cog me-2"></i>
+                                <span class="align-middle">Settings</span>
+                            </a>
+                        </li>
+                        <li>
+                            <div class="dropdown-divider"></div>
+                        </li>
+                        <li>
+                            <form asp-area=""
+                                  asp-controller="Account"
+                                  asp-action="Logout"
+                                  asp-antiforgery="true"
+                                  asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                <button type="submit" class="dropdown-item">
+                                    <i class="bx bx-power-off me-2"></i>
+                                    <span class="align-middle">Logout</span>
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+                <!--/ User -->
+            }
+            else
+            {
+                <!-- Sign Up Button -->
+                <button type="button"
+                        class="btn nav-signup-btn ms-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#loginModal">
+                    Sign Up
+                    <i class="fas fa-user-plus"></i>
+                </button>
+            }
+
+        </div>
+    </div>
+</nav>

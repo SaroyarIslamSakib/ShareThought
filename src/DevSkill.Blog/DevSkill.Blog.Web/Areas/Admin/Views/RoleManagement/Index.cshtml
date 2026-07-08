@@ -1,0 +1,214 @@
+﻿@model RoleIndexViewModel
+@{
+    ViewData["Title"] = "Role Management";
+}
+@section Styles
+{
+    <link rel="stylesheet" href="~/Admin/css/role-card.css" />
+}
+    <div class="app-content-header">
+        <div class="container-fluid">
+            <!-- Alert / Response -->
+            <div class="row mb-3">
+                <div id="responseContainer" class="col-lg-4 col-md-6">
+                    <partial name="_ResponsePartial" />
+
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <partial name="_AddRoleModalPartial" />
+
+                </div>
+                <div id="editRoleModalContainer"></div>
+                <div id="deleteRoleModalContainer"></div>
+                <div id="roleUserModalContainer"></div>
+
+            </div>
+
+            <!-- Title & Breadcrumb -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-style1 mb-2">
+                    <li class="breadcrumb-item">
+                        <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
+                    </li>
+                    <li class="breadcrumb-item active">Role Management</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+
+    <!-- ================= App Content ================= -->
+    <div class="app-content">
+        <div class="container-fluid">
+            <!-- ================= DataTable Section ================= -->
+            <div class="card card-primary card-outline shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-semibold">
+                        <i class="fa fa-users me-1 text-primary"></i> Roles
+                    </h5>
+
+                    <button type="button"
+                            class="btn btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addRoleModal">
+                        Add Role
+                    </button>
+                </div>
+                <div class="mx-3">
+
+                    <div class="row">
+                        @foreach (var role in Model.Roles)
+                        {
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card role-card mb-3 position-relative border-0 shadow-sm">
+
+                                    <!-- 3 Dot Dropdown -->
+                                    <div class="dropdown position-absolute top-0 end-0 m-2">
+                                        <button class="btn btn-sm btn-light"
+                                                type="button"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                            <i class="fa fa-ellipsis-v"></i>
+                                        </button>
+
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                            <li>
+                                                <a class="dropdown-item edit-role-btn"
+                                                   data-id="@role.Id"
+                                                   href="javascript:void(0)">
+                                                    <i class="fa fa-pencil me-2 text-primary"></i> Edit
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item text-danger delete-role-btn"
+                                                   data-id="@role.Id"
+                                                   href="javascript:void(0)">
+                                                    <i class="fa fa-trash me-2"></i> Delete
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Card Body -->
+                                    <div class="card-body text-center pt-4 pb-4">
+                                        <h5 class="card-title mb-2">@role.Name</h5>
+                                        <p class="card-text role-description"
+                                           data-full="@role.Description">
+                                            @role.Description
+                                        </p>
+                                        <a href="javascript:void(0)"
+                                           class="btn btn-outline-primary btn-sm mt-2"
+                                           onclick="openRoleUsers('@role.Id')">
+                                            See Details
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+
+                    </div>
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+@section Scripts {
+    <script>
+                $(document).on("click", ".edit-role-btn", function () {
+            const roleId = $(this).data("id");
+
+            $.get('/Admin/RoleManagement/Edit', { id: roleId })
+                .done(function (html) {
+                    $("#editRoleModalContainer").html(html);
+                    const modal = new bootstrap.Modal(
+                        document.getElementById('editRoleModal')
+                    );
+                    modal.show();
+                });
+                });
+
+
+             // Delete Role Button Click
+             $(document).on("click", ".delete-role-btn", function () {
+            const roleId = $(this).data("id");
+
+            $.get('/Admin/RoleManagement/Delete', { id: roleId })
+                .done(function (html) {
+                    $("#deleteRoleModalContainer").html(html);
+
+                    const modal = new bootstrap.Modal(
+                        document.getElementById('deleteRoleModal')
+                    );
+                    modal.show();
+                });
+        });
+
+
+    </script>
+    <script>
+               function openRoleUsers(roleId) {
+
+            $.get('/Admin/RoleManagement/RoleUsersModal', { roleId: roleId })
+                .done(function (html) {
+
+                    $("#roleUserModalContainer").html(html);
+
+                    const modal = new bootstrap.Modal(
+                        document.getElementById('roleUserModal')
+                    );
+
+                    modal.show();
+                })
+                .fail(function () {
+                    alert("Failed to load role users modal");
+                });
+        }
+
+    </script>
+    <script>
+        $(document).ready(function () {
+
+            $(".role-description").each(function () {
+
+                const maxLength = 90;
+                const fullText = $(this).data("full");
+
+                if (fullText.length > maxLength) {
+
+                    const visibleText = fullText.substring(0, maxLength);
+
+                    $(this).html(
+                        visibleText +
+                        '... <span class="see-more-link" style="color:#4e73df; cursor:pointer;">See more</span>'
+                    );
+
+                    $(this).on("click", ".see-more-link", function () {
+
+                        const parent = $(this).closest(".role-description");
+
+                        parent.html(
+                            fullText +
+                            ' <span class="see-less-link" style="color:#4e73df; cursor:pointer;">See less</span>'
+                        );
+                    });
+
+                    $(this).on("click", ".see-less-link", function () {
+
+                        const parent = $(this).closest(".role-description");
+
+                        parent.html(
+                            visibleText +
+                            '... <span class="see-more-link" style="color:#4e73df; cursor:pointer;">See more</span>'
+                        );
+                    });
+
+                }
+
+            });
+
+        });
+    </script>
+
+}

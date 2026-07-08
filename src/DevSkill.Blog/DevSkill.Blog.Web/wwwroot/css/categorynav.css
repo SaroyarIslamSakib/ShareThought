@@ -1,0 +1,67 @@
+﻿
+:root {
+    --brand-red: #519bf7;
+    --brand-red-dark: #2975d5;
+}
+.sub-navbar {
+    height: 70px;
+    background-color: var(--brand-red);
+    display: flex;
+    align-items: center;
+}
+
+/* Inner container */
+.sub-navbar-inner {
+    width: 85%;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+/* 🔥 Button reset (MOST IMPORTANT PART) */
+.tab-item {
+    all: unset; /* ❗ সব default button style remove */
+    box-sizing: border-box; /* layout ঠিক রাখে */
+
+    flex: 1;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #5AB2FF;
+    color: #FFFFFF;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 10px 10px 0 0;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: center;
+}
+
+    /* Active Tab */
+    .tab-item.active {
+        background-color: #2975d5;
+        color: #ffffff;
+    }
+
+    /* Hover ONLY for inactive tab */
+    .tab-item:not(.active):hover {
+        background-color: #ffffff;
+        color: #2975d5;
+    }
+
+
+    /* 🔹 Keyboard accessibility */
+    .tab-item:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 2px;
+    }
+.tab-content-item {
+    display: none;
+}
+
+    .tab-content-item.active {
+        display: block;
+    }

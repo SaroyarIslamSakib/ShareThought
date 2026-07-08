@@ -1,0 +1,300 @@
+﻿@model IndexViewModel
+@{
+    ViewData["Title"] = "Posts";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/public-post-list.css" />
+    <link rel="stylesheet" href="~/css/navbar.css" />
+    <link rel="stylesheet" href="~/css/choice-section.css" />
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
+    <link rel="stylesheet" href="~/css/public-post-list-item.css" />
+    <link rel="stylesheet" href="~/css/create-blog-modal.css" />
+
+}
+<partial name="_LoginModalPartial" />
+<partial name="_RegisterModalPartial" model="new RegisterModel()" />
+<partial name="_ResponsePartial" />
+<partial name="_CreateBlogModalPartial" model="new CreateBlogAreaModel()" />
+<partial name="_ReportModalPartial" />
+
+<main>
+    <div class="landing-body">
+        <section class="hero">
+
+            <!-- MAIN CONTENT -->
+            <div class="container text-center">
+                <h6>Posts</h6>
+                <h3 class="choice-title mb-4">@ViewBag.BlogTitle</h3>
+                <div class="search-center">
+                    <div class="search-box search-wrapper mb-4">
+                        <input type="text" class="search-input" id="searchInput" placeholder="">
+                    </div>
+                </div>
+            </div>
+            <!-- Dark section -->
+            <section class="category-section">
+                <div class="container">
+                    <div class="category-list">
+                        <button class="category-item active" data-category="">All</button>
+                        <button class="category-item" data-category="Programming">Programming</button>
+                        <button class="category-item" data-category="Architechture">Architechture</button>
+                        <button class="category-item" data-category="Framework">Framework</button>
+                        <button class="category-item" data-category="Life Style">Life Style</button>
+                        <button class="category-item" data-category="Marketing">Marketing</button>
+                        <button class="category-item" data-category="Self-Publishing">Self-Publishing</button>
+                        <button class="category-item" data-category="Spines">Spines</button>
+                        <button class="category-item" data-category="Writing">Writing</button>
+                    </div>
+                </div>
+            </section>
+
+        </section>
+        <!-- ================= DataTable Section ================= -->
+        <div class="container">
+
+            <table id="posts">
+                <thead>
+                    <tr>
+                        <th>Posts</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="add-section">
+        </div>
+    </div>
+</main>
+<script>
+    const text = "Search Your Favorite Posts In This Blog and Give Response ";
+    const input = document.getElementById("searchInput");
+
+    let index = 0;
+
+    function typeText() {
+        if (index <= text.length) {
+            input.setAttribute("placeholder", text.substring(0, index));
+            index++;
+        } else {
+            index = 0;
+        }
+    }
+    setInterval(typeText, 150);
+</script>
+<script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
+
+<script>
+    const isUserLoggedIn = @(User.Identity.IsAuthenticated.ToString().ToLower());
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const loginModalEl = document.getElementById("loginModal");
+        const registerModalEl = document.getElementById("registerModal");
+        const createBlogModalEl = document.getElementById("createBlogModal");
+
+        const loginModal = new bootstrap.Modal(loginModalEl);
+        const registerModal = new bootstrap.Modal(registerModalEl);
+        const createBlogModal = new bootstrap.Modal(createBlogModalEl);
+
+        // Login → Register
+        document.getElementById("openRegisterFromLogin")
+            .addEventListener("click", function () {
+                loginModal.hide();
+                setTimeout(() => {
+                    registerModal.show();
+                    $.validator.unobtrusive.parse($(this).find('form'));
+                }, 300);
+            });
+
+        // Register → Login
+        document.getElementById("openLoginFromRegister")
+            .addEventListener("click", function () {
+                registerModal.hide();
+                setTimeout(() => {
+                    loginModal.show();
+                    $.validator.unobtrusive.parse($(this).find('form'));
+                }, 300);
+            });
+
+        // Create Blog Button Logic
+        document.getElementById("openCreateBlog")
+            .addEventListener("click", function () {
+
+                if (!isUserLoggedIn) {
+                    // User NOT logged in → open login modal
+                    loginModal.show();
+                } else {
+                    // User logged in → open create blog modal
+                    createBlogModal.show();
+                }
+            });
+    });
+</script>
+
+
+<!--begin: When Unauthorize then automatic open modal-->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const loginModalElement = document.getElementById("loginModal");
+
+        if (!loginModalElement) return;
+
+        const loginModal = new bootstrap.Modal(loginModalElement);
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if (urlParams.get("loginRequired") === "true") {
+            loginModal.show();
+        }
+    });
+</script>
+
+<script>
+    document.querySelectorAll(".category-item").forEach(item => {
+        item.addEventListener("click", () => {
+            document.querySelectorAll(".category-item")
+                .forEach(i => i.classList.remove("active"));
+            item.classList.add("active");
+        });
+    });
+</script>
+@section Scripts {
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        const blogSlug = "@ViewBag.BlogSlug";
+        $(function () {
+
+            //  MUST be declared BEFORE DataTable
+            let selectedCategory = "";
+
+            // ================= DataTable =================
+            const postsTable = $("#posts").DataTable({
+                processing: true,
+                serverSide: true,
+                paging: true,
+                pagingType: "full_numbers",
+                lengthChange: false,
+                info: true,
+                ordering: false,
+                searching: false,
+
+                ajax: {
+                    url: "/Blog/GetPostsInBlogJsonData",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: function (d) {
+
+                        d.search = {
+                            value: $("#searchInput").val(),
+                            regex: false
+                        };
+
+                        //  NAME MUST MATCH MODEL PROPERTY
+                        d.categoryName = selectedCategory;
+                        d.blogSlug = blogSlug;
+                        return JSON.stringify(d);
+                    }
+                },
+
+                columns: [
+                    {
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            return `
+                                    <div class="post-card">
+
+                                        <div class="post-thumb">
+                                            <img src="${row[0]}" alt="${row[1]}" />
+                                        </div>
+
+                                        <div class="post-content">
+                                            <h5 class="post-title">${row[1]}</h5>
+                                                <p class="post-author premium">
+                                                    <i class="fa-solid fa-user-pen"></i>
+                                                    ${row[7]}
+                                                </p>
+
+                                            <div class="post-meta">
+                                                <span><i class="fa-solid fa-calendar-days"></i> ${row[3]}</span>
+                                                <span><i class="fa-solid fa-heart"></i> ${row[4]}</span>
+                                                <span><i class="fa-solid fa-comment"></i> ${row[6]}</span>
+                                                        <a href="/blog/${row[8]}/posts/${row[9]}" class="read-link inline-read">
+                                                           Read article
+                                                           <i class="fa-solid fa-arrow-right"></i>
+                                                        </a>
+                                            </div>
+                                        </div>
+                                        <div class="post-actions dropdown">
+                                    <button data-bs-toggle="dropdown">
+                                        <i class="fa fa-ellipsis"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                       href="#"
+                                                       data-bs-toggle="modal"
+                                                       data-bs-target="#reportModal"
+                                                       data-postid="${row[5]}">
+                                                        <i class="fa-solid fa-flag me-2 text-danger"></i>Report
+                                                    </a>
+                                                </li>
+                                    </ul>
+                                </div>
+                                    </div>`;
+                        }
+                    }
+                ]
+            });
+
+            // ================= Search =================
+            let searchTimer;
+            $("#searchInput").on("keyup", function () {
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(() => {
+                    postsTable.ajax.reload();
+                }, 400);
+            });
+
+            $("#searchInput").on("search", function () {
+                postsTable.ajax.reload();
+            });
+
+            // ================= Category =================
+            $(".category-item").on("click", function () {
+
+                $(".category-item").removeClass("active");
+                $(this).addClass("active");
+
+                selectedCategory = $(this).data("category") || "";
+
+                postsTable.ajax.reload();
+            });
+
+        });
+    </script>
+    <script>
+            //Send PostId to Report Modal
+            document.addEventListener('DOMContentLoaded', function () {
+
+            var reportModal = document.getElementById('reportModal');
+
+            reportModal.addEventListener('show.bs.modal', function (event) {
+
+                var button = event.relatedTarget;
+                var postId = button.getAttribute('data-postid');
+
+                document.getElementById('reportPostId').value = postId;
+            });
+
+        });
+    </script>
+}
+
+

@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-DevSkill.Blog.Web-863d683e-9a90-4c76-9ae6-cfc2b7d59188</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\Admin\Data\**" />
+    <Compile Remove="Areas\Blogger\Data\**" />
+    <Compile Remove="wwwroot\Admin\js\**" />
+    <Content Remove="Areas\Admin\Data\**" />
+    <Content Remove="Areas\Blogger\Data\**" />
+    <Content Remove="wwwroot\Admin\js\**" />
+    <EmbeddedResource Remove="Areas\Admin\Data\**" />
+    <EmbeddedResource Remove="Areas\Blogger\Data\**" />
+    <EmbeddedResource Remove="wwwroot\Admin\js\**" />
+    <None Remove="Areas\Admin\Data\**" />
+    <None Remove="Areas\Blogger\Data\**" />
+    <None Remove="wwwroot\Admin\js\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Cortex.Mediator" Version="1.7.0" />
+    <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.12">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.12" />
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DevSkill.Blog.Application\DevSkill.Blog.Application.csproj" />
+    <ProjectReference Include="..\DevSkill.Blog.Domain\DevSkill.Blog.Domain.csproj" />
+    <ProjectReference Include="..\DevSkill.Blog.Infrastructure\DevSkill.Blog.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\posts\" />
+  </ItemGroup>
+
+</Project>

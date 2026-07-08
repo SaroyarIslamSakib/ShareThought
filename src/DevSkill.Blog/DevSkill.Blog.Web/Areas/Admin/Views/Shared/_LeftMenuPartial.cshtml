@@ -1,0 +1,101 @@
+﻿<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+    <div class="sidebar-hero">
+        <div class="write-area">
+            <div class="text-wrapper">
+                <h1>ThoughtShare</h1>
+            </div>
+
+            <svg id="pencil" viewBox="0 0 8 24" xmlns="http://www.w3.org/2000/svg">
+
+                <defs>
+                    <linearGradient id="bodyGrad" x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0%" stop-color="#9FA8B2" />
+                        <stop offset="100%" stop-color="#6B7280" />
+                    </linearGradient>
+                </defs>
+
+                <!-- eraser -->
+                <rect x="2.5" y="0" width="3" height="2.5" rx="0.7" fill="#A5B4FC" />
+
+                <!-- metal -->
+                <rect x="2.5" y="2.5" width="3" height="1.5" fill="#D1D5DB" />
+
+                <!-- body -->
+                <rect x="2.5" y="4" width="3" height="8" rx="0.8" fill="url(#bodyGrad)" />
+
+                <!-- wood -->
+                <polygon points="2.5,12 5.5,12 4,16" fill="#C4B5A5" />
+
+                <!-- graphite -->
+                <polygon points="3,16 5,16 4,19" fill="#374151" />
+
+            </svg>
+        </div>
+    </div>
+
+
+    <div class="menu-inner-shadow"></div>
+    
+    <ul class="menu-inner py-1 mt-3">
+
+        <!-- Dashboard -->
+        <li class="menu-item">
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div>Dashboard</div>
+            </a>
+        </li>
+
+        <!-- Blog Management -->
+        <li class="menu-item">
+            <a asp-area="Admin" asp-controller="Blog" asp-action="Index" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-book-content"></i>
+                <div>Blog Management</div>
+            </a>
+        </li>
+
+        <!-- Post Management -->
+        <li class="menu-item">
+            <a asp-area="Admin" asp-controller="Post" asp-action="Index" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-detail"></i>
+                <div>Post Management</div>
+            </a>
+        </li>
+
+        <!-- User Management -->
+        <li class="menu-item">
+            <a asp-area="Admin" asp-controller="UserManagement" asp-action="Index" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-user"></i>
+                <div>User Management</div>
+            </a>
+        </li>
+
+        <!-- Role Management -->
+        <li class="menu-item">
+            <a asp-area="Admin" asp-controller="RoleManagement" asp-action="Index" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-shield-quarter"></i>
+                <div>Role Management</div>
+            </a>
+        </li>
+
+        <!-- Contact Message Management -->
+        <li class="menu-item">
+            <a asp-area="Admin" asp-controller="ContactMessages" asp-action="Index" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-envelope"></i>
+                <div>Contact Messages</div>
+            </a>
+        </li>
+
+    </ul>
+    <!-- Bottom Settings -->
+    <div class="menu-bottom">
+        <a asp-area="Admin"
+           asp-controller="Settings"
+           asp-action="Index"
+           class="menu-link premium-settings">
+
+            <i class="menu-icon tf-icons bx bx-cog"></i>
+            <span>System Settings</span>
+        </a>
+    </div>
+</aside>

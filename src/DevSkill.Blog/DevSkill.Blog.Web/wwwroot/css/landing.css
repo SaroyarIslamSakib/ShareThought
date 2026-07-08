@@ -1,0 +1,284 @@
+﻿.landing-body {
+    font-family: 'Inter', sans-serif;
+    background: #ffffff;
+}
+
+.hero {
+    position: relative;
+    overflow: hidden;
+    padding: 120px 0 160px;
+}
+
+.hero-title {
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1.1;
+    position: relative;
+    z-index: 2; /* text above ruler */
+}
+
+.hero-subtitle,
+.hero-actions {
+    position: relative;
+    z-index: 2;
+}
+/* Primary Button */
+.hero-btn-primary {
+    background-color: #566a7f; /* dark */
+    color: #ffffff;
+    border: 2px solid #212529;
+    padding: 12px 28px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    border-radius: 0;
+}
+
+    /* Primary Hover */
+    .hero-btn-primary:hover {
+        background-color: #ffffff;
+        color: #566a7f;
+        border-color: #212529;
+    }
+
+/* Secondary Button */
+.hero-btn-secondary {
+    background-color: transparent;
+    color: #566a7f;
+    border: 2px solid #212529;
+    padding: 12px 28px;
+    font-weight: 500;
+    margin-left: 12px;
+    transition: all 0.3s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    border-radius: 0;
+}
+
+    /* Secondary Hover */
+    .hero-btn-secondary:hover {
+        background-color: #566a7f;
+        color: #ffffff;
+        border-color: #212529;
+    }
+
+/* ===============================
+   Ruler
+================================ */
+.ruler {
+    position: absolute;
+    top: clamp(260px, 32vh, 380px); /* 👈 magic line */
+    right: -200px;
+    width: clamp(360px, 45vw, 560px);
+    height: auto;
+    z-index: 0; /* 👈 text এর নিচে */
+    opacity: 0.95;
+    pointer-events: none;
+    animation: floatDown 6s ease-in-out infinite;
+}
+
+/* floating animation */
+.floating {
+    animation: float 6s ease-in-out infinite;
+}
+
+
+/* ===============================
+   Pencil Decoration
+================================ */
+.pencil {
+    position: absolute;
+    top: clamp(320px, 38vh, 460px); /* 👈 dynamic */
+    left: -200px;
+    width: clamp(320px, 45vw, 560px);
+    height: auto;
+    z-index: 0;
+    opacity: 0.95;
+    pointer-events: none;
+    animation:floatUp 6s ease-in-out infinite;
+}
+
+
+/* ===============================
+   Floating animation
+================================ */
+@keyframes floatUp {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-30px); /* ⬆️ উপরে উঠবে */
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes floatDown {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(30px); /* ⬇️ নিচে নামবে */
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+/* =====================================================
+   RULE 1: Below 1024px → hide both (tablet & mobile)
+===================================================== */
+@media (max-width: 1023px) {
+    .pencil,
+    .ruler {
+        display: none !important;
+    }
+}
+
+/* =====================================================
+   RULE 2: iPad / awkward tablet sizes → pencil hide
+   (768×1024, 820×1180, 853×1280)
+===================================================== */
+@media (min-width: 768px) and (max-width: 1023px){
+    .pencil {
+        display: none !important;
+    }
+}
+
+/* =====================================================
+   RULE 4: Nest Hub & Small Landscape Tablets
+   (1024×600, 1280×800)
+===================================================== */
+@media (min-width: 1024px) and (max-width: 1280px) {
+
+    .pencil,
+    .ruler {
+        display: block;
+        opacity: 0.8;
+    }
+
+    .pencil {
+        left: -280px;
+        top: 360px; /* 👈 নিচে */
+        transform: translateX(-50%);
+    }
+
+    .ruler {
+        right:-280px;
+        top: 290px; /* 👈 উপরে */
+        transform: translateX(50%);
+    }
+}
+
+/* =====================================================
+   RULE 5: Large desktop (1629×832 & above) → untouched
+===================================================== */
+@media (min-width: 1281px) {
+    .pencil,
+    .ruler {
+        display: block;
+    }
+}
+
+
+/* ===============================
+   Notebook-1
+================================ */
+
+.notebook-illustration {
+    position: absolute;
+    /* 👇 horizontal center */
+    left: 45%;
+    transform: translateX(-50%);
+    /* 👇 pencil এর নিচে */
+    top: 500px; /* pencil top (370px) + gap */
+
+    width: 120px; /* small & clean */
+    height: auto;
+    opacity: 0.95;
+    z-index: 1;
+    pointer-events: none;
+}
+@media (max-width: 992px) {
+    .notebook-illustration {
+        top: 520px;
+        width: 100px;
+        opacity: 0.7;
+    }
+}
+
+@media (max-width: 768px) {
+    .notebook-illustration {
+        display: none; /* decoration hide */
+    }
+}
+
+/* ===============================
+   Notebook - 2
+================================ */
+
+.notebook-Writing {
+    position: absolute;
+    /* 👇 horizontal center */
+    left: 55%;
+    transform: translateX(-50%);
+    /* 👇 pencil এর নিচে */
+    top: 500px; /* pencil top (370px) + gap */
+
+    width: 120px; /* small & clean */
+    height: auto;
+    opacity: 0.95;
+    z-index: 1;
+    pointer-events: none;
+}
+
+@media (max-width: 992px) {
+    .notebook-Writing {
+        top: 520px;
+        width: 100px;
+        opacity: 0.7;
+    }
+}
+
+@media (max-width: 768px) {
+    .notebook-Writing {
+        display: none; /* decoration hide */
+    }
+}
+/* ===============================
+   Search
+================================ */
+
+.search-box {
+    width: 600px;
+    max-width: 90%;
+}
+
+.search-input {
+    width: 100%;
+    padding: 16px 22px;
+    font-size: 18px;
+    border-radius: 14px;
+    border: 1.5px solid #9aa7b2;
+    outline: none;
+    background: #FFFFFF;
+    color: #333;
+}
+
+    .search-input::placeholder {
+        color: #9aa7b2;
+    }
+
+.search-wrapper {
+    display: flex;
+    margin: 0 auto;
+    align-items: stretch;
+    background: #fff;
+    overflow: hidden;
+}
+

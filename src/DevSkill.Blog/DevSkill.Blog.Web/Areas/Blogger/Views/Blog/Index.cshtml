@@ -1,0 +1,137 @@
+﻿@model BloggerDashboardItemModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/navbar.css" />
+    <link rel="stylesheet" href="~/css/blog-sub-nav.css" />
+    <link rel="stylesheet" href="~/css/blog-dashboard.css" />
+    <link rel="stylesheet" href="~/Admin/css/admin-dashboard.css" />
+
+
+
+}
+
+<main>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <!-- Menu -->
+            <partial name="_BlogAreaSideMenuPartial" />
+            <!-- / Menu -->
+
+            <div class="layout-page">
+                <!-- Navbar -->
+                <partial name="_BlogAreaNavbarPartial" />
+                <!-- / Navbar -->
+                <!-- ================= App Content Header ================= -->
+                <div class="app-content-header">
+                    <div class="container-fluid">
+
+                        <!-- Alert / Response -->
+                        <div class="row mb-3">
+                            <div id="responseContainer" class="col-lg-4 col-md-6">
+                                <partial name="_ResponsePartial" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= App Content ================= -->
+                <div class="app-content">
+                    <div class="container-fluid">
+                        <div class="row g-4">
+
+                            <!-- Total Published Post -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="dashboard-card views">
+                                    <div class="card-content">
+                                        <div class="icon">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                        </div>
+                                        <div class="details">
+                                            <h6>Published Posts</h6>
+                                            <h3>@Model.TotalPublishedPost</h3>
+                                            <span class="trend up">
+                                                Successfully published articles
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Total Draft Posts -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="dashboard-card today">
+                                    <div class="card-content">
+                                        <div class="icon">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </div>
+                                        <div class="details">
+                                            <h6>Draft Posts</h6>
+                                            <h3>@Model.TotalDraftPost</h3>
+                                            <span class="trend up">
+                                                Articles not yet published
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Total Likes -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="dashboard-card users">
+                                    <div class="card-content">
+                                        <div class="icon">
+                                            <i class="fa-solid fa-thumbs-up"></i>
+                                        </div>
+                                        <div class="details">
+                                            <h6>Total Likes</h6>
+                                            <h3>@Model.TotalLike</h3>
+                                            <span class="trend up">
+                                                Received from users
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Total Comments -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="dashboard-card bounce">
+                                    <div class="card-content">
+                                        <div class="icon">
+                                            <i class="fa-solid fa-comments"></i>
+                                        </div>
+                                        <div class="details">
+                                            <h6>Total Comments</h6>
+                                            <h3>@Model.TotalComment</h3>
+                                            <span class="trend up">
+                                                Approved and pending 
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!--end::App Content-->
+            </div>
+            <!-- / Layout page -->
+        </div>
+
+        <!-- Overlay -->
+        <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+    <!-- / Layout wrapper -->
+</main>
+@section Scripts {
+    <script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
+    <script src="~/sneat-1.0.0/assets/vendor/libs/popper/popper.js"></script>
+    <script src="~/sneat-1.0.0/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="~/sneat-1.0.0/assets/vendor/libs/masonry/masonry.js"></script>
+
+}

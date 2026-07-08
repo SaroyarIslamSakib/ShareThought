@@ -1,0 +1,210 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+@Html.AntiForgeryToken()
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
+    <link rel="stylesheet" href="~/css/navbar.css" />
+    <link rel="stylesheet" href="~/css/blog-sub-nav.css" />
+    <link rel="stylesheet" href="~/css/blogger-comment-list.css" />
+
+}
+
+<main>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <!-- Menu -->
+            <partial name="_BlogAreaSideMenuPartial" />
+            <partial name="_ResponsePartial" />
+            <!-- / Menu -->
+
+            <div class="layout-page">
+                <!-- Navbar -->
+                <partial name="_BlogAreaNavbarPartial" />
+                <!-- / Navbar -->
+                <!-- ================= App Content Header ================= -->
+                <div class="app-content-header mt-3 mb-2">
+                    <div class="container-fluid">
+                        <!-- Title & Breadcrumb -->
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb breadcrumb-style1 mb-2">
+                                <li class="breadcrumb-item">
+                                    <a asp-area="Blogger" asp-controller="Blog" asp-action="Index">Blog</a>
+                                </li>
+                                <li class="breadcrumb-item active">Review Comments</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+
+
+
+                <!-- ================= App Content ================= -->
+                <div class="app-content">
+                    <div class="container-fluid">
+
+                        <!-- ================= DataTable Section ================= -->
+                        <div class="card card-primary card-outline shadow-sm">
+                            <div class="mx-3">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table id="comments" class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Comments</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!--end::App Content-->
+            </div>
+            <!-- / Layout page -->
+        </div>
+
+        <!-- Overlay -->
+        <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+    <!-- / Layout wrapper -->
+</main>
+
+@section Scripts
+{
+    <script src="~/sneat-1.0.0/assets/vendor/libs/popper/popper.js"></script>
+    <script src="~/sneat-1.0.0/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="~/sneat-1.0.0/assets/vendor/libs/masonry/masonry.js"></script>
+
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
+    <script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
+
+
+    <script>
+        $(function () {
+
+            const commentsTable = $("#comments").DataTable({
+                processing: true,
+                serverSide: true,
+                paging: true,
+                ordering: false,
+                searching: true,
+
+                ajax: {
+                    url: "/Blogger/Comment/GetBlogCommentsJsonData",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: d => JSON.stringify(d)
+                },
+
+                columns: [
+                    {
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+
+                            const isApproved = row[4] === "True";
+
+                            const statusBadge = isApproved
+                                ? `<span class="status-badge approved">Approved</span>`
+                                : `<span class="status-badge pending">Pending</span>`;
+
+                            return `
+        <div class="comment-card ${isApproved ? 'card-approved' : ''}">
+
+            <div class="comment-top">
+
+                <div class="comment-user-area">
+                    <div class="avatar-circle">
+                        ${row[0].charAt(0).toUpperCase()}
+                    </div>
+
+                    <div>
+                        <div class="comment-user">${row[0]}</div>
+                        ${row[1] ? `<div class="comment-post">On: ${row[1]}</div>` : ``}
+                    </div>
+                </div>
+
+                <div class="comment-meta">
+                    ${statusBadge}
+                    <div class="comment-date">${row[2]}</div>
+                </div>
+
+            </div>
+
+            <div class="comment-body">
+                ${row[3]}
+            </div>
+
+            <div class="comment-actions">
+
+                <button class="btn-approve btn-approve-comment"
+                        data-id="${row[5]}">
+                    Approve
+                </button>
+
+                <button class="btn-decline btn-remove-comment"
+                        data-id="${row[5]}">
+                    Remove
+                </button>
+
+
+            </div>
+
+        </div>`;
+                        }
+                    }
+                ]
+            });
+                    // Approve
+        $(document).on("click", ".btn-approve-comment", function () {
+
+            const id = $(this).data("id");
+
+            $.ajax({
+                url: "/Blogger/Comment/ApprovedComment",
+                type: "POST",
+                data: { id: id },
+                success: function () {
+                    location.reload();
+                },
+                error: function () {
+                    alert("Failed to approve comment.");
+                }
+            });
+        });
+
+
+        // Remove
+        $(document).on("click", ".btn-remove-comment", function () {
+
+            const id = $(this).data("id");
+
+            $.ajax({
+                url: "/Blogger/Comment/RemoveComment",
+                type: "POST",
+                data: { id: id },
+                success: function () {
+                    location.reload();
+                },
+                error: function () {
+                    alert("Failed to remove comment.");
+                }
+            });
+        });
+
+
+        });
+
+    </script>
+}
+
+

@@ -1,0 +1,130 @@
+﻿@using DevSkill.Blog.Web.Areas.Admin.Models
+@model SettingsModel
+@{
+    ViewData["Title"] = "Terms";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/navbar.css" />
+    <link rel="stylesheet" href="~/css/post-details.css" />
+    <link rel="stylesheet" href="~/css/create-blog-modal.css" />
+
+}
+<partial name="_LoginModalPartial" model="new LoginModel()" />
+<partial name="_RegisterModalPartial" model="new RegisterModel()" />
+<partial name="_ResponsePartial" />
+
+<main class="bg-white py-5">
+
+    <!-- Post Card -->
+    <article class="bg-white rounded-4 shadow-sm px-4 px-md-5 py-5 mx-auto post-article">
+        <!-- Title -->
+        <h1 class="fw-bold mb-3 text-dark">
+            Terms And Conditions
+        </h1>
+
+       
+
+        <!-- Content -->
+        <div class="post-content">
+            @Html.Raw(Model.TermsContent)
+        </div>
+
+    </article>
+
+</main>
+<script src="~/sneat-1.0.0/assets/js/ui-toasts.js"></script>
+<script>
+    const isUserLoggedIn = @(User.Identity.IsAuthenticated.ToString().ToLower());
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // ===== Get Elements Safely =====
+        const loginModalEl = document.getElementById("loginModal");
+        const registerModalEl = document.getElementById("registerModal");
+        const createBlogModalEl = document.getElementById("createBlogModal");
+
+        const openRegisterBtn = document.getElementById("openRegisterFromLogin");
+        const openLoginBtn = document.getElementById("openLoginFromRegister");
+        const openCreateBlogBtn = document.getElementById("openCreateBlog");
+
+        // ===== Initialize Modals Only If Exist =====
+        const loginModal = loginModalEl ? new bootstrap.Modal(loginModalEl) : null;
+        const registerModal = registerModalEl ? new bootstrap.Modal(registerModalEl) : null;
+        const createBlogModal = createBlogModalEl ? new bootstrap.Modal(createBlogModalEl) : null;
+
+        // ===== Login → Register =====
+        if (openRegisterBtn && loginModal && registerModal) {
+            openRegisterBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                loginModal.hide();
+
+                setTimeout(() => {
+                    registerModal.show();
+
+                    // Re-parse validation safely
+                    const registerForm = document.querySelector("#registerModal form");
+                    if (registerForm) {
+                        $.validator.unobtrusive.parse(registerForm);
+                    }
+
+                }, 300);
+            });
+        }
+
+        // ===== Register → Login =====
+        if (openLoginBtn && loginModal && registerModal) {
+            openLoginBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                registerModal.hide();
+
+                setTimeout(() => {
+                    loginModal.show();
+
+                    const loginForm = document.querySelector("#loginModal form");
+                    if (loginForm) {
+                        $.validator.unobtrusive.parse(loginForm);
+                    }
+
+                }, 300);
+            });
+        }
+
+        // ===== Create Blog Button =====
+        if (openCreateBlogBtn) {
+            openCreateBlogBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                if (!isUserLoggedIn) {
+                    if (loginModal) loginModal.show();
+                } else {
+                    if (createBlogModal) createBlogModal.show();
+                }
+            });
+        }
+
+    });
+</script>
+
+
+
+
+<!--begin: When Unauthorize then automatic open modal-->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const loginModalElement = document.getElementById("loginModal");
+
+        if (!loginModalElement) return;
+
+        const loginModal = new bootstrap.Modal(loginModalElement);
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if (urlParams.get("loginRequired") === "true") {
+            loginModal.show();
+        }
+    });
+</script>
